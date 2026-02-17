@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control0'.
  *
- * Model version                  : 1.12
+ * Model version                  : 1.15
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Fri Feb 13 12:09:22 2026
+ * C/C++ source code generated on : Tue Feb 17 10:16:03 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -50,12 +50,12 @@ typedef struct {
   real_T UnitDelay2_DSTATE;            /* '<S1>/Unit Delay2' */
   real_T UnitDelay5_DSTATE;            /* '<S1>/Unit Delay5' */
   real_T Integrator_DSTATE;            /* '<S47>/Integrator' */
-  real_T Integrator_DSTATE_g;          /* '<S99>/Integrator' */
-  real_T Integrator_DSTATE_d;          /* '<S203>/Integrator' */
+  real_T Integrator_DSTATE_b;          /* '<S99>/Integrator' */
   real_T UnitDelay7_DSTATE;            /* '<S1>/Unit Delay7' */
-  real_T Integrator_DSTATE_c;          /* '<S151>/Integrator' */
+  real_T Integrator_DSTATE_g;          /* '<S151>/Integrator' */
+  real_T Integrator_DSTATE_i;          /* '<S203>/Integrator' */
   int32_T clockTickCounter;            /* '<S1>/Pulse Generator' */
-  int32_T clockTickCounter_h;          /* '<S1>/Pulse Generator1' */
+  int32_T clockTickCounter_o;          /* '<S1>/Pulse Generator1' */
 } DW;
 
 /* External inputs (root inport signals with default storage) */
@@ -68,11 +68,12 @@ typedef struct {
   real_T gripperRotationDesiredPosition;
                                    /* '<Root>/gripperRotationDesiredPosition' */
   real_T actualposition;               /* '<Root>/jawActualPosition' */
-  real_T actualposition_a;          /* '<Root>/gripperRotationActualPosition' */
-  real_T actualposition_d;             /* '<Root>/gripperPitchActualPosition' */
-  real_T actualposition_i;             /* '<Root>/baseActualPosition' */
-  real_T actualposition_c;             /* '<Root>/stepperLeftActualPosition' */
-  real_T actualposition_h;             /* '<Root>/stepperRightActualPosition' */
+  real_T actualposition_l;          /* '<Root>/gripperRotationActualPosition' */
+  real_T actualposition_j;             /* '<Root>/gripperPitchActualPosition' */
+  real_T actualposition_d;             /* '<Root>/baseActualPosition' */
+  real_T actualposition_d0;            /* '<Root>/stepperLeftActualPosition' */
+  real_T actualposition_jh;            /* '<Root>/stepperRightActualPosition' */
+  real_T deltaTime;                    /* '<Root>/deltaTime' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -121,6 +122,7 @@ extern RT_MODEL *const rtM;
  * Block '<S1>/gripper rotation' : Unused code path elimination
  * Block '<S1>/left base' : Unused code path elimination
  * Block '<S1>/right base' : Unused code path elimination
+ * Block '<S1>/Gain9' : Eliminated nontunable gain of 1
  * Block '<S96>/Integral Gain' : Eliminated nontunable gain of 1
  * Block '<S104>/Proportional Gain' : Eliminated nontunable gain of 1
  * Block '<S200>/Integral Gain' : Eliminated nontunable gain of 1
@@ -204,7 +206,7 @@ extern RT_MODEL *const rtM;
  * '<S57>'  : 'codegen/control/PID Controller1/Sum Fdbk/Disabled'
  * '<S58>'  : 'codegen/control/PID Controller1/Tracking Mode/Disabled'
  * '<S59>'  : 'codegen/control/PID Controller1/Tracking Mode Sum/Passthrough'
- * '<S60>'  : 'codegen/control/PID Controller1/Tsamp - Integral/TsSignalSpecification'
+ * '<S60>'  : 'codegen/control/PID Controller1/Tsamp - Integral/External Ts'
  * '<S61>'  : 'codegen/control/PID Controller1/Tsamp - Ngain/Passthrough'
  * '<S62>'  : 'codegen/control/PID Controller1/postSat Signal/Forward_Path'
  * '<S63>'  : 'codegen/control/PID Controller1/preInt Signal/Internal PreInt'
@@ -256,7 +258,7 @@ extern RT_MODEL *const rtM;
  * '<S109>' : 'codegen/control/PID Controller2/Sum Fdbk/Disabled'
  * '<S110>' : 'codegen/control/PID Controller2/Tracking Mode/Disabled'
  * '<S111>' : 'codegen/control/PID Controller2/Tracking Mode Sum/Passthrough'
- * '<S112>' : 'codegen/control/PID Controller2/Tsamp - Integral/TsSignalSpecification'
+ * '<S112>' : 'codegen/control/PID Controller2/Tsamp - Integral/External Ts'
  * '<S113>' : 'codegen/control/PID Controller2/Tsamp - Ngain/Passthrough'
  * '<S114>' : 'codegen/control/PID Controller2/postSat Signal/Forward_Path'
  * '<S115>' : 'codegen/control/PID Controller2/preInt Signal/Internal PreInt'
@@ -308,7 +310,7 @@ extern RT_MODEL *const rtM;
  * '<S161>' : 'codegen/control/PID Controller3/Sum Fdbk/Disabled'
  * '<S162>' : 'codegen/control/PID Controller3/Tracking Mode/Disabled'
  * '<S163>' : 'codegen/control/PID Controller3/Tracking Mode Sum/Passthrough'
- * '<S164>' : 'codegen/control/PID Controller3/Tsamp - Integral/TsSignalSpecification'
+ * '<S164>' : 'codegen/control/PID Controller3/Tsamp - Integral/External Ts'
  * '<S165>' : 'codegen/control/PID Controller3/Tsamp - Ngain/Passthrough'
  * '<S166>' : 'codegen/control/PID Controller3/postSat Signal/Forward_Path'
  * '<S167>' : 'codegen/control/PID Controller3/preInt Signal/Internal PreInt'
@@ -360,7 +362,7 @@ extern RT_MODEL *const rtM;
  * '<S213>' : 'codegen/control/PID Controller4/Sum Fdbk/Disabled'
  * '<S214>' : 'codegen/control/PID Controller4/Tracking Mode/Disabled'
  * '<S215>' : 'codegen/control/PID Controller4/Tracking Mode Sum/Passthrough'
- * '<S216>' : 'codegen/control/PID Controller4/Tsamp - Integral/TsSignalSpecification'
+ * '<S216>' : 'codegen/control/PID Controller4/Tsamp - Integral/External Ts'
  * '<S217>' : 'codegen/control/PID Controller4/Tsamp - Ngain/Passthrough'
  * '<S218>' : 'codegen/control/PID Controller4/postSat Signal/Forward_Path'
  * '<S219>' : 'codegen/control/PID Controller4/preInt Signal/Internal PreInt'
