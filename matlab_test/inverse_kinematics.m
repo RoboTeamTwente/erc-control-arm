@@ -4,13 +4,13 @@ z = -200;
 alpha = 90 * (pi/180);
 
 %all the lengths are in millimeters
-LbaseToP1 = 32;
-LbaseToP3 = 112;
-
+LbaseToP1 = 45;
+LbaseToP3 = 129;
+    
 LP1toP2 = 350;
-LP2toP6 = 620;
-LP6toP7 = 105;
-
+LP2toP6 = 500;
+LP6toP7 = 300;
+    
 LP3toP4 = 120;
 LP4toP5 = 280;
 LP5toP2 = 120;
@@ -134,7 +134,7 @@ P3planar = P0 * TPbasetoP3;
 P5planar = P0 * TPbasetoP1 * TP1toP2 * TP2toP5;
 
 %getting parallelageram angles
-L_1 = 120; L_2 = 280;
+L_1 = LP3toP4; L_2 = LP4toP5;
 XE = P5planar(1, 4) - P3planar(1, 4);
 YE = P5planar(3, 4) - P3planar(3, 4);
 theta4 = 2*atan((2*L_1*YE + sqrt(- L_1^4 + 2*L_1^2*L_2^2 + 2*L_1^2*XE^2 + 2*L_1^2*YE^2 - L_2^4 + 2*L_2^2*XE^2 + 2*L_2^2*YE^2 - XE^4 - 2*XE^2*YE^2 - YE^4))/(L_1^2 + 2*L_1*XE - L_2^2 + XE^2 + YE^2));
@@ -156,6 +156,6 @@ TP3toP4 = [cos(theta5) -sin(theta5) 0 LP3toP4;
 
 
 %passing the angles to the forward kinematics file
-angles = [theta0, theta1, theta2, theta3, theta4, theta5];
+%angles = [theta0, theta1, theta2, theta3, theta4, theta5];
 
-%forward_kinematics;
+forward_kinematics;

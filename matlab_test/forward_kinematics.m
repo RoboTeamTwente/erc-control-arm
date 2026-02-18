@@ -57,7 +57,7 @@ grid(ax1, 'on');
 axis(ax1, 'equal');
 xlim(ax1, [-1000, 1000]);
 ylim(ax1, [-1000, 1000]);
-zlim(ax1, [-300, 1000]);
+zlim(ax1, [-500, 1000]);
 xlabel(ax1, 'X');
 ylabel(ax1, 'Y');
 zlabel(ax1, 'Z');
