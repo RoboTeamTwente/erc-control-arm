@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control0'.
  *
- * Model version                  : 1.15
+ * Model version                  : 1.18
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue Feb 17 10:16:03 2026
+ * C/C++ source code generated on : Fri Feb 20 14:10:08 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
