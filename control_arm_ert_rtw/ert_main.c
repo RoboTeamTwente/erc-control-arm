@@ -5,11 +5,11 @@
  *
  * File: ert_main.c
  *
- * Code generated for Simulink model 'control0'.
+ * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.18
+ * Model version                  : 1.25
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Fri Feb 20 14:10:08 2026
+ * C/C++ source code generated on : Tue Mar  3 16:51:44 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -21,7 +21,7 @@
 
 #include <stddef.h>
 #include <stdio.h>            /* This example main program uses printf/fflush */
-#include "control0.h"                  /* Model header file */
+#include "control_arm.h"               /* Model header file */
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -54,7 +54,7 @@ void rt_OneStep(void)
   /* Set model inputs here */
 
   /* Step the model */
-  control0_step();
+  control_arm_step();
 
   /* Get model outputs here */
 
@@ -79,7 +79,7 @@ int_T main(int_T argc, const char *argv[])
   (void)(argv);
 
   /* Initialize model */
-  control0_initialize();
+  control_arm_initialize();
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.001 seconds (base rate of the model) here.

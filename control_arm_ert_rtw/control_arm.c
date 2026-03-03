@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: control0.c
+ * File: control_arm.c
  *
- * Code generated for Simulink model 'control0'.
+ * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.18
+ * Model version                  : 1.25
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Fri Feb 20 14:10:08 2026
+ * C/C++ source code generated on : Tue Mar  3 16:51:44 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -19,7 +19,7 @@
  * Validation result: Not run
  */
 
-#include "control0.h"
+#include "control_arm.h"
 #include "rtwtypes.h"
 #include <math.h>
 #include "math.h"
@@ -190,7 +190,7 @@ real_T rt_powd_snf(real_T u0, real_T u1)
 }
 
 /* Model step function */
-void control0_step(void)
+void control_arm_step(void)
 {
   real_T P6i[16];
   real_T rtb_IntegralGain_0[16];
@@ -205,7 +205,7 @@ void control0_step(void)
   real_T alpha;
   real_T angToBase;
   real_T rtb_IntegralGain;
-  real_T rtb_Integrator_n;
+  real_T rtb_Integrator_e;
   real_T rtb_ProportionalGain;
   real_T theta2;
   int16_T P6i_tmp_0;
@@ -235,7 +235,7 @@ void control0_step(void)
   };
 
   /* DiscretePulseGenerator: '<S1>/Pulse Generator' */
-  rtb_Integrator_n = ((rtDW.clockTickCounter < 1L) && (rtDW.clockTickCounter >=
+  rtb_Integrator_e = ((rtDW.clockTickCounter < 1L) && (rtDW.clockTickCounter >=
     0L));
   if (rtDW.clockTickCounter >= 1L) {
     rtDW.clockTickCounter = 0L;
@@ -252,18 +252,18 @@ void control0_step(void)
    *  RelationalOperator: '<S2>/Compare'
    *  UnitDelay: '<S1>/Unit Delay'
    */
-  rtY.stepperLeftENA = (real_T)(fabs(rtDW.UnitDelay_DSTATE) > 0.0002) *
-    rtb_Integrator_n;
+  rtY.stepperLeftENA = (real_T)(fabs(rtDW.UnitDelay_DSTATE) > 0.032) *
+    rtb_Integrator_e;
 
   /* Signum: '<S1>/Sign1' incorporates:
    *  UnitDelay: '<S1>/Unit Delay'
    */
   if (rtIsNaN(rtDW.UnitDelay_DSTATE)) {
-    rtb_Integrator_n = (rtNaN);
+    rtb_Integrator_e = (rtNaN);
   } else if (rtDW.UnitDelay_DSTATE < 0.0) {
-    rtb_Integrator_n = -1.0;
+    rtb_Integrator_e = -1.0;
   } else {
-    rtb_Integrator_n = (rtDW.UnitDelay_DSTATE > 0.0);
+    rtb_Integrator_e = (rtDW.UnitDelay_DSTATE > 0.0);
   }
 
   /* End of Signum: '<S1>/Sign1' */
@@ -271,23 +271,23 @@ void control0_step(void)
   /* Saturate: '<S1>/Saturation1' incorporates:
    *  Gain: '<S1>/Gain1'
    */
-  if (-rtb_Integrator_n < 0.0) {
+  if (-rtb_Integrator_e < 0.0) {
     /* Outport: '<Root>/stepperLeftREV' */
     rtY.stepperLeftREV = 0.0;
   } else {
     /* Outport: '<Root>/stepperLeftREV' */
-    rtY.stepperLeftREV = -rtb_Integrator_n;
+    rtY.stepperLeftREV = -rtb_Integrator_e;
   }
 
   /* End of Saturate: '<S1>/Saturation1' */
 
   /* DiscretePulseGenerator: '<S1>/Pulse Generator1' */
-  rtb_Integrator_n = ((rtDW.clockTickCounter_h < 1L) && (rtDW.clockTickCounter_h
+  rtb_Integrator_e = ((rtDW.clockTickCounter_d < 1L) && (rtDW.clockTickCounter_d
     >= 0L));
-  if (rtDW.clockTickCounter_h >= 1L) {
-    rtDW.clockTickCounter_h = 0L;
+  if (rtDW.clockTickCounter_d >= 1L) {
+    rtDW.clockTickCounter_d = 0L;
   } else {
-    rtDW.clockTickCounter_h++;
+    rtDW.clockTickCounter_d++;
   }
 
   /* End of DiscretePulseGenerator: '<S1>/Pulse Generator1' */
@@ -299,18 +299,18 @@ void control0_step(void)
    *  RelationalOperator: '<S3>/Compare'
    *  UnitDelay: '<S1>/Unit Delay3'
    */
-  rtY.stepperRightENA = (real_T)(fabs(rtDW.UnitDelay3_DSTATE) > 0.0002) *
-    rtb_Integrator_n;
+  rtY.stepperRightENA = (real_T)(fabs(rtDW.UnitDelay3_DSTATE) > 0.032) *
+    rtb_Integrator_e;
 
   /* Signum: '<S1>/Sign2' incorporates:
    *  UnitDelay: '<S1>/Unit Delay3'
    */
   if (rtIsNaN(rtDW.UnitDelay3_DSTATE)) {
-    rtb_Integrator_n = (rtNaN);
+    rtb_Integrator_e = (rtNaN);
   } else if (rtDW.UnitDelay3_DSTATE < 0.0) {
-    rtb_Integrator_n = -1.0;
+    rtb_Integrator_e = -1.0;
   } else {
-    rtb_Integrator_n = (rtDW.UnitDelay3_DSTATE > 0.0);
+    rtb_Integrator_e = (rtDW.UnitDelay3_DSTATE > 0.0);
   }
 
   /* End of Signum: '<S1>/Sign2' */
@@ -318,12 +318,12 @@ void control0_step(void)
   /* Saturate: '<S1>/Saturation2' incorporates:
    *  Gain: '<S1>/Gain4'
    */
-  if (-rtb_Integrator_n < 0.0) {
+  if (-rtb_Integrator_e < 0.0) {
     /* Outport: '<Root>/stepperRightREV' */
     rtY.stepperRightREV = 0.0;
   } else {
     /* Outport: '<Root>/stepperRightREV' */
-    rtY.stepperRightREV = -rtb_Integrator_n;
+    rtY.stepperRightREV = -rtb_Integrator_e;
   }
 
   /* End of Saturate: '<S1>/Saturation2' */
@@ -400,16 +400,17 @@ void control0_step(void)
    */
   alpha = rtU.gripperAng * 0.017453292519943295;
   if (rtU.x < 0.0) {
-    rtb_Integrator_n = atan(rtU.y / rtU.x) + 3.1415926535897931;
+    rtb_Integrator_e = atan(rtU.y / rtU.x) + 3.1415926535897931;
   } else {
-    rtb_Integrator_n = atan(rtU.y / rtU.x);
+    rtb_Integrator_e = atan(rtU.y / rtU.x);
   }
 
-  angToBase = rtb_Integrator_n - 3.1415926535897931;
-  if (rtb_Integrator_n > 3.1415926535897931) {
-    rtb_Integrator_n -= 6.2831853071795862;
+  angToBase = rtb_Integrator_e - 3.1415926535897931;
+  if (rtb_Integrator_e > 3.1415926535897931) {
+    rtb_Integrator_e -= 6.2831853071795862;
   }
 
+  rtb_Integrator_e = -rtb_Integrator_e;
   XEi = sin(angToBase);
   rtb_IntegralGain = cos(angToBase);
   rtb_ProportionalGain = sin(alpha);
@@ -661,7 +662,7 @@ void control0_step(void)
       4.0)) - rtb_IntegralGain * 2.0 * theta2) - rt_powd_snf(P6i[14] - 0.149,
       4.0)) + (P6i[14] - 0.149) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
       0.078400000000000011) + rtb_IntegralGain) + theta2)) * 2.0;
-    if ((fabs(rtb_Integrator_n) > 3.1415926535897931) || ((angToBase < 0.0) ||
+    if ((fabs(rtb_Integrator_e) > 3.1415926535897931) || ((angToBase < 0.0) ||
          (angToBase > 2.3561944901923448) || (alpha < -2.3561944901923448) ||
          (alpha > 0.78539816339744828) || (XEi < 1.5707963267948966) || (XEi >
           4.71238898038469))) {
@@ -673,7 +674,7 @@ void control0_step(void)
       /* Outport: '<Root>/error' */
       rtY.error = 2.0;
     } else {
-      rtb_angles[0] = rtb_Integrator_n;
+      rtb_angles[0] = rtb_Integrator_e;
       rtb_angles[1] = angToBase;
       rtb_angles[2] = alpha;
       rtb_angles[3] = XEi;
@@ -687,29 +688,31 @@ void control0_step(void)
 
   /* Sum: '<S1>/Sum1' incorporates:
    *  Constant: '<S1>/Pi'
+   *  Gain: '<S1>/Gain13'
    *  Inport: '<Root>/stepperLeftActualPosition'
-   *  Sum: '<S1>/Sum'
+   *  Sum: '<S1>/Sum7'
    */
-  alpha = (rtb_angles[3] + 1.5707963267948966) - rtU.actualposition_c;
+  alpha = (rtb_angles[3] + 1.5707963267948966) * 160.0 - rtU.actualposition_f;
 
   /* Sum: '<S1>/Sum4' incorporates:
    *  Inport: '<Root>/gripperPitchActualPosition'
    *  UnitDelay: '<S1>/Unit Delay2'
    */
-  rtb_Integrator_n = rtDW.UnitDelay2_DSTATE - rtU.actualposition_p;
+  rtb_Integrator_e = rtDW.UnitDelay2_DSTATE - rtU.actualposition_l;
 
   /* Sum: '<S1>/Sum2' incorporates:
    *  Inport: '<Root>/baseActualPosition'
    *  UnitDelay: '<S1>/Unit Delay5'
    */
-  angToBase = rtDW.UnitDelay5_DSTATE - rtU.actualposition_pe;
+  angToBase = rtDW.UnitDelay5_DSTATE - rtU.actualposition_o;
 
   /* Sum: '<S1>/Sum3' incorporates:
    *  Constant: '<S1>/Pi1'
+   *  Gain: '<S1>/Gain8'
    *  Inport: '<Root>/stepperRightActualPosition'
-   *  Sum: '<S1>/Sum7'
+   *  Sum: '<S1>/Sum9'
    */
-  XEi = (rtb_angles[1] + 1.5707963267948966) - rtU.actualposition_ps;
+  XEi = (rtb_angles[1] + 1.5707963267948966) * 160.0 - rtU.actualposition_ik;
 
   /* Outport: '<Root>/pointReached' incorporates:
    *  Abs: '<S1>/Abs2'
@@ -720,8 +723,8 @@ void control0_step(void)
    *  RelationalOperator: '<S4>/Compare'
    *  Sum: '<S1>/Sum8'
    */
-  rtY.pointReached = (((fabs(rtb_Integrator_n) + fabs(angToBase)) + fabs(alpha))
-                      + fabs(XEi) <= 0.001);
+  rtY.pointReached = (((fabs(rtb_Integrator_e) + fabs(angToBase)) + fabs(alpha))
+                      + fabs(XEi) <= 0.025);
 
   /* Gain: '<S45>/Integral Gain' */
   rtb_IntegralGain = 0.2 * angToBase;
@@ -729,15 +732,14 @@ void control0_step(void)
   /* Update for UnitDelay: '<S1>/Unit Delay5' incorporates:
    *  Gain: '<S1>/Gain11'
    *  Gain: '<S1>/Gain6'
-   *  Gain: '<S1>/Gain8'
    *  Inport: '<Root>/deltaTime'
    *  MATLAB Function: '<S1>/MATLAB Function1'
    */
-  MATLABFunction(rtDW.UnitDelay5_DSTATE, 63.0 * -rtb_angles[0], 20.0 *
+  MATLABFunction(rtDW.UnitDelay5_DSTATE, 63.0 * rtb_angles[0], 20.0 *
                  rtU.deltaTime, &rtDW.UnitDelay5_DSTATE);
 
   /* Gain: '<S97>/Integral Gain' */
-  theta2 = 0.1 * rtb_Integrator_n;
+  theta2 = 0.1 * rtb_Integrator_e;
 
   /* Update for UnitDelay: '<S1>/Unit Delay2' incorporates:
    *  Gain: '<S1>/Gain10'
@@ -768,7 +770,7 @@ void control0_step(void)
    *  UnitDelay: '<S1>/Unit Delay9'
    */
   MATLABFunction(rtDW.UnitDelay9_DSTATE, 21.0 * (0.017453292519943295 *
-    rtU.jawDesiredPosition), 2.1 * rtU.deltaTime, &rtb_Integrator_n);
+    rtU.jawDesiredPosition), 2.1 * rtU.deltaTime, &rtb_Integrator_e);
 
   /* Sum: '<S1>/Sum6' incorporates:
    *  Inport: '<Root>/jawActualPosition'
@@ -787,7 +789,8 @@ void control0_step(void)
    *  Gain: '<S209>/Proportional Gain'
    *  Sum: '<S213>/Sum'
    */
-  rtDW.UnitDelay8_DSTATE = 2.0 * rtb_ProportionalGain + rtDW.Integrator_DSTATE_d;
+  rtDW.UnitDelay8_DSTATE = 2.0 * rtb_ProportionalGain +
+    rtDW.Integrator_DSTATE_mo;
 
   /* Gain: '<S157>/Proportional Gain' incorporates:
    *  Gain: '<S149>/Integral Gain'
@@ -795,21 +798,21 @@ void control0_step(void)
    *  Sum: '<S1>/Sum5'
    *  UnitDelay: '<S1>/Unit Delay7'
    */
-  alpha = (rtDW.UnitDelay7_DSTATE - rtU.actualposition_g) * 0.2;
+  alpha = (rtDW.UnitDelay7_DSTATE - rtU.actualposition_i) * 0.2;
 
   /* Update for UnitDelay: '<S1>/Unit Delay6' incorporates:
    *  DiscreteIntegrator: '<S152>/Integrator'
    *  Gain: '<S157>/Proportional Gain'
    *  Sum: '<S161>/Sum'
    */
-  rtDW.UnitDelay6_DSTATE = alpha + rtDW.Integrator_DSTATE_g;
+  rtDW.UnitDelay6_DSTATE = alpha + rtDW.Integrator_DSTATE_m;
 
   /* Update for UnitDelay: '<S1>/Unit Delay4' incorporates:
    *  DiscreteIntegrator: '<S100>/Integrator'
    *  Gain: '<S105>/Proportional Gain'
    *  Sum: '<S109>/Sum'
    */
-  rtDW.UnitDelay4_DSTATE = theta2 + rtDW.Integrator_DSTATE_i;
+  rtDW.UnitDelay4_DSTATE = theta2 + rtDW.Integrator_DSTATE_p;
 
   /* Update for UnitDelay: '<S1>/Unit Delay1' incorporates:
    *  DiscreteIntegrator: '<S48>/Integrator'
@@ -828,7 +831,7 @@ void control0_step(void)
    *  Inport: '<Root>/deltaTime'
    *  Product: '<S113>/Uintegral*Ts Prod Out'
    */
-  rtDW.Integrator_DSTATE_i += theta2 * rtU.deltaTime;
+  rtDW.Integrator_DSTATE_p += theta2 * rtU.deltaTime;
 
   /* Update for UnitDelay: '<S1>/Unit Delay7' */
   rtDW.UnitDelay7_DSTATE = angToBase;
@@ -837,20 +840,20 @@ void control0_step(void)
    *  Inport: '<Root>/deltaTime'
    *  Product: '<S165>/Uintegral*Ts Prod Out'
    */
-  rtDW.Integrator_DSTATE_g += alpha * rtU.deltaTime;
+  rtDW.Integrator_DSTATE_m += alpha * rtU.deltaTime;
 
   /* Update for UnitDelay: '<S1>/Unit Delay9' */
-  rtDW.UnitDelay9_DSTATE = rtb_Integrator_n;
+  rtDW.UnitDelay9_DSTATE = rtb_Integrator_e;
 
   /* Update for DiscreteIntegrator: '<S204>/Integrator' incorporates:
    *  Inport: '<Root>/deltaTime'
    *  Product: '<S217>/Uintegral*Ts Prod Out'
    */
-  rtDW.Integrator_DSTATE_d += rtb_ProportionalGain * rtU.deltaTime;
+  rtDW.Integrator_DSTATE_mo += rtb_ProportionalGain * rtU.deltaTime;
 }
 
 /* Model initialize function */
-void control0_initialize(void)
+void control_arm_initialize(void)
 {
   /* (no initialization code required) */
 }

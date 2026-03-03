@@ -1,13 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" type="text/css" href="rtwreport.css" /><script language="JavaScript" type="text/javascript" src="rtwshrink.js"></script><script>function postParentWindowMessage(message) {window.parent.postMessage(message, "*");}</script><style> h3 { margin-bottom: 1ex; } h4.function {   font-size: larger; font-weight: normal;   color: #c05709;	margin-bottom: 0ex; } .description {	border-style: none;	color: DimGray; } .footnote { margin-top: 0.5ex; font-size: small; color: DimGray;} a:visited, a:hover { color: #004b87 } ul.services { margin-top: 0.5ex; } .include { color: #992211 } a.include:link { color:inherit; text-decoration: none } a.include:hover { text-decoration: underline } a.fcn:link { color:inherit; text-decoration: none } a.fcn:hover { text-decoration: underline } code.usage { white-space: pre-wrap; } .programlisting {   margin-left: 4ex; margin-right: 4ex;   margin-top: 2ex;  margin-bottom: 2ex; } .tooltip { position: relative; display: inline-block; } .tooltip .tooltip-text {   visibility: hidden;   position: absolute;   top: 110%;   left: 0;   background-color: white;   z-index: 1;   box-shadow: 5px 5px 10px 5px Gainsboro;   border-radius: 10px;   padding: 10px 15px 0px; } .tooltip:hover .tooltip-text { visibility: visible; } .tooltip-text .footnote { white-space: nowrap;} </style><title>
-Code Interface Report for control0
+Code Interface Report for control_arm
 </title>
 
 </head>
 <body>
 <h1>
-Code Interface Report for control0
+Code Interface Report for control_arm
 </h1>
 <div>
 
@@ -131,16 +131,16 @@ External code initiates execution of the generated code by calling entry-point f
 <p>
 Initialize entry-point functions implement startup behavior. In a model, Initialize Function blocks represent startup behavior explicitly.
 </p>
-<div id="fcn_control0_initialize">
+<div id="fcn_control_arm_initialize">
 <h4 class="function">
-control0_initialize
+control_arm_initialize
 </h4>
 <span class="description">
 Initialization entry point of generated code
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
-void <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0_initialize'})" class="fcn">control0_initialize</a>(void)</code>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+void <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm_initialize'})" class="fcn">control_arm_initialize</a>(void)</code>
 </div>
 </div>
 </section>
@@ -162,16 +162,16 @@ No terminate functions represented in model.
 <p>
 Periodic entry-point functions implement model behavior that occurs at a fixed sampling rate. For a rate-based model, the code generator produces a periodic entry-point function for each rate used in the model. In a function-call (export-function) model, Function Call Subsystem blocks that specify a sampling rate represent periodic functions.
 </p>
-<div id="fcn_control0_step">
+<div id="fcn_control_arm_step">
 <h4 class="function">
-control0_step
+control_arm_step
 </h4>
 <span class="description">
 Output entry point of generated code. Must be called periodically, every 0.001 seconds. 
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
-void <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0_step'})" class="fcn">control0_step</a>(void)</code>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+void <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm_step'})" class="fcn">control_arm_step</a>(void)</code>
 </div>
 </div>
 </section>
@@ -216,7 +216,7 @@ rtU.x
 Input data for &lt;S1&gt;/x
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T x;
@@ -232,7 +232,7 @@ rtU.y
 Input data for &lt;S1&gt;/y
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T y;
@@ -248,7 +248,7 @@ rtU.z
 Input data for &lt;S1&gt;/z
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T z;
@@ -264,7 +264,7 @@ rtU.gripperAng
 Input data for &lt;S1&gt;/gripperAng
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T gripperAng;
@@ -280,7 +280,7 @@ rtU.jawDesiredPosition
 Input data for &lt;S1&gt;/jawDesiredPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T jawDesiredPosition;
@@ -296,7 +296,7 @@ rtU.gripperRotationDesiredPosition
 Input data for &lt;S1&gt;/gripperRotationDesiredPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T gripperRotationDesiredPosition;
@@ -312,7 +312,7 @@ rtU.actualposition
 Input data for &lt;S1&gt;/jawActualPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T actualposition;
@@ -320,82 +320,82 @@ struct {
 } rtU;</code>
 </div>
 </div>
-<div id="fcn_rtU.actualposition_g">
+<div id="fcn_rtU.actualposition_i">
 <h4 class="function">
-rtU.actualposition_g
+rtU.actualposition_i
 </h4>
 <span class="description">
 Input data for &lt;S1&gt;/gripperRotationActualPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T actualposition_g;
+  real_T actualposition_i;
   ...
 } rtU;</code>
 </div>
 </div>
-<div id="fcn_rtU.actualposition_p">
+<div id="fcn_rtU.actualposition_l">
 <h4 class="function">
-rtU.actualposition_p
+rtU.actualposition_l
 </h4>
 <span class="description">
 Input data for &lt;S1&gt;/gripperPitchActualPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T actualposition_p;
+  real_T actualposition_l;
   ...
 } rtU;</code>
 </div>
 </div>
-<div id="fcn_rtU.actualposition_pe">
+<div id="fcn_rtU.actualposition_o">
 <h4 class="function">
-rtU.actualposition_pe
+rtU.actualposition_o
 </h4>
 <span class="description">
 Input data for &lt;S1&gt;/baseActualPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T actualposition_pe;
+  real_T actualposition_o;
   ...
 } rtU;</code>
 </div>
 </div>
-<div id="fcn_rtU.actualposition_c">
+<div id="fcn_rtU.actualposition_f">
 <h4 class="function">
-rtU.actualposition_c
+rtU.actualposition_f
 </h4>
 <span class="description">
 Input data for &lt;S1&gt;/stepperLeftActualPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T actualposition_c;
+  real_T actualposition_f;
   ...
 } rtU;</code>
 </div>
 </div>
-<div id="fcn_rtU.actualposition_ps">
+<div id="fcn_rtU.actualposition_ik">
 <h4 class="function">
-rtU.actualposition_ps
+rtU.actualposition_ik
 </h4>
 <span class="description">
 Input data for &lt;S1&gt;/stepperRightActualPosition
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T actualposition_ps;
+  real_T actualposition_ik;
   ...
 } rtU;</code>
 </div>
@@ -408,7 +408,7 @@ rtU.deltaTime
 Input data for &lt;S1&gt;/deltaTime
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T deltaTime;
@@ -429,7 +429,7 @@ rtY.pointReached
 Output data for &lt;S1&gt;/pointReached
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   boolean_T pointReached;
@@ -445,7 +445,7 @@ rtY.error
 Output data for &lt;S1&gt;/error
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T error;
@@ -461,7 +461,7 @@ rtY.controlJaw
 Output data for &lt;S1&gt;/controlJaw
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T controlJaw;
@@ -477,7 +477,7 @@ rtY.controlWristRotation
 Output data for &lt;S1&gt;/controlWristRotation
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T controlWristRotation;
@@ -493,7 +493,7 @@ rtY.controlGripperPitch
 Output data for &lt;S1&gt;/controlGripperPitch
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T controlGripperPitch;
@@ -509,7 +509,7 @@ rtY.controlBase
 Output data for &lt;S1&gt;/controlBase
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T controlBase;
@@ -525,7 +525,7 @@ rtY.stepperLeftENA
 Output data for &lt;S1&gt;/stepperLeftENA
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T stepperLeftENA;
@@ -541,7 +541,7 @@ rtY.stepperLeftREV
 Output data for &lt;S1&gt;/stepperLeftREV
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T stepperLeftREV;
@@ -557,7 +557,7 @@ rtY.stepperRightENA
 Output data for &lt;S1&gt;/stepperRightENA
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T stepperRightENA;
@@ -573,7 +573,7 @@ rtY.stepperRightREV
 Output data for &lt;S1&gt;/stepperRightREV
 </span>
 <div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control0.h'})" class="include">control0.h</a>"</span>
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
   real_T stepperRightREV;
