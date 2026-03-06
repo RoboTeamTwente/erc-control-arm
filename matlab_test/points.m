@@ -1,4 +1,4 @@
-function [x, y, z] = forward_kinematics(theta0, theta1, theta3, theta4)
+function [Pbase, P1, P2, P3, P4, P5, P6, P7] = points(theta0, theta1, theta3, theta4)
     %defining dimentions
     LbaseToP1 = 0.065;
     LbaseToP3 = 0.149;
@@ -102,7 +102,6 @@ function [x, y, z] = forward_kinematics(theta0, theta1, theta3, theta4)
     P6 = P5 * TP5toP6;
     P7 = P6 * TP6toP7;
 
-    x = P7(1,4);
-    y = P7(2,4);
-    z = P7(3,4);
+    P1 = Pbase * TPbasetoP1;
+    P2 = P1 * TP1toP2;
 end
