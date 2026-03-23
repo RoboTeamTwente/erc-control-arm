@@ -1,4 +1,4 @@
-function [] = draw_arm(Pbase, P1, P2, P3, P4, P5, P6, P7)
+function [ax1] = draw_arm(Pbase, P1, P2, P3, P4, P5, P6, P7)
     %getting cartesian coordinates
     frames1 = [Pbase, P1, P2, P5, P6, P7];
 
@@ -24,7 +24,7 @@ function [] = draw_arm(Pbase, P1, P2, P3, P4, P5, P6, P7)
     %plotting points in 3d space
     fig1 = figure('Name', 'robotic arm test', 'NumberTitle', 'off');
     ax1 = axes('Parent', fig1, 'Projection', 'perspective');
-    plot3(ax1, Xs1, Ys1, Zs1, '-o', 'LineWidth', 10, 'MarkerSize', 6, 'Color', "blue");
+    plot3(ax1, Xs1, Ys1, Zs1, '-o', 'LineWidth', 10, 'MarkerSize', 6, 'Color', "red");
     hold on;
     plot3(ax1, Xs2, Ys2, Zs2, '-o', 'LineWidth', 10, 'MarkerSize', 6, 'Color', 'red');
 
@@ -36,5 +36,4 @@ function [] = draw_arm(Pbase, P1, P2, P3, P4, P5, P6, P7)
     xlabel(ax1, 'X');
     ylabel(ax1, 'Y');
     zlabel(ax1, 'Z');
-    hold off;
 end

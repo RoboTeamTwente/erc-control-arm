@@ -1,4 +1,4 @@
-function [Pbase, P1, P2, P3, P4, P5, P6, P7] = points(theta0, theta1, theta3, theta4)
+function [Pbase, P1, P2, P3, P4, P5, P6, P7] = points_arm(theta0, theta1, theta3, theta4, P0)
     %defining dimentions
     LbaseToP1 = 0.065;
     LbaseToP3 = 0.149;
@@ -66,10 +66,12 @@ function [Pbase, P1, P2, P3, P4, P5, P6, P7] = points(theta0, theta1, theta3, th
                                0            0           0 1];
 
     %initial position
+    %{
     P0 = [1 0 0 0;
           0 1 0 0;
           0 0 1 0;
           0 0 0 1];
+    %}
 
     %getting position for paralellagram angles
     P2planar = P0 * TPbasetoP1 * TP1toP2;
@@ -95,7 +97,7 @@ function [Pbase, P1, P2, P3, P4, P5, P6, P7] = points(theta0, theta1, theta3, th
                0            0           1 0;
                0            0           0 1];
 
-    Pbase = TP0toPbase;
+    Pbase = P0 * TP0toPbase;
     P3 = Pbase * TPbasetoP3;
     P4 = P3 * TP3toP4;
     P5 = P4 * TP4toP5;
