@@ -12,7 +12,7 @@ P0 = [1 0 0 0.4;
 
 [Pbase, P1, P2, P3, P4, P5, P6, P7] = points_arm(theta0, theta1, theta3, theta4, P0);
 
-fig1 = draw_arm(Pbase, P1, P2, P3, P4, P5, P6, P7); 
+fig1 = draw_arm(Pbase, P1, P2, P3, P4, P5, P6, P7);
 
 [x, y, z] = forward_kinematics(theta0, theta1, theta3, theta4);
 

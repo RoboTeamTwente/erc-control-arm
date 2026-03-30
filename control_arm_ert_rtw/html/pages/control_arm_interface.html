@@ -320,9 +320,9 @@ struct {
 } rtU;</code>
 </div>
 </div>
-<div id="fcn_rtU.actualposition_o">
+<div id="fcn_rtU.actualposition_l">
 <h4 class="function">
-rtU.actualposition_o
+rtU.actualposition_l
 </h4>
 <span class="description">
 Input data for &lt;S1&gt;/gripperRotationActualPosition
@@ -331,7 +331,39 @@ Input data for &lt;S1&gt;/gripperRotationActualPosition
 <code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T actualposition_o;
+  real_T actualposition_l;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.actualposition_p">
+<h4 class="function">
+rtU.actualposition_p
+</h4>
+<span class="description">
+Input data for &lt;S1&gt;/gripperPitchActualPosition
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+struct {
+  ...
+  real_T actualposition_p;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.actualposition_e">
+<h4 class="function">
+rtU.actualposition_e
+</h4>
+<span class="description">
+Input data for &lt;S1&gt;/baseActualPosition
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+struct {
+  ...
+  real_T actualposition_e;
   ...
 } rtU;</code>
 </div>
@@ -341,7 +373,7 @@ struct {
 rtU.actualposition_f
 </h4>
 <span class="description">
-Input data for &lt;S1&gt;/gripperPitchActualPosition
+Input data for &lt;S1&gt;/stepperLeftActualPosition
 </span>
 <div class="programlisting">
 <code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
@@ -352,41 +384,9 @@ struct {
 } rtU;</code>
 </div>
 </div>
-<div id="fcn_rtU.actualposition_b">
+<div id="fcn_rtU.actualposition_o">
 <h4 class="function">
-rtU.actualposition_b
-</h4>
-<span class="description">
-Input data for &lt;S1&gt;/baseActualPosition
-</span>
-<div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
-struct {
-  ...
-  real_T actualposition_b;
-  ...
-} rtU;</code>
-</div>
-</div>
-<div id="fcn_rtU.stepperLeftActualPosition">
-<h4 class="function">
-rtU.stepperLeftActualPosition
-</h4>
-<span class="description">
-Input data for &lt;S1&gt;/stepperLeftActualPosition
-</span>
-<div class="programlisting">
-<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
-struct {
-  ...
-  real_T stepperLeftActualPosition;
-  ...
-} rtU;</code>
-</div>
-</div>
-<div id="fcn_rtU.stepperRightActualPosition">
-<h4 class="function">
-rtU.stepperRightActualPosition
+rtU.actualposition_o
 </h4>
 <span class="description">
 Input data for &lt;S1&gt;/stepperRightActualPosition
@@ -395,7 +395,7 @@ Input data for &lt;S1&gt;/stepperRightActualPosition
 <code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T stepperRightActualPosition;
+  real_T actualposition_o;
   ...
 } rtU;</code>
 </div>
@@ -412,6 +412,70 @@ Input data for &lt;S1&gt;/deltaTime
 struct {
   ...
   real_T deltaTime;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.gripperPitchOldPosition">
+<h4 class="function">
+rtU.gripperPitchOldPosition
+</h4>
+<span class="description">
+Input data for &lt;S1&gt;/gripperPitchOldPosition
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+struct {
+  ...
+  real_T gripperPitchOldPosition;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.baseOldPosition">
+<h4 class="function">
+rtU.baseOldPosition
+</h4>
+<span class="description">
+Input data for &lt;S1&gt;/baseOldPosition
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+struct {
+  ...
+  real_T baseOldPosition;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.stepperLeftOldPosition">
+<h4 class="function">
+rtU.stepperLeftOldPosition
+</h4>
+<span class="description">
+Input data for &lt;S1&gt;/stepperLeftOldPosition
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+struct {
+  ...
+  real_T stepperLeftOldPosition;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.stepperRightOldPosition">
+<h4 class="function">
+rtU.stepperRightOldPosition
+</h4>
+<span class="description">
+Input data for &lt;S1&gt;/stepperRightOldPosition
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
+struct {
+  ...
+  real_T stepperRightOldPosition;
   ...
 } rtU;</code>
 </div>
@@ -517,66 +581,66 @@ struct {
 } rtY;</code>
 </div>
 </div>
-<div id="fcn_rtY.FreqLeftBase">
+<div id="fcn_rtY.stepperLeftSteps">
 <h4 class="function">
-rtY.FreqLeftBase
+rtY.stepperLeftSteps
 </h4>
 <span class="description">
-Output data for &lt;S1&gt;/FreqLeftBase
+Output data for &lt;S1&gt;/stepperLeftSteps
 </span>
 <div class="programlisting">
 <code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T FreqLeftBase;
+  real_T stepperLeftSteps;
   ...
 } rtY;</code>
 </div>
 </div>
-<div id="fcn_rtY.StepsLeftBase">
+<div id="fcn_rtY.stepperLeftFrequency">
 <h4 class="function">
-rtY.StepsLeftBase
+rtY.stepperLeftFrequency
 </h4>
 <span class="description">
-Output data for &lt;S1&gt;/StepsLeftBase
+Output data for &lt;S1&gt;/stepperLeftFrequency
 </span>
 <div class="programlisting">
 <code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T StepsLeftBase;
+  real_T stepperLeftFrequency;
   ...
 } rtY;</code>
 </div>
 </div>
-<div id="fcn_rtY.FreqRightBase">
+<div id="fcn_rtY.stepperRightSteps">
 <h4 class="function">
-rtY.FreqRightBase
+rtY.stepperRightSteps
 </h4>
 <span class="description">
-Output data for &lt;S1&gt;/FreqRightBase
+Output data for &lt;S1&gt;/stepperRightSteps
 </span>
 <div class="programlisting">
 <code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T FreqRightBase;
+  real_T stepperRightSteps;
   ...
 } rtY;</code>
 </div>
 </div>
-<div id="fcn_rtY.StepsRightBase">
+<div id="fcn_rtY.stepperRightFrequency">
 <h4 class="function">
-rtY.StepsRightBase
+rtY.stepperRightFrequency
 </h4>
 <span class="description">
-Output data for &lt;S1&gt;/StepsRightBase
+Output data for &lt;S1&gt;/stepperRightFrequency
 </span>
 <div class="programlisting">
 <code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'control_arm.h'})" class="include">control_arm.h</a>"</span>
 struct {
   ...
-  real_T StepsRightBase;
+  real_T stepperRightFrequency;
   ...
 } rtY;</code>
 </div>
