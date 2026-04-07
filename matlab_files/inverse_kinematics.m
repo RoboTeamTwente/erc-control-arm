@@ -1,5 +1,17 @@
-function [theta0, theta1, theta3, theta4] = inverse_kinematics(x, y, z, theta6)
+function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, theta6)
     alpha = theta6;
+    defaultAngles = [0; pi/2; 0; -pi/2; pi];
+    error = 0;
+
+    if x == 0 && y == 0
+        theta0 = defaultAngles(1);
+        theta1 = defaultAngles(2);
+        theta2 = defaultAngles(3);
+        theta3 = defaultAngles(4);
+        theta4 = defaultAngles(5);
+        error = 1;
+        return;
+    end
 
     %all the lengths are in meters
     LbaseToP1 = 0.065;
@@ -60,6 +72,16 @@ function [theta0, theta1, theta3, theta4] = inverse_kinematics(x, y, z, theta6)
     dy = P6i(2,4) - P1i(2,4);
     XEi = sqrt(dx*dx + dy*dy);
     YEi = P6i(3,4) - P1i(3,4);
+
+    if (- L_1i^4 + 2*L_1i^2*L_2i^2 + 2*L_1i^2*XEi^2 + 2*L_1i^2*YEi^2 - L_2i^4 + 2*L_2i^2*XEi^2 + 2*L_2i^2*YEi^2 - XEi^4 - 2*XEi^2*YEi^2 - YEi^4) < 0
+        error = 1;
+        theta0 = defaultAngles(1);
+        theta1 = defaultAngles(2);
+        theta2 = defaultAngles(3);
+        theta3 = defaultAngles(4);
+        theta4 = defaultAngles(5);
+        return;
+    end
 
     theta1 = 2*atan((2*L_1i*YEi + sqrt(- L_1i^4 + 2*L_1i^2*L_2i^2 + 2*L_1i^2*XEi^2 + 2*L_1i^2*YEi^2 - L_2i^4 + 2*L_2i^2*XEi^2 + 2*L_2i^2*YEi^2 - XEi^4 - 2*XEi^2*YEi^2 - YEi^4))/(L_1i^2 + 2*L_1i*XEi - L_2i^2 + XEi^2 + YEi^2));
     theta2 = -2*atan(sqrt((- L_1i^2 + 2*L_1i*L_2i - L_2i^2 + XEi^2 + YEi^2)*(L_1i^2 + 2*L_1i*L_2i + L_2i^2 - XEi^2 - YEi^2))/(- L_1i^2 + 2*L_1i*L_2i - L_2i^2 + XEi^2 + YEi^2));
@@ -134,6 +156,17 @@ function [theta0, theta1, theta3, theta4] = inverse_kinematics(x, y, z, theta6)
     L_1 = LP3toP4; L_2 = LP4toP5;
     XE = P5planar(1, 4) - P3planar(1, 4);
     YE = P5planar(3, 4) - P3planar(3, 4);
+
+    if (- L_1^4 + 2*L_1^2*L_2^2 + 2*L_1^2*XE^2 + 2*L_1^2*YE^2 - L_2^4 + 2*L_2^2*XE^2 + 2*L_2^2*YE^2 - XE^4 - 2*XE^2*YE^2 - YE^4) < 0
+        error = 1;
+        theta0 = defaultAngles(1);
+        theta1 = defaultAngles(2);
+        theta2 = defaultAngles(3);
+        theta3 = defaultAngles(4);
+        theta4 = defaultAngles(5);
+        return;
+    end
+
     theta4 = 2*atan((2*L_1*YE + sqrt(- L_1^4 + 2*L_1^2*L_2^2 + 2*L_1^2*XE^2 + 2*L_1^2*YE^2 - L_2^4 + 2*L_2^2*XE^2 + 2*L_2^2*YE^2 - XE^4 - 2*XE^2*YE^2 - YE^4))/(L_1^2 + 2*L_1*XE - L_2^2 + XE^2 + YE^2));
     theta5 = -2*atan(sqrt((- L_1^2 + 2*L_1*L_2 - L_2^2 + XE^2 + YE^2)*(L_1^2 + 2*L_1*L_2 + L_2^2 - XE^2 - YE^2))/(- L_1^2 + 2*L_1*L_2 - L_2^2 + XE^2 + YE^2));
 
@@ -149,4 +182,16 @@ function [theta0, theta1, theta3, theta4] = inverse_kinematics(x, y, z, theta6)
                sin(theta5)  cos(theta5) 0 0;
                0            0           1 0;
                0            0           0 1];
+
+    %{
+    if (abs(theta0) > pi) || (theta1 < 0) || (theta1 > pi) || (theta3 < -3/4*pi) || (theta3 > pi/4) || (theta4 < pi/2) || (theta4 > 3/2*pi)
+        theta0 = defaultAngles(1);
+        theta1 = defaultAngles(2);
+        theta2 = defaultAngles(3);
+        theta3 = defaultAngles(4);
+        theta4 = defaultAngles(5);
+        error = 1;
+        return;
+    end
+    %}
 end
