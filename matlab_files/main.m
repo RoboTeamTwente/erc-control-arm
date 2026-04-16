@@ -29,28 +29,26 @@ for x = -1:0.1:1
               [armPbase, armP1, armP2, armP3, armP4, armP5, armP6, armP7] = points_arm(theta0, theta1, theta3, theta4, P0);
               [roverP1, roverP2, roverP3, roverP4, roverP5, roverP6, roverP7, roverP8, roverP9] = points_rover(P0, width, dimentions);
               if is_reachable([armPbase, armP1, armP2, armP3, armP4, armP5, armP6, armP7], width, [roverP1, roverP2, roverP3, roverP4, roverP5, roverP6, roverP7, roverP8, roverP9])
-                  reachablePoints = [reachablePoints, [x+0.4; y; z]]; %x+0.4 is to convert point reference from the base of the arm to the world
+                  reachablePoints = [reachablePoints, [x+P0(1,4); y+P0(2,4); z+P0(3,4)]];
               end
           end
       end
   end
 end
 
-x = -0.4 - 0.4;
-y = -0.265;
-z = 0.100;
+x = -0.4 - P0(1,4);
+y = -0.265 - P0(2,4);
+z = 0.100 - P0(3,4);
 
 size(reachablePoints, 2);
 
 [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, alpha);
-
 
 [armPbase, armP1, armP2, armP3, armP4, armP5, armP6, armP7] = points_arm(theta0, theta1, theta3, theta4, P0);
 
 draw_arm(armPbase, armP1, armP2, armP3, armP4, armP5, armP6, armP7);
 
 %[x, y, z] = forward_kinematics(theta0, theta1, theta3, theta4)
-
 
 [roverP1, roverP2, roverP3, roverP4, roverP5, roverP6, roverP7, roverP8, roverP9] = points_rover(P0, width, dimentions);
 
