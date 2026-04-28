@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.30
+ * Model version                  : 1.33
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Mon Mar 30 12:08:07 2026
+ * C/C++ source code generated on : Tue Apr 28 11:04:02 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -65,11 +65,11 @@ typedef struct {
   real_T gripperRotationDesiredPosition;
                                    /* '<Root>/gripperRotationDesiredPosition' */
   real_T actualposition;               /* '<Root>/jawActualPosition' */
-  real_T actualposition_l;          /* '<Root>/gripperRotationActualPosition' */
-  real_T actualposition_p;             /* '<Root>/gripperPitchActualPosition' */
-  real_T actualposition_e;             /* '<Root>/baseActualPosition' */
-  real_T actualposition_f;             /* '<Root>/stepperLeftActualPosition' */
-  real_T actualposition_o;             /* '<Root>/stepperRightActualPosition' */
+  real_T actualposition_e;          /* '<Root>/gripperRotationActualPosition' */
+  real_T actualposition_f;             /* '<Root>/gripperPitchActualPosition' */
+  real_T actualposition_o;             /* '<Root>/baseActualPosition' */
+  real_T actualposition_k;             /* '<Root>/stepperLeftActualPosition' */
+  real_T actualposition_d;             /* '<Root>/stepperRightActualPosition' */
   real_T deltaTime;                    /* '<Root>/deltaTime' */
   real_T gripperPitchOldPosition;      /* '<Root>/gripperPitchOldPosition' */
   real_T baseOldPosition;              /* '<Root>/baseOldPosition' */

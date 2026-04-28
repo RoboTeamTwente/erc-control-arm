@@ -1,12 +1,11 @@
-function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, theta6)
-    alpha = theta6;
+function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, alpha)
     defaultAngles = [0; pi/2; 0; -pi/2; pi];
     error = 0;
 
     if x == 0 && y == 0
         theta0 = defaultAngles(1);
         theta1 = defaultAngles(2);
-        theta2 = defaultAngles(3);
+        %theta2 = defaultAngles(3);
         theta3 = defaultAngles(4);
         theta4 = defaultAngles(5);
         error = 1;
@@ -19,7 +18,7 @@ function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, t
 
     LP1toP2 = 0.350;
     LP2toP6 = 0.500;
-    LP5toP6 = 0.620;
+    %LP5toP6 = 0.620;
     LP5toP2 = 0.120;
     LP6toP7 = 0.300;
 
@@ -77,7 +76,7 @@ function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, t
         error = 1;
         theta0 = defaultAngles(1);
         theta1 = defaultAngles(2);
-        theta2 = defaultAngles(3);
+        %theta2 = defaultAngles(3);
         theta3 = defaultAngles(4);
         theta4 = defaultAngles(5);
         return;
@@ -89,17 +88,20 @@ function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, t
     theta3 = 2*pi - alpha -theta1 -theta2;
 
     %getting currently known transforms
+    %{
     %rotation z
     TP0toPbase = [cos(theta0) -sin(theta0) 0 0;
                   sin(theta0)  cos(theta0) 0 0;
                   0            0           1 0;
                   0            0           0 1];
+    %}
 
     %translation z then rotation x
     TPbasetoP1 = [1 0 0  0;
                   0 0 -1 0;
                   0 1 0  LbaseToP1;
                   0 0 0  1];
+
     %rotation z
     TPbasetoP1 = TPbasetoP1 * [cos(theta1) -sin(theta1) 0 0;
                                sin(theta1)  cos(theta1) 0 0;
@@ -112,17 +114,21 @@ function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, t
                0            0           1 0;
                0            0           0 1];
 
+    %{
     %translation x then rotation z
     TP2toP6 = [cos(theta3) -sin(theta3) 0 LP2toP6;
                sin(theta3)  cos(theta3) 0 0;
                0            0           1 0;
                0            0           0 1];
+    %}
 
+    %{
     %translation x
     TP6toP7 = [1 0 0 LP6toP7;
                0 1 0 0;
                0 0 1 0;
                0 0 0 1];
+    %}
 
     %translation z then rotation x
     TPbasetoP3 = [1 0 0  0;
@@ -136,11 +142,13 @@ function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, t
                0 0 1 0;
                0 0 0 1];
 
+   %{
    %translation x
    TP4toP5 = [1 0 0 LP4toP5;
               0 1 0 0;
               0 0 1 0;
               0 0 0 1];
+    %}
 
     %initial position
     P0 = [1 0 0 0;
@@ -161,15 +169,16 @@ function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, t
         error = 1;
         theta0 = defaultAngles(1);
         theta1 = defaultAngles(2);
-        theta2 = defaultAngles(3);
+        %theta2 = defaultAngles(3);
         theta3 = defaultAngles(4);
         theta4 = defaultAngles(5);
         return;
     end
 
     theta4 = 2*atan((2*L_1*YE + sqrt(- L_1^4 + 2*L_1^2*L_2^2 + 2*L_1^2*XE^2 + 2*L_1^2*YE^2 - L_2^4 + 2*L_2^2*XE^2 + 2*L_2^2*YE^2 - XE^4 - 2*XE^2*YE^2 - YE^4))/(L_1^2 + 2*L_1*XE - L_2^2 + XE^2 + YE^2));
-    theta5 = -2*atan(sqrt((- L_1^2 + 2*L_1*L_2 - L_2^2 + XE^2 + YE^2)*(L_1^2 + 2*L_1*L_2 + L_2^2 - XE^2 - YE^2))/(- L_1^2 + 2*L_1*L_2 - L_2^2 + XE^2 + YE^2));
+    %theta5 = -2*atan(sqrt((- L_1^2 + 2*L_1*L_2 - L_2^2 + XE^2 + YE^2)*(L_1^2 + 2*L_1*L_2 + L_2^2 - XE^2 - YE^2))/(- L_1^2 + 2*L_1*L_2 - L_2^2 + XE^2 + YE^2));
 
+    %{
     %getting the last transforms
     %rotation z
     TPbasetoP3 = TPbasetoP3 * [cos(theta4) -sin(theta4) 0 0;
@@ -182,6 +191,7 @@ function [theta0, theta1, theta3, theta4, error] = inverse_kinematics(x, y, z, t
                sin(theta5)  cos(theta5) 0 0;
                0            0           1 0;
                0            0           0 1];
+    %}
 
     %{
     if (abs(theta0) > pi) || (theta1 < 0) || (theta1 > pi) || (theta3 < -3/4*pi) || (theta3 > pi/4) || (theta4 < pi/2) || (theta4 > 3/2*pi)
