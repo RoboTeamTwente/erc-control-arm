@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: control_arm_manual.c
+ * File: control_arm_manual_webots.c
  *
- * Code generated for Simulink model 'control_arm_manual'.
+ * Code generated for Simulink model 'control_arm_manual_webots'.
  *
- * Model version                  : 1.21
+ * Model version                  : 1.22
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Wed May  6 10:08:28 2026
+ * C/C++ source code generated on : Mon May 11 12:51:03 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -19,7 +19,7 @@
  * Validation result: Not run
  */
 
-#include "control_arm_manual.h"
+#include "control_arm_manual_webots.h"
 #include <math.h>
 #include <emmintrin.h>
 #include "rtwtypes.h"
@@ -168,7 +168,7 @@ real_T rt_powd_snf(real_T u0, real_T u1)
 }
 
 /* Model step function */
-void control_arm_manual_step(void)
+void control_arm_manual_webots_step(void)
 {
   real_T P6i[16];
   real_T XEi;
@@ -1063,7 +1063,7 @@ void control_arm_manual_step(void)
 }
 
 /* Model initialize function */
-void control_arm_manual_initialize(void)
+void control_arm_manual_webots_initialize(void)
 {
   /* (no initialization code required) */
 }

@@ -28,7 +28,7 @@ codegen/
 octave-workspace
 
 *.slxc
-
 *.slx.r2024b
-
 *.STEP
+*.bak
+*.original

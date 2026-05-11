@@ -5,11 +5,11 @@
  *
  * File: rtwtypes.h
  *
- * Code generated for Simulink model 'control_arm_manual'.
+ * Code generated for Simulink model 'control_arm_manual_webots'.
  *
- * Model version                  : 1.21
+ * Model version                  : 1.22
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Wed May  6 10:08:28 2026
+ * C/C++ source code generated on : Mon May 11 12:51:03 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
