@@ -1,3 +1,4 @@
 add_library(stm_automatic ${CMAKE_CURRENT_SOURCE_DIR}/control_arm_ert_rtw/control_arm.c)
 add_library(stm_manual ${CMAKE_CURRENT_SOURCE_DIR}/control_arm_manual_ert_rtw/control_arm_manual.c)
+add_library(webots_automatic ${CMAKE_CURRENT_SOURCE_DIR}/control_arm_webots_ert_rtw/control_arm_webots.c)
 add_library(webots_manual ${CMAKE_CURRENT_SOURCE_DIR}/control_arm_manual_webots_ert_rtw/control_arm_manual_webots.c)

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual_webots'.
  *
- * Model version                  : 1.36
+ * Model version                  : 1.39
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Thu May 14 16:11:21 2026
+ * C/C++ source code generated on : Tue May 19 12:26:34 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -24,9 +24,6 @@
 #include <emmintrin.h>
 #include "rtwtypes.h"
 #include "math.h"
-
-/* Block signals and states (default storage) */
-DW rtDW;
 
 /* External inputs (root inport signals with default storage) */
 ExtU rtU;
@@ -541,9 +538,6 @@ void control_arm_manual_webots_step(void)
 
   /* End of MATLAB Function: '<S1>/inverse kinematics' */
 
-  /* Outport: '<Root>/testProbe' */
-  rtY.testProbe = rtb_angles[4];
-
   /* Outport: '<Root>/controlGripperPitch' incorporates:
    *  Gain: '<S1>/Gain'
    */
@@ -1034,33 +1028,15 @@ void control_arm_manual_webots_step(void)
   rtY.actualZ = P2planar[14];
 
   /* Outport: '<Root>/controlJaw' incorporates:
-   *  UnitDelay: '<S1>/Unit Delay8'
-   */
-  rtY.controlJaw = rtDW.UnitDelay8_DSTATE;
-
-  /* Sum: '<S1>/Sum6' incorporates:
-   *  Inport: '<Root>/jawActualPosition'
+   *  Gain: '<S1>/Gain4'
    *  Inport: '<Root>/jawDesiredPosition'
    */
-  theta0 = rtU.desiredposition - rtU.actualposition;
+  rtY.controlJaw = 0.017453292519943295 * rtU.jawDesiredPosition;
 
   /* Outport: '<Root>/controlWristRotation' incorporates:
    *  Inport: '<Root>/gripperRotationDesiredPosition'
    */
   rtY.controlWristRotation = rtU.gripperRotationDesiredPosition;
-
-  /* Update for UnitDelay: '<S1>/Unit Delay8' incorporates:
-   *  DiscreteIntegrator: '<S41>/Integrator'
-   *  Gain: '<S46>/Proportional Gain'
-   *  Sum: '<S50>/Sum'
-   */
-  rtDW.UnitDelay8_DSTATE = 2.0 * theta0 + rtDW.Integrator_DSTATE;
-
-  /* Update for DiscreteIntegrator: '<S41>/Integrator' incorporates:
-   *  Inport: '<Root>/deltaTime'
-   *  Product: '<S54>/Uintegral*Ts Prod Out'
-   */
-  rtDW.Integrator_DSTATE += theta0 * rtU.deltaTime;
 }
 
 /* Model initialize function */
