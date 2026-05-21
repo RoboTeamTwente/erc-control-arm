@@ -2,7 +2,7 @@
 ## Makefile generated for component 'control_arm_manual'. 
 ## 
 ## Makefile     : control_arm_manual.mk
-## Generated on : Tue May 05 09:58:32 2026
+## Generated on : Thu May 21 11:07:19 2026
 ## Final product: $(RELATIVE_PATH_TO_ANCHOR)/control_arm_manual
 ## Product type : executable
 ## 
@@ -21,7 +21,7 @@ MAKEFILE                  = control_arm_manual.mk
 MATLAB_ROOT               = /usr/local/MATLAB/R2025b
 MATLAB_BIN                = /usr/local/MATLAB/R2025b/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/glnxa64
-START_DIR                 = /home/rowan/Documents/roboteam/control/erc-control-arm
+START_DIR                 = /home/rowan/Documents/roboteam/webots_projects/controllers/cydonia_robotic_arm_controller/erc-control-arm
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
@@ -210,19 +210,17 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
-CFLAGS_TFL = -msse2 -fno-predictive-commoning
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
-CFLAGS += $(CFLAGS_TFL) $(CFLAGS_BASIC)
+CFLAGS += $(CFLAGS_BASIC)
 
 #-----------------
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_TFL = -msse2 -fno-predictive-commoning
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
-CPPFLAGS += $(CPPFLAGS_TFL) $(CPPFLAGS_BASIC)
+CPPFLAGS += $(CPPFLAGS_BASIC)
 
 ###########################################################################
 ## INLINED COMMANDS

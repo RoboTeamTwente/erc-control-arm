@@ -7,12 +7,12 @@
  *
  * Code generated for Simulink model 'control_arm_manual'.
  *
- * Model version                  : 1.21
+ * Model version                  : 1.8
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Wed May  6 10:08:28 2026
+ * C/C++ source code generated on : Thu May 21 11:07:17 2026
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: Intel->x86-64 (Linux 64)
+ * Embedded hardware selection: STMicroelectronics->ST10/Super10
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. RAM efficiency
@@ -21,12 +21,8 @@
 
 #include "control_arm_manual.h"
 #include <math.h>
-#include <emmintrin.h>
 #include "rtwtypes.h"
 #include "math.h"
-
-/* Block signals and states (default storage) */
-DW rtDW;
 
 /* External inputs (root inport signals with default storage) */
 ExtU rtU;
@@ -38,6 +34,7 @@ ExtY rtY;
 static RT_MODEL rtM_;
 RT_MODEL *const rtM = &rtM_;
 extern real_T rt_powd_snf(real_T u0, real_T u1);
+extern real_T rt_roundd_snf(real_T u);
 static real_T rtGetInf(void);
 static real32_T rtGetInfF(void);
 static real_T rtGetMinusInf(void);
@@ -167,44 +164,52 @@ real_T rt_powd_snf(real_T u0, real_T u1)
   return y;
 }
 
+real_T rt_roundd_snf(real_T u)
+{
+  real_T y;
+  if (fabs(u) < 4.503599627370496E+15) {
+    if (u >= 0.5) {
+      y = floor(u + 0.5);
+    } else if (u > -0.5) {
+      y = u * 0.0;
+    } else {
+      y = ceil(u - 0.5);
+    }
+  } else {
+    y = u;
+  }
+
+  return y;
+}
+
 /* Model step function */
 void control_arm_manual_step(void)
 {
+  real_T P2planar[16];
+  real_T P4planar[16];
   real_T P6i[16];
+  real_T theta5_0[16];
+  real_T theta5_1[16];
+  real_T rtb_angles[5];
+  real_T P6i_0;
+  real_T XE;
   real_T XEi;
+  real_T YE;
+  real_T a;
   real_T angToBase;
   real_T theta0;
   real_T theta2;
-  real_T theta4;
-  static const real_T a[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
-
-  real_T P2planar[16];
-  real_T P4planar[16];
-  real_T XE;
-  real_T YE;
-  static const real_T a_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.149, 1.0 };
-
-  static const real_T b_a[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
-
-  __m128d tmp_0;
-  __m128d tmp_2;
-  real_T XE_0[16];
-  real_T XE_1[16];
-  real_T rtb_angles[5];
-  real_T tmp[2];
-  real_T P6i_tmp;
-  real_T a_1;
-  int32_T P6i_tmp_2;
-  int32_T P6i_tmp_3;
-  int32_T XE_tmp;
-  int32_T i;
-  int32_T tmp_1;
+  real_T theta3;
+  real_T theta5;
+  int16_T P6i_tmp_1;
+  int16_T P6i_tmp_2;
+  int16_T i;
+  int16_T i_0;
+  int16_T theta5_tmp;
+  int16_T theta5_tmp_0;
   int8_T P2planar_tmp[16];
+  int8_T P6i_tmp[4];
   int8_T P6i_tmp_0[4];
-  int8_T P6i_tmp_1[4];
   static const int8_T b[4] = { 0, 0, 0, 1 };
 
   static const int8_T c[4] = { 0, 0, 1, 0 };
@@ -218,8 +223,14 @@ void control_arm_manual_step(void)
   static const real_T c_b[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
     0.0, 1.0, 0.0, 0.3, 0.0, 0.0, 1.0 };
 
+  static const real_T a_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
+
   static const int8_T c_a[16] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
   };
+
+  static const real_T a_1[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.149, 1.0 };
 
   static const real_T d_b[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
     0.0, 1.0, 0.0, -0.12, 0.0, 0.0, 1.0 };
@@ -248,294 +259,256 @@ void control_arm_manual_step(void)
   }
 
   theta0 = -theta0;
-  theta4 = sin(angToBase);
-  XE = cos(angToBase);
-  YE = sin(rtU.gripperAng);
-  P6i_tmp = cos(rtU.gripperAng);
-  XE_0[0] = XE;
-  XE_0[4] = -theta4;
-  XE_0[8] = 0.0;
-  XE_0[12] = rtU.x;
-  XE_0[1] = theta4;
-  XE_0[5] = XE;
-  XE_0[9] = 0.0;
-  XE_0[13] = rtU.y;
-  XE_0[2] = 0.0;
-  XE_0[6] = 0.0;
-  XE_0[10] = 1.0;
-  XE_0[14] = rtU.z;
-  P2planar[0] = P6i_tmp;
-  P2planar[4] = -YE;
+  XEi = sin(angToBase);
+  theta5 = cos(angToBase);
+  XE = sin(rtU.gripperAng);
+  YE = cos(rtU.gripperAng);
+  theta5_0[0] = theta5;
+  theta5_0[4] = -XEi;
+  theta5_0[8] = 0.0;
+  theta5_0[12] = rtU.x;
+  theta5_0[1] = XEi;
+  theta5_0[5] = theta5;
+  theta5_0[9] = 0.0;
+  theta5_0[13] = rtU.y;
+  theta5_0[2] = 0.0;
+  theta5_0[6] = 0.0;
+  theta5_0[10] = 1.0;
+  theta5_0[14] = rtU.z;
+  P2planar[0] = YE;
+  P2planar[4] = -XE;
   P2planar[8] = 0.0;
   P2planar[12] = 0.0;
-  P2planar[1] = YE;
-  P2planar[5] = P6i_tmp;
+  P2planar[1] = XE;
+  P2planar[5] = YE;
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
-  for (i = 0; i < 4; i++) {
+  for (i_0 = 0; i_0 < 4; i_0++) {
     /* MATLAB Function: '<S1>/MATLAB Function4' */
-    P6i_tmp_2 = b[i];
-    P6i_tmp_0[i] = (int8_T)P6i_tmp_2;
+    P6i_tmp_1 = b[i_0];
+    P6i_tmp[i_0] = (int8_T)P6i_tmp_1;
 
     /* MATLAB Function: '<S1>/MATLAB Function4' */
-    P6i_tmp_3 = c[i];
-    P6i_tmp_1[i] = (int8_T)P6i_tmp_3;
-    XE_tmp = i << 2;
-    XE_0[XE_tmp + 3] = P6i_tmp_2;
-    P2planar[XE_tmp + 2] = P6i_tmp_3;
-    P2planar[XE_tmp + 3] = P6i_tmp_2;
-    XE_1[XE_tmp] = 0.0;
-    XE_1[XE_tmp + 1] = 0.0;
-    XE_1[XE_tmp + 2] = 0.0;
-    XE_1[XE_tmp + 3] = 0.0;
+    P6i_tmp_2 = c[i_0];
+    P6i_tmp_0[i_0] = (int8_T)P6i_tmp_2;
+    theta5_tmp = i_0 << 2;
+    theta5_0[theta5_tmp + 3] = P6i_tmp_1;
+    P2planar[theta5_tmp + 2] = P6i_tmp_2;
+    P2planar[theta5_tmp + 3] = P6i_tmp_1;
+    theta5_1[theta5_tmp] = 0.0;
+    theta5_1[theta5_tmp + 1] = 0.0;
+    theta5_1[theta5_tmp + 2] = 0.0;
+    theta5_1[theta5_tmp + 3] = 0.0;
   }
 
-  for (i = 0; i < 4; i++) {
-    XE_tmp = i << 2;
-    XE = XE_1[XE_tmp];
-    XEi = XE_1[XE_tmp + 1];
-    angToBase = XE_1[XE_tmp + 2];
-    P6i_tmp = XE_1[XE_tmp + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      P6i_tmp_2 = XE_tmp + P6i_tmp_3;
-      tmp_2 = _mm_set1_pd(b_b[P6i_tmp_2]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, XE));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      XE = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(P6i_tmp, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      P6i_tmp = tmp[1];
-      P4planar[P6i_tmp_2] = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta5_tmp = i_0 << 2;
+    theta5 = theta5_1[theta5_tmp];
+    theta2 = theta5_1[theta5_tmp + 1];
+    angToBase = theta5_1[theta5_tmp + 2];
+    XEi = theta5_1[theta5_tmp + 3];
+    for (i = 0; i < 4; i++) {
+      P6i_tmp_1 = theta5_tmp + i;
+      P6i_tmp_2 = b_b[P6i_tmp_1];
+      theta5_tmp_0 = i << 2;
+      theta5 += theta5_0[theta5_tmp_0] * (real_T)P6i_tmp_2;
+      theta2 += theta5_0[theta5_tmp_0 + 1] * (real_T)P6i_tmp_2;
+      angToBase += theta5_0[theta5_tmp_0 + 2] * (real_T)P6i_tmp_2;
+      XEi += theta5_0[theta5_tmp_0 + 3] * (real_T)P6i_tmp_2;
+      P4planar[P6i_tmp_1] = 0.0;
     }
 
-    XE_1[XE_tmp + 3] = P6i_tmp;
-    XE_1[XE_tmp + 2] = angToBase;
-    XE_1[XE_tmp + 1] = XEi;
-    XE_1[XE_tmp] = XE;
-    P6i_tmp = P4planar[XE_tmp];
-    XEi = P4planar[XE_tmp + 1];
-    angToBase = P4planar[XE_tmp + 2];
-    YE = P4planar[XE_tmp + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      P6i_tmp_2 = XE_tmp + P6i_tmp_3;
-      tmp_2 = _mm_set1_pd(c_b[P6i_tmp_2]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, P6i_tmp));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      P6i_tmp = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(YE, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      YE = tmp[1];
-      P6i[P6i_tmp_2] = 0.0;
+    theta5_1[theta5_tmp + 3] = XEi;
+    theta5_1[theta5_tmp + 2] = angToBase;
+    theta5_1[theta5_tmp + 1] = theta2;
+    theta5_1[theta5_tmp] = theta5;
+    YE = P4planar[theta5_tmp];
+    angToBase = P4planar[theta5_tmp + 1];
+    XEi = P4planar[theta5_tmp + 2];
+    theta3 = P4planar[theta5_tmp + 3];
+    for (i = 0; i < 4; i++) {
+      P6i_tmp_1 = theta5_tmp + i;
+      theta2 = c_b[P6i_tmp_1];
+      theta5_tmp_0 = i << 2;
+      YE += P2planar[theta5_tmp_0] * theta2;
+      angToBase += P2planar[theta5_tmp_0 + 1] * theta2;
+      XEi += P2planar[theta5_tmp_0 + 2] * theta2;
+      theta3 += P2planar[theta5_tmp_0 + 3] * theta2;
+      P6i[P6i_tmp_1] = 0.0;
     }
 
-    P4planar[XE_tmp + 3] = YE;
-    P4planar[XE_tmp + 2] = angToBase;
-    P4planar[XE_tmp + 1] = XEi;
-    P4planar[XE_tmp] = P6i_tmp;
+    P4planar[theta5_tmp + 3] = theta3;
+    P4planar[theta5_tmp + 2] = XEi;
+    P4planar[theta5_tmp + 1] = angToBase;
+    P4planar[theta5_tmp] = YE;
   }
 
-  for (i = 0; i < 4; i++) {
-    P6i_tmp_2 = i << 2;
-    P6i_tmp = P6i[P6i_tmp_2];
-    YE = P6i[P6i_tmp_2 + 1];
-    XE = P6i[P6i_tmp_2 + 2];
-    theta2 = P6i[P6i_tmp_2 + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(P4planar[P6i_tmp_2 + P6i_tmp_3]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1]), tmp_2),
-                         _mm_set_pd(YE, P6i_tmp));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      P6i_tmp = tmp[0];
-      YE = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(theta2, XE));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      XE = tmp[0];
-      theta2 = tmp[1];
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    P6i_tmp_1 = i_0 << 2;
+    YE = P6i[P6i_tmp_1];
+    XE = P6i[P6i_tmp_1 + 1];
+    theta5 = P6i[P6i_tmp_1 + 2];
+    P6i_0 = P6i[P6i_tmp_1 + 3];
+    for (i = 0; i < 4; i++) {
+      theta2 = P4planar[P6i_tmp_1 + i];
+      P6i_tmp_2 = i << 2;
+      YE += theta5_1[P6i_tmp_2] * theta2;
+      XE += theta5_1[P6i_tmp_2 + 1] * theta2;
+      theta5 += theta5_1[P6i_tmp_2 + 2] * theta2;
+      P6i_0 += theta5_1[P6i_tmp_2 + 3] * theta2;
     }
 
-    P6i[P6i_tmp_2 + 3] = theta2;
-    P6i[P6i_tmp_2 + 2] = XE;
-    P6i[P6i_tmp_2 + 1] = YE;
-    P6i[P6i_tmp_2] = P6i_tmp;
+    P6i[P6i_tmp_1 + 3] = P6i_0;
+    P6i[P6i_tmp_1 + 2] = theta5;
+    P6i[P6i_tmp_1 + 1] = XE;
+    P6i[P6i_tmp_1] = YE;
   }
 
   XEi = sqrt(P6i[12] * P6i[12] + P6i[13] * P6i[13]);
-  P6i_tmp = XEi * XEi;
-  YE = (P6i[14] - 0.065) * (P6i[14] - 0.065);
-  angToBase = (((((((P6i_tmp * 0.24499999999999997 + 0.04624375) + YE *
-                    0.24499999999999997) - 0.0625) + P6i_tmp * 0.5) + YE * 0.5)
-                - rt_powd_snf(XEi, 4.0)) - P6i_tmp * 2.0 * YE) - rt_powd_snf
+  theta2 = XEi * XEi;
+  theta3 = (P6i[14] - 0.065) * (P6i[14] - 0.065);
+  theta5 = (((((((theta2 * 0.24499999999999997 + 0.04624375) + theta3 *
+                 0.24499999999999997) - 0.0625) + theta2 * 0.5) + theta3 * 0.5)
+             - rt_powd_snf(XEi, 4.0)) - theta2 * 2.0 * theta3) - rt_powd_snf
     (P6i[14] - 0.065, 4.0);
-  if (angToBase < 0.0) {
-    for (i = 0; i < 5; i++) {
-      rtb_angles[i] = d[i];
+  if (theta5 < 0.0) {
+    for (i_0 = 0; i_0 < 5; i_0++) {
+      rtb_angles[i_0] = d[i_0];
     }
 
     /* Outport: '<Root>/error' */
     rtY.error = 1.0;
   } else {
-    angToBase = atan(((P6i[14] - 0.065) * 0.7 + sqrt(angToBase)) / ((((0.7 * XEi
-      + 0.12249999999999998) - 0.25) + P6i_tmp) + YE)) * 2.0;
-    XEi = (P6i_tmp - 0.02250000000000002) + YE;
-    theta2 = atan(sqrt(((0.72249999999999992 - P6i_tmp) - YE) * XEi) / XEi) *
+    angToBase = atan(((P6i[14] - 0.065) * 0.7 + sqrt(theta5)) / ((((0.7 * XEi +
+      0.12249999999999998) - 0.25) + theta2) + theta3)) * 2.0;
+    XEi = (theta2 - 0.02250000000000002) + theta3;
+    theta2 = atan(sqrt(((0.72249999999999992 - theta2) - theta3) * XEi) / XEi) *
       -2.0;
-    XEi = (-rtU.gripperAng - angToBase) - theta2;
-    theta4 = sin(angToBase);
-    XE = cos(angToBase);
-    YE = sin(theta2);
-    P6i_tmp = cos(theta2);
-    XE_0[0] = XE;
-    XE_0[4] = -theta4;
-    XE_0[8] = 0.0;
-    XE_0[12] = 0.0;
-    XE_0[1] = theta4;
-    XE_0[5] = XE;
-    XE_0[9] = 0.0;
-    XE_0[13] = 0.0;
-    for (i = 0; i < 4; i++) {
-      XE_tmp = i << 2;
-      XE_0[XE_tmp + 2] = P6i_tmp_1[i];
-      XE_0[XE_tmp + 3] = P6i_tmp_0[i];
-      XE = 0.0;
-      theta2 = 0.0;
-      theta4 = 0.0;
-      a_1 = 0.0;
-      for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-        tmp_1 = P6i_tmp_3 << 2;
-        tmp_2 = _mm_set1_pd(XE_0[XE_tmp + P6i_tmp_3]);
-        _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&a[tmp_1]),
-          tmp_2), _mm_set_pd(theta2, XE)));
-        XE = tmp[0];
-        theta2 = tmp[1];
-        _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&a[tmp_1 + 2]),
-          tmp_2), _mm_set_pd(a_1, theta4)));
-        theta4 = tmp[0];
-        a_1 = tmp[1];
+    theta3 = (-rtU.gripperAng - angToBase) - theta2;
+    XEi = sin(angToBase);
+    theta5 = cos(angToBase);
+    XE = sin(theta2);
+    YE = cos(theta2);
+    theta5_0[0] = theta5;
+    theta5_0[4] = -XEi;
+    theta5_0[8] = 0.0;
+    theta5_0[12] = 0.0;
+    theta5_0[1] = XEi;
+    theta5_0[5] = theta5;
+    theta5_0[9] = 0.0;
+    theta5_0[13] = 0.0;
+    for (i_0 = 0; i_0 < 4; i_0++) {
+      theta5_tmp = i_0 << 2;
+      theta5_0[theta5_tmp + 2] = P6i_tmp_0[i_0];
+      theta5_0[theta5_tmp + 3] = P6i_tmp[i_0];
+      XEi = 0.0;
+      theta5 = 0.0;
+      P6i_0 = 0.0;
+      a = 0.0;
+      for (i = 0; i < 4; i++) {
+        theta2 = theta5_0[theta5_tmp + i];
+        P6i_tmp_1 = i << 2;
+        XEi += a_0[P6i_tmp_1] * theta2;
+        theta5 += a_0[P6i_tmp_1 + 1] * theta2;
+        P6i_0 += a_0[P6i_tmp_1 + 2] * theta2;
+        a += a_0[P6i_tmp_1 + 3] * theta2;
       }
 
-      P6i[XE_tmp + 3] = a_1;
-      P6i[XE_tmp + 2] = theta4;
-      P6i[XE_tmp + 1] = theta2;
-      P6i[XE_tmp] = XE;
+      P6i[theta5_tmp + 3] = a;
+      P6i[theta5_tmp + 2] = P6i_0;
+      P6i[theta5_tmp + 1] = theta5;
+      P6i[theta5_tmp] = XEi;
     }
 
-    P2planar[0] = P6i_tmp;
-    P2planar[4] = -YE;
+    P2planar[0] = YE;
+    P2planar[4] = -XE;
     P2planar[8] = 0.0;
     P2planar[12] = 0.35;
-    P2planar[1] = YE;
-    P2planar[5] = P6i_tmp;
+    P2planar[1] = XE;
+    P2planar[5] = YE;
     P2planar[9] = 0.0;
     P2planar[13] = 0.0;
-    for (i = 0; i < 4; i++) {
-      XE_tmp = i << 2;
-      P2planar[XE_tmp + 2] = P6i_tmp_1[i];
-      P2planar[XE_tmp + 3] = P6i_tmp_0[i];
-      P6i_tmp = 0.0;
+    for (i_0 = 0; i_0 < 4; i_0++) {
+      theta5_tmp_0 = i_0 << 2;
+      P2planar[theta5_tmp_0 + 2] = P6i_tmp_0[i_0];
+      P2planar[theta5_tmp_0 + 3] = P6i_tmp[i_0];
       YE = 0.0;
       XE = 0.0;
-      theta2 = 0.0;
-      for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-        tmp_1 = P6i_tmp_3 << 2;
-        P6i_tmp_2 = XE_tmp + P6i_tmp_3;
-        tmp_2 = _mm_set1_pd(P6i[P6i_tmp_2]);
-        _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(c_a[tmp_1 + 1],
-          c_a[tmp_1]), tmp_2), _mm_set_pd(YE, P6i_tmp)));
-        P6i_tmp = tmp[0];
-        YE = tmp[1];
-        _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(c_a[tmp_1 + 3],
-          c_a[tmp_1 + 2]), tmp_2), _mm_set_pd(theta2, XE)));
-        XE = tmp[0];
-        theta2 = tmp[1];
-        XE_1[P6i_tmp_2] = 0.0;
+      theta5 = 0.0;
+      P6i_0 = 0.0;
+      for (i = 0; i < 4; i++) {
+        P6i_tmp_1 = theta5_tmp_0 + i;
+        theta2 = P6i[P6i_tmp_1];
+        P6i_tmp_2 = i << 2;
+        YE += (real_T)c_a[P6i_tmp_2] * theta2;
+        XE += (real_T)c_a[P6i_tmp_2 + 1] * theta2;
+        theta5 += (real_T)c_a[P6i_tmp_2 + 2] * theta2;
+        P6i_0 += (real_T)c_a[P6i_tmp_2 + 3] * theta2;
+        theta5_1[P6i_tmp_1] = 0.0;
       }
 
-      XE_0[XE_tmp + 3] = theta2;
-      XE_0[XE_tmp + 2] = XE;
-      XE_0[XE_tmp + 1] = YE;
-      XE_0[XE_tmp] = P6i_tmp;
+      theta5_0[theta5_tmp_0 + 3] = P6i_0;
+      theta5_0[theta5_tmp_0 + 2] = theta5;
+      theta5_0[theta5_tmp_0 + 1] = XE;
+      theta5_0[theta5_tmp_0] = YE;
     }
 
-    for (i = 0; i < 4; i++) {
-      P6i_tmp_2 = i << 2;
-      P6i_tmp = XE_1[P6i_tmp_2];
-      YE = XE_1[P6i_tmp_2 + 1];
-      XE = XE_1[P6i_tmp_2 + 2];
-      theta2 = XE_1[P6i_tmp_2 + 3];
-      for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-        tmp_1 = P6i_tmp_3 << 2;
-        tmp_2 = _mm_set1_pd(P2planar[P6i_tmp_2 + P6i_tmp_3]);
-        tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1]), tmp_2),
-                           _mm_set_pd(YE, P6i_tmp));
-        _mm_storeu_pd(&tmp[0], tmp_0);
-        P6i_tmp = tmp[0];
-        YE = tmp[1];
-        tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1 + 2]), tmp_2),
-                           _mm_set_pd(theta2, XE));
-        _mm_storeu_pd(&tmp[0], tmp_2);
-        XE = tmp[0];
-        theta2 = tmp[1];
+    for (i_0 = 0; i_0 < 4; i_0++) {
+      P6i_tmp_2 = i_0 << 2;
+      YE = theta5_1[P6i_tmp_2];
+      XE = theta5_1[P6i_tmp_2 + 1];
+      theta5 = theta5_1[P6i_tmp_2 + 2];
+      P6i_0 = theta5_1[P6i_tmp_2 + 3];
+      for (i = 0; i < 4; i++) {
+        theta2 = P2planar[P6i_tmp_2 + i];
+        P6i_tmp_1 = i << 2;
+        YE += theta5_0[P6i_tmp_1] * theta2;
+        XE += theta5_0[P6i_tmp_1 + 1] * theta2;
+        theta5 += theta5_0[P6i_tmp_1 + 2] * theta2;
+        P6i_0 += theta5_0[P6i_tmp_1 + 3] * theta2;
       }
 
-      XE_1[P6i_tmp_2 + 3] = theta2;
-      XE_1[P6i_tmp_2 + 2] = XE;
-      XE_1[P6i_tmp_2 + 1] = YE;
-      XE_1[P6i_tmp_2] = P6i_tmp;
+      theta5_1[P6i_tmp_2 + 3] = P6i_0;
+      theta5_1[P6i_tmp_2 + 2] = theta5;
+      theta5_1[P6i_tmp_2 + 1] = XE;
+      theta5_1[P6i_tmp_2] = YE;
     }
 
-    for (i = 0; i < 4; i++) {
-      P6i_tmp = 0.0;
+    for (i_0 = 0; i_0 < 4; i_0++) {
       YE = 0.0;
       XE = 0.0;
-      theta2 = 0.0;
-      for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-        tmp_1 = P6i_tmp_3 << 2;
-        tmp_2 = _mm_set1_pd(d_b[(i << 2) + P6i_tmp_3]);
-        tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1]), tmp_2),
-                           _mm_set_pd(YE, P6i_tmp));
-        _mm_storeu_pd(&tmp[0], tmp_0);
-        P6i_tmp = tmp[0];
-        YE = tmp[1];
-        tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1 + 2]), tmp_2),
-                           _mm_set_pd(theta2, XE));
-        _mm_storeu_pd(&tmp[0], tmp_2);
-        XE = tmp[0];
-        theta2 = tmp[1];
+      theta5 = 0.0;
+      P6i_0 = 0.0;
+      for (i = 0; i < 4; i++) {
+        theta2 = d_b[(i_0 << 2) + i];
+        P6i_tmp_1 = i << 2;
+        YE += theta5_1[P6i_tmp_1] * theta2;
+        XE += theta5_1[P6i_tmp_1 + 1] * theta2;
+        theta5 += theta5_1[P6i_tmp_1 + 2] * theta2;
+        P6i_0 += theta5_1[P6i_tmp_1 + 3] * theta2;
       }
 
-      P6i_tmp_2 = i << 2;
-      P6i[P6i_tmp_2 + 3] = theta2;
-      P6i[P6i_tmp_2 + 2] = XE;
-      P6i[P6i_tmp_2 + 1] = YE;
-      P6i[P6i_tmp_2] = P6i_tmp;
+      P6i_tmp_1 = i_0 << 2;
+      P6i[P6i_tmp_1 + 3] = P6i_0;
+      P6i[P6i_tmp_1 + 2] = theta5;
+      P6i[P6i_tmp_1 + 1] = XE;
+      P6i[P6i_tmp_1] = YE;
     }
 
-    P6i_tmp = P6i[12] * P6i[12];
-    YE = (P6i[14] - 0.149) * (P6i[14] - 0.149);
-    theta4 = atan((sqrt((((((((P6i_tmp * 0.0288 + 0.00205056) + YE * 0.0288) -
-      0.0061465600000000023) + P6i_tmp * 0.15680000000000002) + YE *
-      0.15680000000000002) - rt_powd_snf(P6i[12], 4.0)) - P6i_tmp * 2.0 * YE) -
-                        rt_powd_snf(P6i[14] - 0.149, 4.0)) + (P6i[14] - 0.149) *
-                   0.24) / ((((0.24 * P6i[12] + 0.0144) - 0.078400000000000011)
-      + P6i_tmp) + YE)) * 2.0;
+    theta2 = P6i[12] * P6i[12];
+    XEi = (P6i[14] - 0.149) * (P6i[14] - 0.149);
+    XEi = atan((sqrt((((((((theta2 * 0.0288 + 0.00205056) + XEi * 0.0288) -
+                          0.0061465600000000023) + theta2 * 0.15680000000000002)
+                        + XEi * 0.15680000000000002) - rt_powd_snf(P6i[12], 4.0))
+                      - theta2 * 2.0 * XEi) - rt_powd_snf(P6i[14] - 0.149, 4.0))
+                + (P6i[14] - 0.149) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
+      0.078400000000000011) + theta2) + XEi)) * 2.0;
     if ((fabs(theta0) > 3.1415926535897931) || ((angToBase < 0.0) || (angToBase >
-          2.3561944901923448) || (XEi < -2.3561944901923448) || (XEi >
-          0.78539816339744828) || (theta4 < 1.5707963267948966) || (theta4 >
+          2.3561944901923448) || (theta3 < -2.3561944901923448) || (theta3 >
+          0.78539816339744828) || (XEi < 1.5707963267948966) || (XEi >
           4.71238898038469))) {
-      for (i = 0; i < 5; i++) {
-        rtb_angles[i] = d[i];
+      for (i_0 = 0; i_0 < 5; i_0++) {
+        rtb_angles[i_0] = d[i_0];
       }
 
       /* Outport: '<Root>/error' */
@@ -543,8 +516,8 @@ void control_arm_manual_step(void)
     } else {
       rtb_angles[0] = theta0;
       rtb_angles[1] = angToBase;
-      rtb_angles[3] = XEi;
-      rtb_angles[4] = theta4;
+      rtb_angles[3] = theta3;
+      rtb_angles[4] = XEi;
 
       /* Outport: '<Root>/error' */
       rtY.error = 0.0;
@@ -554,268 +527,273 @@ void control_arm_manual_step(void)
   /* End of MATLAB Function: '<S1>/inverse kinematics' */
 
   /* Outport: '<Root>/controlGripperPitch' incorporates:
-   *  Gain: '<S1>/Gain'
+   *  Gain: '<S1>/Gain4'
    */
-  rtY.controlGripperPitch = -rtb_angles[3];
+  rtY.controlGripperPitch = 57.295779513082323 * rtb_angles[3];
 
   /* Outport: '<Root>/controlBase' incorporates:
-   *  Gain: '<S1>/Gain3'
+   *  Gain: '<S1>/Gain6'
    */
-  rtY.controlBase = -rtb_angles[0];
+  rtY.controlBase = 63.0 * rtb_angles[0];
 
-  /* Sum: '<S1>/Sum9' incorporates:
+  /* Outport: '<Root>/stepperLeftSteps' incorporates:
+   *  Constant: '<S1>/Constant5'
    *  Constant: '<S1>/Pi'
-   *  Constant: '<S1>/Pi1'
+   *  Gain: '<S1>/Gain10'
+   *  Gain: '<S1>/Gain13'
+   *  Product: '<S1>/Divide1'
+   *  Rounding: '<S1>/Round'
    *  Sum: '<S1>/Sum7'
    */
-  _mm_storeu_pd(&tmp[0], _mm_sub_pd(_mm_set_pd(1.5707963267948966,
-    3.1415926535897931), _mm_set_pd(rtb_angles[1], rtb_angles[4])));
+  rtY.stepperLeftSteps = rt_roundd_snf((rtb_angles[4] + 1.5707963267948966) *
+    160.0 * 57.295779513082323 / 1.8);
 
-  /* Outport: '<Root>/controlStepperLeft' */
-  rtY.controlStepperLeft = tmp[0];
-
-  /* Outport: '<Root>/controlStepperRight' */
-  rtY.controlStepperRight = tmp[1];
-
-  /* MATLAB Function: '<S1>/MATLAB Function4' incorporates:
-   *  Constant: '<S1>/Pi2'
-   *  Constant: '<S1>/Pi4'
-   *  Gain: '<S1>/Gain1'
-   *  Inport: '<Root>/baseActualPosition'
-   *  Inport: '<Root>/gripperPitchActualPosition'
-   *  Inport: '<Root>/stepperLeftActualPosition'
-   *  Inport: '<Root>/stepperRightActualPosition'
-   *  Sum: '<S1>/Sum10'
-   *  Sum: '<S1>/Sum11'
+  /* Outport: '<Root>/stepperRightSteps' incorporates:
+   *  Constant: '<S1>/Constant2'
+   *  Constant: '<S1>/Pi1'
+   *  Gain: '<S1>/Gain11'
+   *  Gain: '<S1>/Gain8'
+   *  Product: '<S1>/Divide2'
+   *  Rounding: '<S1>/Round1'
+   *  Sum: '<S1>/Sum9'
    */
-  theta4 = sin(3.1415926535897931 - rtU.stepperLeftActualPosition);
-  XEi = cos(3.1415926535897931 - rtU.stepperLeftActualPosition);
-  P4planar[0] = XEi;
-  P4planar[4] = -theta4;
-  P4planar[8] = 0.0;
-  P4planar[12] = 0.0;
-  P4planar[1] = theta4;
-  P4planar[5] = XEi;
-  P4planar[9] = 0.0;
-  P4planar[13] = 0.0;
-  for (i = 0; i < 4; i++) {
-    XE_tmp = i << 2;
-    P4planar[XE_tmp + 2] = P6i_tmp_1[i];
-    P4planar[XE_tmp + 3] = P6i_tmp_0[i];
-    P6i_tmp = 0.0;
+  rtY.stepperRightSteps = rt_roundd_snf((rtb_angles[1] + 1.5707963267948966) *
+    160.0 * 57.295779513082323 / 1.8);
+
+  /* Gain: '<S1>/Gain15' incorporates:
+   *  Gain: '<S1>/Gain14'
+   *  Inport: '<Root>/baseActualPosition'
+   */
+  angToBase = 0.015873015873015872 * rtU.baseActualPosition *
+    -0.015873015873015872;
+
+  /* Sum: '<S1>/Sum11' incorporates:
+   *  Constant: '<S1>/Pi2'
+   *  Gain: '<S1>/Gain12'
+   *  Gain: '<S1>/Gain17'
+   *  Gain: '<S1>/degrees per step1'
+   *  Gain: '<S1>/gearbox1'
+   *  Inport: '<Root>/stepperRightActualPosition'
+   */
+  theta3 = 0.00625 * rtU.stepperRightActualPosition * 1.8 * 0.017453292519943295
+    * 0.00625 - 1.5707963267948966;
+
+  /* Gain: '<S1>/Gain16' incorporates:
+   *  Inport: '<Root>/gripperPitchActualPosition'
+   */
+  theta0 = 0.047619047619047616 * rtU.gripperPitchActualPosition;
+
+  /* Sum: '<S1>/Sum10' incorporates:
+   *  Constant: '<S1>/Pi2'
+   *  Gain: '<S1>/Gain18'
+   *  Gain: '<S1>/Gain9'
+   *  Gain: '<S1>/degrees per step'
+   *  Gain: '<S1>/gearbox'
+   *  Inport: '<Root>/stepperLeftActualPosition'
+   */
+  XEi = 0.00625 * rtU.stepperLeftActualPosition * 1.8 * 0.017453292519943295 *
+    0.00625 - 1.5707963267948966;
+
+  /* MATLAB Function: '<S1>/MATLAB Function4' */
+  theta2 = sin(XEi);
+  theta5 = cos(XEi);
+  theta5_0[0] = theta5;
+  theta5_0[4] = -theta2;
+  theta5_0[8] = 0.0;
+  theta5_0[12] = 0.0;
+  theta5_0[1] = theta2;
+  theta5_0[5] = theta5;
+  theta5_0[9] = 0.0;
+  theta5_0[13] = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta5_tmp = i_0 << 2;
+    theta5_0[theta5_tmp + 2] = P6i_tmp_0[i_0];
+    theta5_0[theta5_tmp + 3] = P6i_tmp[i_0];
     YE = 0.0;
     XE = 0.0;
-    theta2 = 0.0;
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(P4planar[XE_tmp + P6i_tmp_3]);
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&a_0[tmp_1]),
-        tmp_2), _mm_set_pd(YE, P6i_tmp)));
-      P6i_tmp = tmp[0];
-      YE = tmp[1];
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&a_0[tmp_1 + 2]),
-        tmp_2), _mm_set_pd(theta2, XE)));
-      XE = tmp[0];
-      theta2 = tmp[1];
+    theta5 = 0.0;
+    P6i_0 = 0.0;
+    for (i = 0; i < 4; i++) {
+      theta2 = theta5_0[theta5_tmp + i];
+      P6i_tmp_1 = i << 2;
+      YE += a_1[P6i_tmp_1] * theta2;
+      XE += a_1[P6i_tmp_1 + 1] * theta2;
+      theta5 += a_1[P6i_tmp_1 + 2] * theta2;
+      P6i_0 += a_1[P6i_tmp_1 + 3] * theta2;
     }
 
-    P6i[XE_tmp + 3] = theta2;
-    P6i[XE_tmp + 2] = XE;
-    P6i[XE_tmp + 1] = YE;
-    P6i[XE_tmp] = P6i_tmp;
+    P6i[theta5_tmp + 3] = P6i_0;
+    P6i[theta5_tmp + 2] = theta5;
+    P6i[theta5_tmp + 1] = XE;
+    P6i[theta5_tmp] = YE;
   }
 
-  theta4 = sin(1.5707963267948966 - rtU.stepperRightActualPosition);
-  theta2 = cos(1.5707963267948966 - rtU.stepperRightActualPosition);
-  for (i = 0; i < 16; i++) {
-    P2planar_tmp[i] = c_a[i];
+  theta2 = sin(theta3);
+  theta3 = cos(theta3);
+  for (i_0 = 0; i_0 < 16; i_0++) {
+    P2planar_tmp[i_0] = c_a[i_0];
   }
 
-  P2planar[0] = theta2;
-  P2planar[4] = -theta4;
+  P2planar[0] = theta3;
+  P2planar[4] = -theta2;
   P2planar[8] = 0.0;
   P2planar[12] = 0.0;
-  P2planar[1] = theta4;
-  P2planar[5] = theta2;
+  P2planar[1] = theta2;
+  P2planar[5] = theta3;
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
-  for (i = 0; i < 4; i++) {
-    P6i_tmp_2 = i << 2;
-    P2planar[P6i_tmp_2 + 2] = P6i_tmp_1[i];
-    P2planar[P6i_tmp_2 + 3] = P6i_tmp_0[i];
-    P6i_tmp = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta5_tmp = i_0 << 2;
+    P2planar[theta5_tmp + 2] = P6i_tmp_0[i_0];
+    P2planar[theta5_tmp + 3] = P6i_tmp[i_0];
     YE = 0.0;
     XE = 0.0;
-    theta2 = 0.0;
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(P2planar[P6i_tmp_2 + P6i_tmp_3]);
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&b_a[tmp_1]),
-        tmp_2), _mm_set_pd(YE, P6i_tmp)));
-      P6i_tmp = tmp[0];
-      YE = tmp[1];
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&b_a[tmp_1 + 2]),
-        tmp_2), _mm_set_pd(theta2, XE)));
-      XE = tmp[0];
-      theta2 = tmp[1];
+    theta5 = 0.0;
+    P6i_0 = 0.0;
+    for (i = 0; i < 4; i++) {
+      theta2 = P2planar[theta5_tmp + i];
+      P6i_tmp_2 = i << 2;
+      YE += a_0[P6i_tmp_2] * theta2;
+      XE += a_0[P6i_tmp_2 + 1] * theta2;
+      theta5 += a_0[P6i_tmp_2 + 2] * theta2;
+      P6i_0 += a_0[P6i_tmp_2 + 3] * theta2;
     }
 
-    XE_0[P6i_tmp_2 + 3] = theta2;
-    XE_0[P6i_tmp_2 + 2] = XE;
-    XE_0[P6i_tmp_2 + 1] = YE;
-    XE_0[P6i_tmp_2] = P6i_tmp;
+    theta5_0[theta5_tmp + 3] = P6i_0;
+    theta5_0[theta5_tmp + 2] = theta5;
+    theta5_0[theta5_tmp + 1] = XE;
+    theta5_0[theta5_tmp] = YE;
   }
 
-  for (i = 0; i < 4; i++) {
-    theta0 = 0.0;
-    XEi = 0.0;
-    angToBase = 0.0;
-    P6i_tmp = 0.0;
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      P6i_tmp_2 = (i << 2) + P6i_tmp_3;
-      tmp_2 = _mm_set1_pd(XE_0[P6i_tmp_2]);
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(P2planar_tmp[tmp_1
-        + 1], P2planar_tmp[tmp_1]), tmp_2), _mm_set_pd(XEi, theta0)));
-      theta0 = tmp[0];
-      XEi = tmp[1];
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(P2planar_tmp[tmp_1
-        + 3], P2planar_tmp[tmp_1 + 2]), tmp_2), _mm_set_pd(P6i_tmp, angToBase)));
-      angToBase = tmp[0];
-      P6i_tmp = tmp[1];
-      P2planar[P6i_tmp_2] = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta3 = 0.0;
+    YE = 0.0;
+    XE = 0.0;
+    theta5 = 0.0;
+    for (i = 0; i < 4; i++) {
+      P6i_tmp_1 = (i_0 << 2) + i;
+      theta2 = theta5_0[P6i_tmp_1];
+      P6i_tmp_2 = i << 2;
+      theta3 += (real_T)P2planar_tmp[P6i_tmp_2] * theta2;
+      YE += (real_T)P2planar_tmp[P6i_tmp_2 + 1] * theta2;
+      XE += (real_T)P2planar_tmp[P6i_tmp_2 + 2] * theta2;
+      theta5 += (real_T)P2planar_tmp[P6i_tmp_2 + 3] * theta2;
+      P2planar[P6i_tmp_1] = 0.0;
     }
 
-    P6i_tmp_3 = i << 2;
-    XE_1[P6i_tmp_3 + 3] = P6i_tmp;
-    XE_1[P6i_tmp_3 + 2] = angToBase;
-    XE_1[P6i_tmp_3 + 1] = XEi;
-    XE_1[P6i_tmp_3] = theta0;
+    P6i_tmp_2 = i_0 << 2;
+    theta5_1[P6i_tmp_2 + 3] = theta5;
+    theta5_1[P6i_tmp_2 + 2] = XE;
+    theta5_1[P6i_tmp_2 + 1] = YE;
+    theta5_1[P6i_tmp_2] = theta3;
   }
 
-  for (i = 0; i < 4; i++) {
-    XE_tmp = i << 2;
-    theta0 = P2planar[XE_tmp];
-    XEi = P2planar[XE_tmp + 1];
-    angToBase = P2planar[XE_tmp + 2];
-    P6i_tmp = P2planar[XE_tmp + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      P6i_tmp_2 = XE_tmp + P6i_tmp_3;
-      tmp_2 = _mm_set1_pd(b_b_0[P6i_tmp_2]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, theta0));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      theta0 = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(P6i_tmp, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      P6i_tmp = tmp[1];
-      XE_0[P6i_tmp_2] = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta5_tmp = i_0 << 2;
+    theta3 = P2planar[theta5_tmp];
+    YE = P2planar[theta5_tmp + 1];
+    XE = P2planar[theta5_tmp + 2];
+    theta5 = P2planar[theta5_tmp + 3];
+    for (i = 0; i < 4; i++) {
+      P6i_tmp_1 = theta5_tmp + i;
+      theta2 = b_b_0[P6i_tmp_1];
+      P6i_tmp_2 = i << 2;
+      theta3 += theta5_1[P6i_tmp_2] * theta2;
+      YE += theta5_1[P6i_tmp_2 + 1] * theta2;
+      XE += theta5_1[P6i_tmp_2 + 2] * theta2;
+      theta5 += theta5_1[P6i_tmp_2 + 3] * theta2;
+      theta5_0[P6i_tmp_1] = 0.0;
     }
 
-    P2planar[XE_tmp + 3] = P6i_tmp;
-    P2planar[XE_tmp + 2] = angToBase;
-    P2planar[XE_tmp + 1] = XEi;
-    P2planar[XE_tmp] = theta0;
-    theta0 = XE_0[XE_tmp];
-    XEi = XE_0[XE_tmp + 1];
-    angToBase = XE_0[XE_tmp + 2];
-    P6i_tmp = XE_0[XE_tmp + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      P6i_tmp_2 = XE_tmp + P6i_tmp_3;
-      tmp_2 = _mm_set1_pd(P6i[P6i_tmp_2]);
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(P2planar_tmp[tmp_1
-        + 1], P2planar_tmp[tmp_1]), tmp_2), _mm_set_pd(XEi, theta0)));
-      theta0 = tmp[0];
-      XEi = tmp[1];
-      _mm_storeu_pd(&tmp[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(P2planar_tmp[tmp_1
-        + 3], P2planar_tmp[tmp_1 + 2]), tmp_2), _mm_set_pd(P6i_tmp, angToBase)));
-      angToBase = tmp[0];
-      P6i_tmp = tmp[1];
-      P4planar[P6i_tmp_2] = 0.0;
+    P2planar[theta5_tmp + 3] = theta5;
+    P2planar[theta5_tmp + 2] = XE;
+    P2planar[theta5_tmp + 1] = YE;
+    P2planar[theta5_tmp] = theta3;
+    theta3 = theta5_0[theta5_tmp];
+    YE = theta5_0[theta5_tmp + 1];
+    XE = theta5_0[theta5_tmp + 2];
+    theta5 = theta5_0[theta5_tmp + 3];
+    for (i = 0; i < 4; i++) {
+      P6i_tmp_1 = theta5_tmp + i;
+      theta2 = P6i[P6i_tmp_1];
+      P6i_tmp_2 = i << 2;
+      theta3 += (real_T)P2planar_tmp[P6i_tmp_2] * theta2;
+      YE += (real_T)P2planar_tmp[P6i_tmp_2 + 1] * theta2;
+      XE += (real_T)P2planar_tmp[P6i_tmp_2 + 2] * theta2;
+      theta5 += (real_T)P2planar_tmp[P6i_tmp_2 + 3] * theta2;
+      P4planar[P6i_tmp_1] = 0.0;
     }
 
-    XE_0[XE_tmp + 3] = P6i_tmp;
-    XE_0[XE_tmp + 2] = angToBase;
-    XE_0[XE_tmp + 1] = XEi;
-    XE_0[XE_tmp] = theta0;
+    theta5_0[theta5_tmp + 3] = theta5;
+    theta5_0[theta5_tmp + 2] = XE;
+    theta5_0[theta5_tmp + 1] = YE;
+    theta5_0[theta5_tmp] = theta3;
   }
 
-  for (i = 0; i < 4; i++) {
-    P6i_tmp_2 = i << 2;
-    theta0 = P4planar[P6i_tmp_2];
-    XEi = P4planar[P6i_tmp_2 + 1];
-    angToBase = P4planar[P6i_tmp_2 + 2];
-    P6i_tmp = P4planar[P6i_tmp_2 + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(c_b_0[P6i_tmp_2 + P6i_tmp_3]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, theta0));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      theta0 = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(P6i_tmp, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      P6i_tmp = tmp[1];
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    P6i_tmp_1 = i_0 << 2;
+    theta3 = P4planar[P6i_tmp_1];
+    YE = P4planar[P6i_tmp_1 + 1];
+    XE = P4planar[P6i_tmp_1 + 2];
+    theta5 = P4planar[P6i_tmp_1 + 3];
+    for (i = 0; i < 4; i++) {
+      theta2 = c_b_0[P6i_tmp_1 + i];
+      theta5_tmp = i << 2;
+      theta3 += theta5_0[theta5_tmp] * theta2;
+      YE += theta5_0[theta5_tmp + 1] * theta2;
+      XE += theta5_0[theta5_tmp + 2] * theta2;
+      theta5 += theta5_0[theta5_tmp + 3] * theta2;
     }
 
-    P4planar[P6i_tmp_2 + 3] = P6i_tmp;
-    P4planar[P6i_tmp_2 + 2] = angToBase;
-    P4planar[P6i_tmp_2 + 1] = XEi;
-    P4planar[P6i_tmp_2] = theta0;
+    P4planar[P6i_tmp_1 + 3] = theta5;
+    P4planar[P6i_tmp_1 + 2] = XE;
+    P4planar[P6i_tmp_1 + 1] = YE;
+    P4planar[P6i_tmp_1] = theta3;
   }
 
-  _mm_storeu_pd(&tmp[0], _mm_sub_pd(_mm_set_pd(P4planar[14], P4planar[12]),
-    _mm_set_pd(P2planar[14], P2planar[12])));
-  P6i_tmp = tmp[0] * tmp[0];
-  YE = tmp[1] * tmp[1];
-  angToBase = (((((((P6i_tmp * 0.15680000000000002 - 0.0038886400000000022) + YE
-                    * 0.15680000000000002) - 0.00020735999999999997) + P6i_tmp *
-                  0.0288) + YE * 0.0288) - rt_powd_snf(tmp[0], 4.0)) - P6i_tmp *
-               2.0 * YE) - rt_powd_snf(tmp[1], 4.0);
-  if (angToBase > 0.0) {
-    XEi = atan((0.56 * tmp[1] + sqrt(angToBase)) / ((((0.56 * tmp[0] +
-      0.078400000000000011) - 0.0144) + P6i_tmp) + YE)) * 2.0;
-    theta0 = (P6i_tmp - 0.0256) + YE;
-    YE = atan(sqrt(((0.16 - P6i_tmp) - YE) * theta0) / theta0) * -2.0;
+  XE = P4planar[12] - P2planar[12];
+  YE = P4planar[14] - P2planar[14];
+  theta2 = XE * XE;
+  theta3 = YE * YE;
+  theta5 = (((((((theta2 * 0.15680000000000002 - 0.0038886400000000022) + theta3
+                 * 0.15680000000000002) - 0.00020735999999999997) + theta2 *
+               0.0288) + theta3 * 0.0288) - rt_powd_snf(XE, 4.0)) - theta2 * 2.0
+            * theta3) - rt_powd_snf(YE, 4.0);
+  if (theta5 > 0.0) {
+    theta5 = atan((0.56 * YE + sqrt(theta5)) / ((((0.56 * XE +
+      0.078400000000000011) - 0.0144) + theta2) + theta3)) * 2.0;
+    YE = (theta2 - 0.0256) + theta3;
+    XE = atan(sqrt(((0.16 - theta2) - theta3) * YE) / YE) * -2.0;
   } else {
-    XEi = 0.0;
-    YE = 0.0;
+    theta5 = 0.0;
+    XE = 0.0;
   }
 
-  XEi += 3.1415926535897931 - (3.1415926535897931 -
-    rtU.stepperLeftActualPosition);
-  theta4 = sin(rtU.baseActualPosition);
-  theta2 = cos(rtU.baseActualPosition);
-  angToBase = sin(XEi);
-  XEi = cos(XEi);
-  XE = sin(YE);
-  YE = cos(YE);
-  P6i_tmp = sin(-rtU.gripperPitchActualPosition);
-  theta0 = cos(-rtU.gripperPitchActualPosition);
-  P2planar[0] = theta2;
-  P2planar[4] = -theta4;
+  theta5 += 3.1415926535897931 - XEi;
+  theta2 = sin(angToBase);
+  theta3 = cos(angToBase);
+  angToBase = sin(theta5);
+  XEi = cos(theta5);
+  theta5 = sin(XE);
+  XE = cos(XE);
+  YE = sin(theta0);
+  theta0 = cos(theta0);
+  P2planar[0] = theta3;
+  P2planar[4] = -theta2;
   P2planar[8] = 0.0;
   P2planar[12] = 0.0;
-  P2planar[1] = theta4;
-  P2planar[5] = theta2;
+  P2planar[1] = theta2;
+  P2planar[5] = theta3;
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
-  for (i = 0; i < 4; i++) {
-    P6i_tmp_2 = i << 2;
-    P2planar[P6i_tmp_2 + 2] = P6i_tmp_1[i];
-    P2planar[P6i_tmp_2 + 3] = P6i_tmp_0[i];
-    XE_0[P6i_tmp_2] = 0.0;
-    XE_0[P6i_tmp_2 + 1] = 0.0;
-    XE_0[P6i_tmp_2 + 2] = 0.0;
-    XE_0[P6i_tmp_2 + 3] = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta5_tmp = i_0 << 2;
+    P2planar[theta5_tmp + 2] = P6i_tmp_0[i_0];
+    P2planar[theta5_tmp + 3] = P6i_tmp[i_0];
+    theta5_0[theta5_tmp] = 0.0;
+    theta5_0[theta5_tmp + 1] = 0.0;
+    theta5_0[theta5_tmp + 2] = 0.0;
+    theta5_0[theta5_tmp + 3] = 0.0;
   }
 
   P4planar[0] = XEi;
@@ -826,163 +804,133 @@ void control_arm_manual_step(void)
   P4planar[5] = XEi;
   P4planar[9] = 0.0;
   P4planar[13] = 0.0;
-  for (i = 0; i < 4; i++) {
-    XE_tmp = i << 2;
-    P4planar[XE_tmp + 2] = P6i_tmp_1[i];
-    P4planar[XE_tmp + 3] = P6i_tmp_0[i];
-    theta2 = XE_0[XE_tmp];
-    XEi = XE_0[XE_tmp + 1];
-    angToBase = XE_0[XE_tmp + 2];
-    theta4 = XE_0[XE_tmp + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      P6i_tmp_2 = XE_tmp + P6i_tmp_3;
-      tmp_2 = _mm_set1_pd(P6i[P6i_tmp_2]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, theta2));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      theta2 = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(theta4, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      theta4 = tmp[1];
-      XE_1[P6i_tmp_2] = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    P6i_tmp_2 = i_0 << 2;
+    P4planar[P6i_tmp_2 + 2] = P6i_tmp_0[i_0];
+    P4planar[P6i_tmp_2 + 3] = P6i_tmp[i_0];
+    theta3 = theta5_0[P6i_tmp_2];
+    angToBase = theta5_0[P6i_tmp_2 + 1];
+    XEi = theta5_0[P6i_tmp_2 + 2];
+    P6i_0 = theta5_0[P6i_tmp_2 + 3];
+    for (i = 0; i < 4; i++) {
+      P6i_tmp_1 = P6i_tmp_2 + i;
+      theta2 = P6i[P6i_tmp_1];
+      theta5_tmp = i << 2;
+      theta3 += P2planar[theta5_tmp] * theta2;
+      angToBase += P2planar[theta5_tmp + 1] * theta2;
+      XEi += P2planar[theta5_tmp + 2] * theta2;
+      P6i_0 += P2planar[theta5_tmp + 3] * theta2;
+      theta5_1[P6i_tmp_1] = 0.0;
     }
 
-    XE_0[XE_tmp + 3] = theta4;
-    XE_0[XE_tmp + 2] = angToBase;
-    XE_0[XE_tmp + 1] = XEi;
-    XE_0[XE_tmp] = theta2;
+    theta5_0[P6i_tmp_2 + 3] = P6i_0;
+    theta5_0[P6i_tmp_2 + 2] = XEi;
+    theta5_0[P6i_tmp_2 + 1] = angToBase;
+    theta5_0[P6i_tmp_2] = theta3;
   }
 
-  for (i = 0; i < 4; i++) {
-    P6i_tmp_2 = i << 2;
-    theta2 = XE_1[P6i_tmp_2];
-    XEi = XE_1[P6i_tmp_2 + 1];
-    angToBase = XE_1[P6i_tmp_2 + 2];
-    theta4 = XE_1[P6i_tmp_2 + 3];
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(P4planar[P6i_tmp_2 + P6i_tmp_3]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, theta2));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      theta2 = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(theta4, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      theta4 = tmp[1];
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta5_tmp = i_0 << 2;
+    theta3 = theta5_1[theta5_tmp];
+    angToBase = theta5_1[theta5_tmp + 1];
+    XEi = theta5_1[theta5_tmp + 2];
+    P6i_0 = theta5_1[theta5_tmp + 3];
+    for (i = 0; i < 4; i++) {
+      theta2 = P4planar[theta5_tmp + i];
+      P6i_tmp_1 = i << 2;
+      theta3 += theta5_0[P6i_tmp_1] * theta2;
+      angToBase += theta5_0[P6i_tmp_1 + 1] * theta2;
+      XEi += theta5_0[P6i_tmp_1 + 2] * theta2;
+      P6i_0 += theta5_0[P6i_tmp_1 + 3] * theta2;
     }
 
-    XE_1[P6i_tmp_2 + 3] = theta4;
-    XE_1[P6i_tmp_2 + 2] = angToBase;
-    XE_1[P6i_tmp_2 + 1] = XEi;
-    XE_1[P6i_tmp_2] = theta2;
+    theta5_1[theta5_tmp + 3] = P6i_0;
+    theta5_1[theta5_tmp + 2] = XEi;
+    theta5_1[theta5_tmp + 1] = angToBase;
+    theta5_1[theta5_tmp] = theta3;
   }
 
-  P6i[0] = YE;
-  P6i[4] = -XE;
+  P6i[0] = XE;
+  P6i[4] = -theta5;
   P6i[8] = 0.0;
   P6i[12] = 0.28;
-  P6i[1] = XE;
-  P6i[5] = YE;
+  P6i[1] = theta5;
+  P6i[5] = XE;
   P6i[9] = 0.0;
   P6i[13] = 0.0;
-  for (i = 0; i < 4; i++) {
-    P6i_tmp_2 = i << 2;
-    P6i[P6i_tmp_2 + 2] = P6i_tmp_1[i];
-    P6i[P6i_tmp_2 + 3] = P6i_tmp_0[i];
-    theta2 = 0.0;
-    XEi = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    P6i_tmp_1 = i_0 << 2;
+    P6i[P6i_tmp_1 + 2] = P6i_tmp_0[i_0];
+    P6i[P6i_tmp_1 + 3] = P6i_tmp[i_0];
+    theta3 = 0.0;
     angToBase = 0.0;
-    theta4 = 0.0;
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(P6i[P6i_tmp_2 + P6i_tmp_3]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, theta2));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      theta2 = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_1[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(theta4, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      theta4 = tmp[1];
+    XEi = 0.0;
+    P6i_0 = 0.0;
+    for (i = 0; i < 4; i++) {
+      theta2 = P6i[P6i_tmp_1 + i];
+      theta5_tmp = i << 2;
+      theta3 += theta5_1[theta5_tmp] * theta2;
+      angToBase += theta5_1[theta5_tmp + 1] * theta2;
+      XEi += theta5_1[theta5_tmp + 2] * theta2;
+      P6i_0 += theta5_1[theta5_tmp + 3] * theta2;
     }
 
-    P2planar[P6i_tmp_2 + 3] = theta4;
-    P2planar[P6i_tmp_2 + 2] = angToBase;
-    P2planar[P6i_tmp_2 + 1] = XEi;
-    P2planar[P6i_tmp_2] = theta2;
+    P2planar[P6i_tmp_1 + 3] = P6i_0;
+    P2planar[P6i_tmp_1 + 2] = XEi;
+    P2planar[P6i_tmp_1 + 1] = angToBase;
+    P2planar[P6i_tmp_1] = theta3;
   }
 
   P6i[0] = theta0;
-  P6i[4] = -P6i_tmp;
+  P6i[4] = -YE;
   P6i[8] = 0.0;
   P6i[12] = 0.62;
-  P6i[1] = P6i_tmp;
+  P6i[1] = YE;
   P6i[5] = theta0;
   P6i[9] = 0.0;
   P6i[13] = 0.0;
-  for (i = 0; i < 4; i++) {
-    P6i_tmp_2 = i << 2;
-    P6i[P6i_tmp_2 + 2] = P6i_tmp_1[i];
-    P6i[P6i_tmp_2 + 3] = P6i_tmp_0[i];
-    theta2 = 0.0;
-    XEi = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    P6i_tmp_1 = i_0 << 2;
+    P6i[P6i_tmp_1 + 2] = P6i_tmp_0[i_0];
+    P6i[P6i_tmp_1 + 3] = P6i_tmp[i_0];
+    theta3 = 0.0;
     angToBase = 0.0;
-    theta4 = 0.0;
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(P6i[P6i_tmp_2 + P6i_tmp_3]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, theta2));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      theta2 = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(theta4, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      theta4 = tmp[1];
+    XEi = 0.0;
+    P6i_0 = 0.0;
+    for (i = 0; i < 4; i++) {
+      theta2 = P6i[P6i_tmp_1 + i];
+      theta5_tmp = i << 2;
+      theta3 += P2planar[theta5_tmp] * theta2;
+      angToBase += P2planar[theta5_tmp + 1] * theta2;
+      XEi += P2planar[theta5_tmp + 2] * theta2;
+      P6i_0 += P2planar[theta5_tmp + 3] * theta2;
     }
 
-    XE_0[P6i_tmp_2 + 3] = theta4;
-    XE_0[P6i_tmp_2 + 2] = angToBase;
-    XE_0[P6i_tmp_2 + 1] = XEi;
-    XE_0[P6i_tmp_2] = theta2;
+    theta5_0[P6i_tmp_1 + 3] = P6i_0;
+    theta5_0[P6i_tmp_1 + 2] = XEi;
+    theta5_0[P6i_tmp_1 + 1] = angToBase;
+    theta5_0[P6i_tmp_1] = theta3;
   }
 
-  for (i = 0; i < 4; i++) {
-    theta0 = 0.0;
-    XEi = 0.0;
-    angToBase = 0.0;
-    P6i_tmp = 0.0;
-    for (P6i_tmp_3 = 0; P6i_tmp_3 < 4; P6i_tmp_3++) {
-      tmp_1 = P6i_tmp_3 << 2;
-      tmp_2 = _mm_set1_pd(c_b[(i << 2) + P6i_tmp_3]);
-      tmp_0 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1]), tmp_2),
-                         _mm_set_pd(XEi, theta0));
-      _mm_storeu_pd(&tmp[0], tmp_0);
-      theta0 = tmp[0];
-      XEi = tmp[1];
-      tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&XE_0[tmp_1 + 2]), tmp_2),
-                         _mm_set_pd(P6i_tmp, angToBase));
-      _mm_storeu_pd(&tmp[0], tmp_2);
-      angToBase = tmp[0];
-      P6i_tmp = tmp[1];
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    theta3 = 0.0;
+    YE = 0.0;
+    XE = 0.0;
+    theta5 = 0.0;
+    for (i = 0; i < 4; i++) {
+      theta2 = c_b[(i_0 << 2) + i];
+      theta5_tmp = i << 2;
+      theta3 += theta5_0[theta5_tmp] * theta2;
+      YE += theta5_0[theta5_tmp + 1] * theta2;
+      XE += theta5_0[theta5_tmp + 2] * theta2;
+      theta5 += theta5_0[theta5_tmp + 3] * theta2;
     }
 
-    XE_tmp = i << 2;
-    P2planar[XE_tmp + 3] = P6i_tmp;
-    P2planar[XE_tmp + 2] = angToBase;
-    P2planar[XE_tmp + 1] = XEi;
-    P2planar[XE_tmp] = theta0;
+    theta5_tmp = i_0 << 2;
+    P2planar[theta5_tmp + 3] = theta5;
+    P2planar[theta5_tmp + 2] = XE;
+    P2planar[theta5_tmp + 1] = YE;
+    P2planar[theta5_tmp] = theta3;
   }
 
   /* Sum: '<S3>/Sum' incorporates:
@@ -992,7 +940,7 @@ void control_arm_manual_step(void)
   theta0 = P2planar[12] - rtU.x;
 
   /* DotProduct: '<S3>/Dot Product' */
-  XEi = theta0 * theta0;
+  theta2 = theta0 * theta0;
 
   /* Sum: '<S3>/Sum' incorporates:
    *  Inport: '<Root>/y'
@@ -1001,7 +949,7 @@ void control_arm_manual_step(void)
   theta0 = P2planar[13] - rtU.y;
 
   /* DotProduct: '<S3>/Dot Product' */
-  XEi += theta0 * theta0;
+  theta2 += theta0 * theta0;
 
   /* Sum: '<S3>/Sum' incorporates:
    *  Inport: '<Root>/z'
@@ -1015,51 +963,35 @@ void control_arm_manual_step(void)
    *  RelationalOperator: '<S2>/Compare'
    *  Sqrt: '<S3>/sqrt'
    */
-  rtY.pointReached = (sqrt(theta0 * theta0 + XEi) <= 0.002);
-
-  /* Outport: '<Root>/actualX' incorporates:
-   *  MATLAB Function: '<S1>/MATLAB Function4'
-   */
-  rtY.actualX = P2planar[12];
-
-  /* Outport: '<Root>/actualY' incorporates:
-   *  MATLAB Function: '<S1>/MATLAB Function4'
-   */
-  rtY.actualY = P2planar[13];
-
-  /* Outport: '<Root>/actualZ' incorporates:
-   *  MATLAB Function: '<S1>/MATLAB Function4'
-   */
-  rtY.actualZ = P2planar[14];
+  rtY.pointReached = (sqrt(theta0 * theta0 + theta2) <= 0.002);
 
   /* Outport: '<Root>/controlJaw' incorporates:
-   *  UnitDelay: '<S1>/Unit Delay8'
-   */
-  rtY.controlJaw = rtDW.UnitDelay8_DSTATE;
-
-  /* Sum: '<S1>/Sum6' incorporates:
-   *  Inport: '<Root>/jawActualPosition'
+   *  Gain: '<S1>/Gain3'
    *  Inport: '<Root>/jawDesiredPosition'
    */
-  theta0 = rtU.desiredposition - rtU.actualposition;
+  rtY.controlJaw = 21.0 * rtU.jawDesiredPosition;
 
   /* Outport: '<Root>/controlWristRotation' incorporates:
+   *  Gain: '<S1>/Gain5'
    *  Inport: '<Root>/gripperRotationDesiredPosition'
    */
-  rtY.controlWristRotation = rtU.gripperRotationDesiredPosition;
+  rtY.controlWristRotation = 21.0 * rtU.gripperRotationDesiredPosition;
 
-  /* Update for UnitDelay: '<S1>/Unit Delay8' incorporates:
-   *  DiscreteIntegrator: '<S41>/Integrator'
-   *  Gain: '<S46>/Proportional Gain'
-   *  Sum: '<S50>/Sum'
-   */
-  rtDW.UnitDelay8_DSTATE = 2.0 * theta0 + rtDW.Integrator_DSTATE;
-
-  /* Update for DiscreteIntegrator: '<S41>/Integrator' incorporates:
+  /* Product: '<S1>/Divide' incorporates:
+   *  Constant: '<S1>/One'
+   *  Gain: '<S1>/Gain2'
    *  Inport: '<Root>/deltaTime'
-   *  Product: '<S54>/Uintegral*Ts Prod Out'
+   *  Product: '<S1>/Divide3'
    */
-  rtDW.Integrator_DSTATE += theta0 * rtU.deltaTime;
+  theta0 = 1.0 / (5.0 * rtU.deltaTime);
+
+  /* Outport: '<Root>/stepperLeftFrequency' incorporates:
+   *  Product: '<S1>/Divide'
+   */
+  rtY.stepperLeftFrequency = theta0;
+
+  /* Outport: '<Root>/stepperRightFrequency' */
+  rtY.stepperRightFrequency = theta0;
 }
 
 /* Model initialize function */

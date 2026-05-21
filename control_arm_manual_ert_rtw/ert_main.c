@@ -7,12 +7,12 @@
  *
  * Code generated for Simulink model 'control_arm_manual'.
  *
- * Model version                  : 1.21
+ * Model version                  : 1.8
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Wed May  6 10:08:28 2026
+ * C/C++ source code generated on : Thu May 21 11:07:17 2026
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: Intel->x86-64 (Linux 64)
+ * Embedded hardware selection: STMicroelectronics->ST10/Super10
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. RAM efficiency
