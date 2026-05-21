@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual_webots'.
  *
- * Model version                  : 1.39
+ * Model version                  : 1.41
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue May 19 12:26:34 2026
+ * C/C++ source code generated on : Thu May 21 10:15:57 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -1028,10 +1028,9 @@ void control_arm_manual_webots_step(void)
   rtY.actualZ = P2planar[14];
 
   /* Outport: '<Root>/controlJaw' incorporates:
-   *  Gain: '<S1>/Gain4'
    *  Inport: '<Root>/jawDesiredPosition'
    */
-  rtY.controlJaw = 0.017453292519943295 * rtU.jawDesiredPosition;
+  rtY.controlJaw = rtU.jawDesiredPosition;
 
   /* Outport: '<Root>/controlWristRotation' incorporates:
    *  Inport: '<Root>/gripperRotationDesiredPosition'

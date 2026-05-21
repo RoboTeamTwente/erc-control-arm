@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_webots'.
  *
- * Model version                  : 1.39
+ * Model version                  : 1.40
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue May 19 14:20:45 2026
+ * C/C++ source code generated on : Thu May 21 10:14:21 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
