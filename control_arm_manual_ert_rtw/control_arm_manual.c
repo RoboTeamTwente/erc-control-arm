@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual'.
  *
- * Model version                  : 1.8
+ * Model version                  : 1.9
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Thu May 21 11:07:17 2026
+ * C/C++ source code generated on : Mon May 25 16:16:30 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -527,14 +527,17 @@ void control_arm_manual_step(void)
   /* End of MATLAB Function: '<S1>/inverse kinematics' */
 
   /* Outport: '<Root>/controlGripperPitch' incorporates:
+   *  Gain: '<S1>/Gain20'
    *  Gain: '<S1>/Gain4'
    */
-  rtY.controlGripperPitch = 57.295779513082323 * rtb_angles[3];
+  rtY.controlGripperPitch = 57.295779513082323 * rtb_angles[3] * 0.1;
 
   /* Outport: '<Root>/controlBase' incorporates:
+   *  Gain: '<S1>/Gain21'
+   *  Gain: '<S1>/Gain22'
    *  Gain: '<S1>/Gain6'
    */
-  rtY.controlBase = 63.0 * rtb_angles[0];
+  rtY.controlBase = 63.0 * rtb_angles[0] * 57.295779513082323 * 0.1;
 
   /* Outport: '<Root>/stepperLeftSteps' incorporates:
    *  Constant: '<S1>/Constant5'
@@ -562,10 +565,12 @@ void control_arm_manual_step(void)
 
   /* Gain: '<S1>/Gain15' incorporates:
    *  Gain: '<S1>/Gain14'
+   *  Gain: '<S1>/Gain23'
+   *  Gain: '<S1>/Gain24'
    *  Inport: '<Root>/baseActualPosition'
    */
   angToBase = 0.015873015873015872 * rtU.baseActualPosition *
-    -0.015873015873015872;
+    0.017453292519943295 * 10.0 * -0.015873015873015872;
 
   /* Sum: '<S1>/Sum11' incorporates:
    *  Constant: '<S1>/Pi2'
@@ -579,9 +584,12 @@ void control_arm_manual_step(void)
     * 0.00625 - 1.5707963267948966;
 
   /* Gain: '<S1>/Gain16' incorporates:
+   *  Gain: '<S1>/Gain25'
+   *  Gain: '<S1>/Gain26'
    *  Inport: '<Root>/gripperPitchActualPosition'
    */
-  theta0 = 0.047619047619047616 * rtU.gripperPitchActualPosition;
+  theta0 = 0.017453292519943295 * rtU.gripperPitchActualPosition * 10.0 *
+    0.047619047619047616;
 
   /* Sum: '<S1>/Sum10' incorporates:
    *  Constant: '<S1>/Pi2'
