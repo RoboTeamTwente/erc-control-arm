@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.33
+ * Model version                  : 1.35
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue Apr 28 11:04:02 2026
+ * C/C++ source code generated on : Mon May 25 10:23:03 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10

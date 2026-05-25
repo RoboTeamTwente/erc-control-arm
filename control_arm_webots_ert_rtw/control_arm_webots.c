@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_webots'.
  *
- * Model version                  : 1.42
+ * Model version                  : 1.47
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Thu May 21 10:27:59 2026
+ * C/C++ source code generated on : Mon May 25 10:08:36 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -38,7 +38,7 @@ ExtY rtY;
 static RT_MODEL rtM_;
 RT_MODEL *const rtM = &rtM_;
 extern real_T rt_powd_snf(real_T u0, real_T u1);
-static void MATLABFunction2(real_T rtu_current, real_T rtu_startPosition, real_T
+static void MATLABFunction1(real_T rtu_current, real_T rtu_startPosition, real_T
   rtu_desired, real_T rtu_timePerMovement, real_T rtu_deltaTime, real_T *rty_out);
 static real_T rtGetInf(void);
 static real32_T rtGetInfF(void);
@@ -125,30 +125,27 @@ static boolean_T rtIsNaNF(real32_T value)
 
 /*
  * Output and update for atomic system:
+ *    '<S1>/MATLAB Function1'
  *    '<S1>/MATLAB Function2'
  *    '<S1>/MATLAB Function3'
  *    '<S1>/MATLAB Function5'
  */
-static void MATLABFunction2(real_T rtu_current, real_T rtu_startPosition, real_T
+static void MATLABFunction1(real_T rtu_current, real_T rtu_startPosition, real_T
   rtu_desired, real_T rtu_timePerMovement, real_T rtu_deltaTime, real_T *rty_out)
 {
-  real_T current;
-  real_T velocity;
-  current = rtu_current;
-  velocity = fabs(rtu_desired - rtu_startPosition) / rtu_timePerMovement;
-  if (rtu_current < rtu_desired) {
-    current = velocity * rtu_deltaTime + rtu_current;
+  if (fabs(rtu_current - rtu_desired) < 0.01) {
+    *rty_out = rtu_desired;
+  } else {
+    real_T velocity;
+    velocity = fabs(rtu_desired - rtu_startPosition) / rtu_timePerMovement;
+    if (rtu_current < rtu_desired) {
+      *rty_out = velocity * rtu_deltaTime + rtu_current;
+    } else if (rtu_current > rtu_desired) {
+      *rty_out = rtu_current - velocity * rtu_deltaTime;
+    } else {
+      *rty_out = rtu_current;
+    }
   }
-
-  if (current > rtu_desired) {
-    current -= velocity * rtu_deltaTime;
-  }
-
-  if (fabs(current - rtu_desired) < 0.01) {
-    current = rtu_desired;
-  }
-
-  *rty_out = current;
 }
 
 real_T rt_powd_snf(real_T u0, real_T u1)
@@ -212,7 +209,6 @@ void control_arm_webots_step(void)
   real_T P4planar[16];
   real_T XE;
   real_T YE;
-  real_T velocity;
   static const real_T a_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
     -1.0, 0.0, 0.0, 0.0, 0.0, 0.149, 1.0 };
 
@@ -229,12 +225,13 @@ void control_arm_webots_step(void)
   real_T P6i_1;
   real_T rtb_Sum10;
   real_T rtb_Sum11;
+  real_T rtb_out_k;
   real_T tmp;
   int32_T P6i_tmp_1;
   int32_T P6i_tmp_2;
   int32_T i;
   int32_T i_0;
-  int32_T velocity_tmp;
+  int32_T rtb_out_b_tmp;
   int8_T P2planar_tmp[16];
   int8_T P6i_tmp[4];
   int8_T P6i_tmp_0[4];
@@ -282,13 +279,13 @@ void control_arm_webots_step(void)
 
   theta0 = -theta0;
   XEi = sin(angToBase);
-  velocity = cos(angToBase);
-  P2planar[0] = velocity;
+  rtb_out_k = cos(angToBase);
+  P2planar[0] = rtb_out_k;
   P2planar[4] = -XEi;
   P2planar[8] = 0.0;
   P2planar[12] = rtU.x;
   P2planar[1] = XEi;
-  P2planar[5] = velocity;
+  P2planar[5] = rtb_out_k;
   P2planar[9] = 0.0;
   P2planar[13] = rtU.y;
   P2planar[2] = 0.0;
@@ -311,30 +308,30 @@ void control_arm_webots_step(void)
     /* MATLAB Function: '<S1>/MATLAB Function4' */
     P6i_tmp_2 = c[i];
     P6i_tmp_0[i] = (int8_T)P6i_tmp_2;
-    velocity_tmp = i << 2;
-    P2planar[velocity_tmp + 3] = P6i_tmp_1;
-    b_a_0[velocity_tmp + 2] = P6i_tmp_2;
-    b_a_0[velocity_tmp + 3] = P6i_tmp_1;
-    P4planar[velocity_tmp] = 0.0;
-    P4planar[velocity_tmp + 1] = 0.0;
-    P4planar[velocity_tmp + 2] = 0.0;
-    P4planar[velocity_tmp + 3] = 0.0;
+    rtb_out_b_tmp = i << 2;
+    P2planar[rtb_out_b_tmp + 3] = P6i_tmp_1;
+    b_a_0[rtb_out_b_tmp + 2] = P6i_tmp_2;
+    b_a_0[rtb_out_b_tmp + 3] = P6i_tmp_1;
+    P4planar[rtb_out_b_tmp] = 0.0;
+    P4planar[rtb_out_b_tmp + 1] = 0.0;
+    P4planar[rtb_out_b_tmp + 2] = 0.0;
+    P4planar[rtb_out_b_tmp + 3] = 0.0;
   }
 
   for (i = 0; i < 4; i++) {
-    velocity_tmp = i << 2;
-    velocity = P4planar[velocity_tmp];
-    angToBase = P4planar[velocity_tmp + 1];
-    XEi = P4planar[velocity_tmp + 2];
-    theta2 = P4planar[velocity_tmp + 3];
+    rtb_out_b_tmp = i << 2;
+    rtb_out_k = P4planar[rtb_out_b_tmp];
+    angToBase = P4planar[rtb_out_b_tmp + 1];
+    XEi = P4planar[rtb_out_b_tmp + 2];
+    theta2 = P4planar[rtb_out_b_tmp + 3];
     for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
       i_0 = P6i_tmp_2 << 2;
-      P6i_tmp_1 = velocity_tmp + P6i_tmp_2;
+      P6i_tmp_1 = rtb_out_b_tmp + P6i_tmp_2;
       tmp_2 = _mm_set1_pd(b_b[P6i_tmp_1]);
       tmp_1 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[i_0]), tmp_2),
-                         _mm_set_pd(angToBase, velocity));
+                         _mm_set_pd(angToBase, rtb_out_k));
       _mm_storeu_pd(&tmp_0[0], tmp_1);
-      velocity = tmp_0[0];
+      rtb_out_k = tmp_0[0];
       angToBase = tmp_0[1];
       tmp_2 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&P2planar[i_0 + 2]), tmp_2),
                          _mm_set_pd(theta2, XEi));
@@ -344,17 +341,17 @@ void control_arm_webots_step(void)
       b_a_1[P6i_tmp_1] = 0.0;
     }
 
-    P4planar[velocity_tmp + 3] = theta2;
-    P4planar[velocity_tmp + 2] = XEi;
-    P4planar[velocity_tmp + 1] = angToBase;
-    P4planar[velocity_tmp] = velocity;
-    P6i_0 = b_a_1[velocity_tmp];
-    P6i_1 = b_a_1[velocity_tmp + 1];
-    rtb_Sum10 = b_a_1[velocity_tmp + 2];
-    tmp = b_a_1[velocity_tmp + 3];
+    P4planar[rtb_out_b_tmp + 3] = theta2;
+    P4planar[rtb_out_b_tmp + 2] = XEi;
+    P4planar[rtb_out_b_tmp + 1] = angToBase;
+    P4planar[rtb_out_b_tmp] = rtb_out_k;
+    P6i_0 = b_a_1[rtb_out_b_tmp];
+    P6i_1 = b_a_1[rtb_out_b_tmp + 1];
+    rtb_Sum10 = b_a_1[rtb_out_b_tmp + 2];
+    tmp = b_a_1[rtb_out_b_tmp + 3];
     for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
       i_0 = P6i_tmp_2 << 2;
-      P6i_tmp_1 = velocity_tmp + P6i_tmp_2;
+      P6i_tmp_1 = rtb_out_b_tmp + P6i_tmp_2;
       tmp_2 = _mm_set1_pd(c_b[P6i_tmp_1]);
       tmp_1 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&b_a_0[i_0]), tmp_2),
                          _mm_set_pd(P6i_1, P6i_0));
@@ -369,10 +366,10 @@ void control_arm_webots_step(void)
       P6i[P6i_tmp_1] = 0.0;
     }
 
-    b_a_1[velocity_tmp + 3] = tmp;
-    b_a_1[velocity_tmp + 2] = rtb_Sum10;
-    b_a_1[velocity_tmp + 1] = P6i_1;
-    b_a_1[velocity_tmp] = P6i_0;
+    b_a_1[rtb_out_b_tmp + 3] = tmp;
+    b_a_1[rtb_out_b_tmp + 2] = rtb_Sum10;
+    b_a_1[rtb_out_b_tmp + 1] = P6i_1;
+    b_a_1[rtb_out_b_tmp] = P6i_0;
   }
 
   for (i = 0; i < 4; i++) {
@@ -425,31 +422,31 @@ void control_arm_webots_step(void)
     angToBase = tmp_0[0];
     theta2 = tmp_0[1];
     XEi = sin(tmp_0[0]);
-    velocity = cos(tmp_0[0]);
+    rtb_out_k = cos(tmp_0[0]);
     rtb_Sum11 = sin(tmp_0[1]);
     P6i_0 = cos(tmp_0[1]);
-    P2planar[0] = velocity;
+    P2planar[0] = rtb_out_k;
     P2planar[4] = -XEi;
     P2planar[8] = 0.0;
     P2planar[12] = 0.0;
     P2planar[1] = XEi;
-    P2planar[5] = velocity;
+    P2planar[5] = rtb_out_k;
     P2planar[9] = 0.0;
     P2planar[13] = 0.0;
     for (i = 0; i < 4; i++) {
-      velocity_tmp = i << 2;
-      P2planar[velocity_tmp + 2] = P6i_tmp_0[i];
-      P2planar[velocity_tmp + 3] = P6i_tmp[i];
-      velocity = 0.0;
+      rtb_out_b_tmp = i << 2;
+      P2planar[rtb_out_b_tmp + 2] = P6i_tmp_0[i];
+      P2planar[rtb_out_b_tmp + 3] = P6i_tmp[i];
+      rtb_out_k = 0.0;
       XEi = 0.0;
       P6i_1 = 0.0;
       XE = 0.0;
       for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
         i_0 = P6i_tmp_2 << 2;
-        tmp_2 = _mm_set1_pd(P2planar[velocity_tmp + P6i_tmp_2]);
+        tmp_2 = _mm_set1_pd(P2planar[rtb_out_b_tmp + P6i_tmp_2]);
         _mm_storeu_pd(&tmp_0[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&a[i_0]),
-          tmp_2), _mm_set_pd(XEi, velocity)));
-        velocity = tmp_0[0];
+          tmp_2), _mm_set_pd(XEi, rtb_out_k)));
+        rtb_out_k = tmp_0[0];
         XEi = tmp_0[1];
         _mm_storeu_pd(&tmp_0[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&a[i_0 + 2]),
           tmp_2), _mm_set_pd(XE, P6i_1)));
@@ -457,10 +454,10 @@ void control_arm_webots_step(void)
         XE = tmp_0[1];
       }
 
-      P6i[velocity_tmp + 3] = XE;
-      P6i[velocity_tmp + 2] = P6i_1;
-      P6i[velocity_tmp + 1] = XEi;
-      P6i[velocity_tmp] = velocity;
+      P6i[rtb_out_b_tmp + 3] = XE;
+      P6i[rtb_out_b_tmp + 2] = P6i_1;
+      P6i[rtb_out_b_tmp + 1] = XEi;
+      P6i[rtb_out_b_tmp] = rtb_out_k;
     }
 
     P2planar[0] = P6i_0;
@@ -472,16 +469,16 @@ void control_arm_webots_step(void)
     P2planar[9] = 0.0;
     P2planar[13] = 0.0;
     for (i = 0; i < 4; i++) {
-      velocity_tmp = i << 2;
-      P2planar[velocity_tmp + 2] = P6i_tmp_0[i];
-      P2planar[velocity_tmp + 3] = P6i_tmp[i];
+      rtb_out_b_tmp = i << 2;
+      P2planar[rtb_out_b_tmp + 2] = P6i_tmp_0[i];
+      P2planar[rtb_out_b_tmp + 3] = P6i_tmp[i];
       rtb_Sum11 = 0.0;
       P6i_0 = 0.0;
       P6i_1 = 0.0;
       XE = 0.0;
       for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
         i_0 = P6i_tmp_2 << 2;
-        P6i_tmp_1 = velocity_tmp + P6i_tmp_2;
+        P6i_tmp_1 = rtb_out_b_tmp + P6i_tmp_2;
         tmp_2 = _mm_set1_pd(P6i[P6i_tmp_1]);
         _mm_storeu_pd(&tmp_0[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(c_a[i_0 + 1],
           c_a[i_0]), tmp_2), _mm_set_pd(P6i_0, rtb_Sum11)));
@@ -494,10 +491,10 @@ void control_arm_webots_step(void)
         b_a_1[P6i_tmp_1] = 0.0;
       }
 
-      b_a_0[velocity_tmp + 3] = XE;
-      b_a_0[velocity_tmp + 2] = P6i_1;
-      b_a_0[velocity_tmp + 1] = P6i_0;
-      b_a_0[velocity_tmp] = rtb_Sum11;
+      b_a_0[rtb_out_b_tmp + 3] = XE;
+      b_a_0[rtb_out_b_tmp + 2] = P6i_1;
+      b_a_0[rtb_out_b_tmp + 1] = P6i_0;
+      b_a_0[rtb_out_b_tmp] = rtb_Sum11;
     }
 
     for (i = 0; i < 4; i++) {
@@ -573,65 +570,19 @@ void control_arm_webots_step(void)
   /* End of MATLAB Function: '<S1>/inverse kinematics' */
 
   /* MATLAB Function: '<S1>/MATLAB Function5' incorporates:
-   *  Constant: '<S1>/Time per movement'
    *  Gain: '<S1>/Gain'
    *  Inport: '<Root>/deltaTime'
    *  Inport: '<Root>/gripperPitchOldPosition'
+   *  Inport: '<Root>/timePerMovement'
    *  UnitDelay: '<S1>/Unit Delay'
    */
-  MATLABFunction2(rtDW.UnitDelay_DSTATE, rtU.gripperPitchOldPosition,
-                  -rtb_angles[3], 10.0, rtU.deltaTime, &theta0);
+  MATLABFunction1(rtDW.UnitDelay_DSTATE, rtU.gripperPitchOldPosition,
+                  -rtb_angles[3], rtU.timePerMovement, rtU.deltaTime, &theta0);
 
   /* Outport: '<Root>/controlGripperPitch' incorporates:
    *  UnitDelay: '<S1>/Unit Delay'
    */
   rtY.controlGripperPitch = rtDW.UnitDelay_DSTATE;
-
-  /* Gain: '<S1>/Gain3' */
-  angToBase = -rtb_angles[0];
-
-  /* MATLAB Function: '<S1>/MATLAB Function1' incorporates:
-   *  Constant: '<S1>/Time per movement'
-   *  Gain: '<S1>/Gain3'
-   *  Inport: '<Root>/baseOldPosition'
-   *  Inport: '<Root>/deltaTime'
-   *  UnitDelay: '<S1>/Unit Delay1'
-   */
-  XEi = rtDW.UnitDelay1_DSTATE;
-  velocity = fabs(-rtb_angles[0] - rtU.baseOldPosition) / 10.0;
-  if (rtDW.UnitDelay1_DSTATE < -rtb_angles[0]) {
-    XEi = velocity * rtU.deltaTime + rtDW.UnitDelay1_DSTATE;
-  }
-
-  if (XEi > -rtb_angles[0]) {
-    XEi -= velocity * rtU.deltaTime;
-  }
-
-  if (fabs(XEi - (-rtb_angles[0])) < 0.01) {
-    XEi = -rtb_angles[0];
-  }
-
-  /* Outport: '<Root>/controlBase' incorporates:
-   *  UnitDelay: '<S1>/Unit Delay1'
-   */
-  rtY.controlBase = rtDW.UnitDelay1_DSTATE;
-
-  /* MATLAB Function: '<S1>/MATLAB Function3' incorporates:
-   *  Constant: '<S1>/Pi1'
-   *  Constant: '<S1>/Time per movement'
-   *  Inport: '<Root>/deltaTime'
-   *  Inport: '<Root>/stepperRightOldPosition'
-   *  Sum: '<S1>/Sum9'
-   *  UnitDelay: '<S1>/Unit Delay3'
-   */
-  MATLABFunction2(rtDW.UnitDelay3_DSTATE, rtU.stepperRightOldPosition,
-                  1.5707963267948966 - rtb_angles[1], 10.0, rtU.deltaTime,
-                  &angToBase);
-
-  /* Outport: '<Root>/controlStepperRight' incorporates:
-   *  UnitDelay: '<S1>/Unit Delay3'
-   */
-  rtY.controlStepperRight = rtDW.UnitDelay3_DSTATE;
 
   /* Switch: '<S1>/Switch' incorporates:
    *  Constant: '<S1>/Pi'
@@ -641,25 +592,58 @@ void control_arm_webots_step(void)
    *  Sum: '<S1>/Sum7'
    */
   if (rtb_angles[4] >= 0.0) {
-    P6i_0 = 3.1415926535897931 - rtb_angles[4];
+    angToBase = 3.1415926535897931 - rtb_angles[4];
   } else {
-    P6i_0 = -(rtb_angles[4] + 3.1415926535897931);
+    angToBase = -(rtb_angles[4] + 3.1415926535897931);
   }
 
+  /* End of Switch: '<S1>/Switch' */
+
   /* MATLAB Function: '<S1>/MATLAB Function2' incorporates:
-   *  Constant: '<S1>/Time per movement'
    *  Inport: '<Root>/deltaTime'
    *  Inport: '<Root>/stepperLeftOldPosition'
-   *  Switch: '<S1>/Switch'
+   *  Inport: '<Root>/timePerMovement'
    *  UnitDelay: '<S1>/Unit Delay2'
    */
-  MATLABFunction2(rtDW.UnitDelay2_DSTATE, rtU.stepperLeftOldPosition, P6i_0,
-                  10.0, rtU.deltaTime, &velocity);
+  MATLABFunction1(rtDW.UnitDelay2_DSTATE, rtU.stepperLeftOldPosition, angToBase,
+                  rtU.timePerMovement, rtU.deltaTime, &XEi);
 
   /* Outport: '<Root>/controlStepperLeft' incorporates:
    *  UnitDelay: '<S1>/Unit Delay2'
    */
   rtY.controlStepperLeft = rtDW.UnitDelay2_DSTATE;
+
+  /* MATLAB Function: '<S1>/MATLAB Function1' incorporates:
+   *  Gain: '<S1>/Gain3'
+   *  Inport: '<Root>/baseOldPosition'
+   *  Inport: '<Root>/deltaTime'
+   *  Inport: '<Root>/timePerMovement'
+   *  UnitDelay: '<S1>/Unit Delay1'
+   */
+  MATLABFunction1(rtDW.UnitDelay1_DSTATE, rtU.baseOldPosition, -rtb_angles[0],
+                  rtU.timePerMovement, rtU.deltaTime, &angToBase);
+
+  /* Outport: '<Root>/controlBase' incorporates:
+   *  UnitDelay: '<S1>/Unit Delay1'
+   */
+  rtY.controlBase = rtDW.UnitDelay1_DSTATE;
+
+  /* MATLAB Function: '<S1>/MATLAB Function3' incorporates:
+   *  Constant: '<S1>/Pi1'
+   *  Inport: '<Root>/deltaTime'
+   *  Inport: '<Root>/stepperRightOldPosition'
+   *  Inport: '<Root>/timePerMovement'
+   *  Sum: '<S1>/Sum9'
+   *  UnitDelay: '<S1>/Unit Delay3'
+   */
+  MATLABFunction1(rtDW.UnitDelay3_DSTATE, rtU.stepperRightOldPosition,
+                  1.5707963267948966 - rtb_angles[1], rtU.timePerMovement,
+                  rtU.deltaTime, &rtb_out_k);
+
+  /* Outport: '<Root>/controlStepperRight' incorporates:
+   *  UnitDelay: '<S1>/Unit Delay3'
+   */
+  rtY.controlStepperRight = rtDW.UnitDelay3_DSTATE;
 
   /* MATLAB Function: '<S1>/MATLAB Function4' incorporates:
    *  Constant: '<S1>/Pi2'
@@ -724,16 +708,16 @@ void control_arm_webots_step(void)
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
   for (i = 0; i < 4; i++) {
-    velocity_tmp = i << 2;
-    P2planar[velocity_tmp + 2] = P6i_tmp_0[i];
-    P2planar[velocity_tmp + 3] = P6i_tmp[i];
+    rtb_out_b_tmp = i << 2;
+    P2planar[rtb_out_b_tmp + 2] = P6i_tmp_0[i];
+    P2planar[rtb_out_b_tmp + 3] = P6i_tmp[i];
     rtb_Sum11 = 0.0;
     P6i_0 = 0.0;
     P6i_1 = 0.0;
     XE = 0.0;
     for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
       i_0 = P6i_tmp_2 << 2;
-      tmp_2 = _mm_set1_pd(P2planar[velocity_tmp + P6i_tmp_2]);
+      tmp_2 = _mm_set1_pd(P2planar[rtb_out_b_tmp + P6i_tmp_2]);
       _mm_storeu_pd(&tmp_0[0], _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&b_a[i_0]),
         tmp_2), _mm_set_pd(P6i_0, rtb_Sum11)));
       rtb_Sum11 = tmp_0[0];
@@ -744,10 +728,10 @@ void control_arm_webots_step(void)
       XE = tmp_0[1];
     }
 
-    b_a_0[velocity_tmp + 3] = XE;
-    b_a_0[velocity_tmp + 2] = P6i_1;
-    b_a_0[velocity_tmp + 1] = P6i_0;
-    b_a_0[velocity_tmp] = rtb_Sum11;
+    b_a_0[rtb_out_b_tmp + 3] = XE;
+    b_a_0[rtb_out_b_tmp + 2] = P6i_1;
+    b_a_0[rtb_out_b_tmp + 1] = P6i_0;
+    b_a_0[rtb_out_b_tmp] = rtb_Sum11;
   }
 
   for (i = 0; i < 4; i++) {
@@ -778,14 +762,14 @@ void control_arm_webots_step(void)
   }
 
   for (i = 0; i < 4; i++) {
-    velocity_tmp = i << 2;
-    theta2 = P2planar[velocity_tmp];
-    rtb_Sum11 = P2planar[velocity_tmp + 1];
-    P6i_0 = P2planar[velocity_tmp + 2];
-    P6i_1 = P2planar[velocity_tmp + 3];
+    rtb_out_b_tmp = i << 2;
+    theta2 = P2planar[rtb_out_b_tmp];
+    rtb_Sum11 = P2planar[rtb_out_b_tmp + 1];
+    P6i_0 = P2planar[rtb_out_b_tmp + 2];
+    P6i_1 = P2planar[rtb_out_b_tmp + 3];
     for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
       i_0 = P6i_tmp_2 << 2;
-      P6i_tmp_1 = velocity_tmp + P6i_tmp_2;
+      P6i_tmp_1 = rtb_out_b_tmp + P6i_tmp_2;
       tmp_2 = _mm_set1_pd(b_b_0[P6i_tmp_1]);
       tmp_1 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&b_a_1[i_0]), tmp_2),
                          _mm_set_pd(rtb_Sum11, theta2));
@@ -800,17 +784,17 @@ void control_arm_webots_step(void)
       b_a_0[P6i_tmp_1] = 0.0;
     }
 
-    P2planar[velocity_tmp + 3] = P6i_1;
-    P2planar[velocity_tmp + 2] = P6i_0;
-    P2planar[velocity_tmp + 1] = rtb_Sum11;
-    P2planar[velocity_tmp] = theta2;
-    theta2 = b_a_0[velocity_tmp];
-    rtb_Sum11 = b_a_0[velocity_tmp + 1];
-    P6i_0 = b_a_0[velocity_tmp + 2];
-    P6i_1 = b_a_0[velocity_tmp + 3];
+    P2planar[rtb_out_b_tmp + 3] = P6i_1;
+    P2planar[rtb_out_b_tmp + 2] = P6i_0;
+    P2planar[rtb_out_b_tmp + 1] = rtb_Sum11;
+    P2planar[rtb_out_b_tmp] = theta2;
+    theta2 = b_a_0[rtb_out_b_tmp];
+    rtb_Sum11 = b_a_0[rtb_out_b_tmp + 1];
+    P6i_0 = b_a_0[rtb_out_b_tmp + 2];
+    P6i_1 = b_a_0[rtb_out_b_tmp + 3];
     for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
       i_0 = P6i_tmp_2 << 2;
-      P6i_tmp_1 = velocity_tmp + P6i_tmp_2;
+      P6i_tmp_1 = rtb_out_b_tmp + P6i_tmp_2;
       tmp_2 = _mm_set1_pd(P6i[P6i_tmp_1]);
       _mm_storeu_pd(&tmp_0[0], _mm_add_pd(_mm_mul_pd(_mm_set_pd(P2planar_tmp[i_0
         + 1], P2planar_tmp[i_0]), tmp_2), _mm_set_pd(rtb_Sum11, theta2)));
@@ -823,10 +807,10 @@ void control_arm_webots_step(void)
       P4planar[P6i_tmp_1] = 0.0;
     }
 
-    b_a_0[velocity_tmp + 3] = P6i_1;
-    b_a_0[velocity_tmp + 2] = P6i_0;
-    b_a_0[velocity_tmp + 1] = rtb_Sum11;
-    b_a_0[velocity_tmp] = theta2;
+    b_a_0[rtb_out_b_tmp + 3] = P6i_1;
+    b_a_0[rtb_out_b_tmp + 2] = P6i_0;
+    b_a_0[rtb_out_b_tmp + 1] = rtb_Sum11;
+    b_a_0[rtb_out_b_tmp] = theta2;
   }
 
   for (i = 0; i < 4; i++) {
@@ -909,16 +893,16 @@ void control_arm_webots_step(void)
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
   for (i = 0; i < 4; i++) {
-    velocity_tmp = i << 2;
-    P2planar[velocity_tmp + 2] = P6i_tmp_0[i];
-    P2planar[velocity_tmp + 3] = P6i_tmp[i];
-    P6i_0 = b_a_1[velocity_tmp];
-    P6i_1 = b_a_1[velocity_tmp + 1];
-    rtb_Sum10 = b_a_1[velocity_tmp + 2];
-    tmp = b_a_1[velocity_tmp + 3];
+    rtb_out_b_tmp = i << 2;
+    P2planar[rtb_out_b_tmp + 2] = P6i_tmp_0[i];
+    P2planar[rtb_out_b_tmp + 3] = P6i_tmp[i];
+    P6i_0 = b_a_1[rtb_out_b_tmp];
+    P6i_1 = b_a_1[rtb_out_b_tmp + 1];
+    rtb_Sum10 = b_a_1[rtb_out_b_tmp + 2];
+    tmp = b_a_1[rtb_out_b_tmp + 3];
     for (P6i_tmp_2 = 0; P6i_tmp_2 < 4; P6i_tmp_2++) {
       i_0 = P6i_tmp_2 << 2;
-      P6i_tmp_1 = velocity_tmp + P6i_tmp_2;
+      P6i_tmp_1 = rtb_out_b_tmp + P6i_tmp_2;
       tmp_2 = _mm_set1_pd(P6i[P6i_tmp_1]);
       tmp_1 = _mm_add_pd(_mm_mul_pd(_mm_loadu_pd(&b_a_0[i_0]), tmp_2),
                          _mm_set_pd(P6i_1, P6i_0));
@@ -933,10 +917,10 @@ void control_arm_webots_step(void)
       P4planar[P6i_tmp_1] = 0.0;
     }
 
-    b_a_1[velocity_tmp + 3] = tmp;
-    b_a_1[velocity_tmp + 2] = rtb_Sum10;
-    b_a_1[velocity_tmp + 1] = P6i_1;
-    b_a_1[velocity_tmp] = P6i_0;
+    b_a_1[rtb_out_b_tmp + 3] = tmp;
+    b_a_1[rtb_out_b_tmp + 2] = rtb_Sum10;
+    b_a_1[rtb_out_b_tmp + 1] = P6i_1;
+    b_a_1[rtb_out_b_tmp] = P6i_0;
   }
 
   for (i = 0; i < 4; i++) {
@@ -1060,11 +1044,11 @@ void control_arm_webots_step(void)
       P6i_1 = tmp_0[1];
     }
 
-    velocity_tmp = i << 2;
-    P2planar[velocity_tmp + 3] = P6i_1;
-    P2planar[velocity_tmp + 2] = P6i_0;
-    P2planar[velocity_tmp + 1] = rtb_Sum11;
-    P2planar[velocity_tmp] = theta2;
+    rtb_out_b_tmp = i << 2;
+    P2planar[rtb_out_b_tmp + 3] = P6i_1;
+    P2planar[rtb_out_b_tmp + 2] = P6i_0;
+    P2planar[rtb_out_b_tmp + 1] = rtb_Sum11;
+    P2planar[rtb_out_b_tmp] = theta2;
   }
 
   /* Sum: '<S3>/Sum' incorporates:
@@ -1127,16 +1111,14 @@ void control_arm_webots_step(void)
   /* Update for UnitDelay: '<S1>/Unit Delay' */
   rtDW.UnitDelay_DSTATE = theta0;
 
-  /* Update for UnitDelay: '<S1>/Unit Delay1' incorporates:
-   *  MATLAB Function: '<S1>/MATLAB Function1'
-   */
-  rtDW.UnitDelay1_DSTATE = XEi;
+  /* Update for UnitDelay: '<S1>/Unit Delay2' */
+  rtDW.UnitDelay2_DSTATE = XEi;
+
+  /* Update for UnitDelay: '<S1>/Unit Delay1' */
+  rtDW.UnitDelay1_DSTATE = angToBase;
 
   /* Update for UnitDelay: '<S1>/Unit Delay3' */
-  rtDW.UnitDelay3_DSTATE = angToBase;
-
-  /* Update for UnitDelay: '<S1>/Unit Delay2' */
-  rtDW.UnitDelay2_DSTATE = velocity;
+  rtDW.UnitDelay3_DSTATE = rtb_out_k;
 }
 
 /* Model initialize function */

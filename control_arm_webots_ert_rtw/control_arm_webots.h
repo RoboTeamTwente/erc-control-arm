@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_webots'.
  *
- * Model version                  : 1.42
+ * Model version                  : 1.47
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Thu May 21 10:27:59 2026
+ * C/C++ source code generated on : Mon May 25 10:08:36 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -42,9 +42,9 @@ typedef struct tag_RTM RT_MODEL;
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   real_T UnitDelay_DSTATE;             /* '<S1>/Unit Delay' */
+  real_T UnitDelay2_DSTATE;            /* '<S1>/Unit Delay2' */
   real_T UnitDelay1_DSTATE;            /* '<S1>/Unit Delay1' */
   real_T UnitDelay3_DSTATE;            /* '<S1>/Unit Delay3' */
-  real_T UnitDelay2_DSTATE;            /* '<S1>/Unit Delay2' */
 } DW;
 
 /* External inputs (root inport signals with default storage) */
@@ -68,6 +68,7 @@ typedef struct {
   real_T stepperLeftOldPosition;       /* '<Root>/stepperLeftOldPosition' */
   real_T stepperRightOldPosition;      /* '<Root>/stepperRightOldPosition' */
   real_T gripperPitchOldPosition;      /* '<Root>/gripperPitchOldPosition' */
+  real_T timePerMovement;              /* '<Root>/timePerMovement' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */

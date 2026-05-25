@@ -2,7 +2,7 @@
 ## Makefile generated for component 'control_arm'. 
 ## 
 ## Makefile     : control_arm.mk
-## Generated on : Mon Mar 23 11:35:04 2026
+## Generated on : Mon May 25 10:23:07 2026
 ## Final product: $(RELATIVE_PATH_TO_ANCHOR)/control_arm
 ## Product type : executable
 ## 
@@ -21,7 +21,7 @@ MAKEFILE                  = control_arm.mk
 MATLAB_ROOT               = /usr/local/MATLAB/R2025b
 MATLAB_BIN                = /usr/local/MATLAB/R2025b/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/glnxa64
-START_DIR                 = /home/rowan/Documents/roboteam/control/erc-control-arm
+START_DIR                 = /home/rowan/Documents/roboteam/webots_projects/controllers/cydonia_robotic_arm_controller/erc-control-arm
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0

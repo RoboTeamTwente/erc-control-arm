@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.33
+ * Model version                  : 1.35
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue Apr 28 11:04:02 2026
+ * C/C++ source code generated on : Mon May 25 10:23:03 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -135,19 +135,19 @@ static boolean_T rtIsNaNF(real32_T value)
 static void MATLABFunction(real_T rtu_current, real_T rtu_startPosition, real_T
   rtu_desired, real_T rtu_timePerMovement, real_T rtu_deltaTime, real_T *rty_out)
 {
-  real_T current;
-  real_T velocity;
-  current = rtu_current;
-  velocity = fabs(rtu_desired - rtu_startPosition) / rtu_timePerMovement;
-  if (rtu_current < rtu_desired) {
-    current = velocity * rtu_deltaTime + rtu_current;
+  if (fabs(rtu_current - rtu_desired) < 0.01) {
+    *rty_out = rtu_desired;
+  } else {
+    real_T velocity;
+    velocity = fabs(rtu_desired - rtu_startPosition) / rtu_timePerMovement;
+    if (rtu_current < rtu_desired) {
+      *rty_out = velocity * rtu_deltaTime + rtu_current;
+    } else if (rtu_current > rtu_desired) {
+      *rty_out = rtu_current - velocity * rtu_deltaTime;
+    } else {
+      *rty_out = rtu_current;
+    }
   }
-
-  if (current > rtu_desired) {
-    current -= velocity * rtu_deltaTime;
-  }
-
-  *rty_out = current;
 }
 
 /*
@@ -263,13 +263,13 @@ void control_arm_step(void)
   real_T rtb_Gain16;
   real_T rtb_Sum10;
   real_T rtb_Sum11;
-  real_T rtb_UintegralTsProdOut_e;
+  real_T rtb_UintegralTsProdOut;
   real_T theta5;
   int16_T TPbasetoP3_tmp_1;
   int16_T TPbasetoP3_tmp_2;
   int16_T i;
   int16_T i_0;
-  int16_T rtb_UintegralTsProdOut_a_tmp;
+  int16_T rtb_UintegralTsProdOut_tmp;
   int16_T theta5_tmp;
   int8_T P2planar_tmp[16];
   int8_T TPbasetoP3_tmp[4];
@@ -312,7 +312,7 @@ void control_arm_step(void)
   /* Gain: '<S1>/Gain15' incorporates:
    *  Inport: '<Root>/baseActualPosition'
    */
-  rtb_Gain15 = -0.015873015873015872 * rtU.actualposition_o;
+  rtb_Gain15 = -0.015873015873015872 * rtU.baseActualPosition;
 
   /* Sum: '<S1>/Sum11' incorporates:
    *  Constant: '<S1>/Pi2'
@@ -321,13 +321,15 @@ void control_arm_step(void)
    *  Gain: '<S1>/Gain4'
    *  Inport: '<Root>/stepperRightActualPosition'
    */
-  rtb_Sum11 = 1.8 * rtU.actualposition_d * 0.017453292519943295 * 0.00625 -
-    1.5707963267948966;
+  rtb_Sum11 = 1.8 * rtU.stepperRightActualPosition * 0.017453292519943295 *
+    0.00625 - 1.5707963267948966;
 
   /* Gain: '<S1>/Gain16' incorporates:
+   *  Gain: '<S1>/Gain22'
    *  Inport: '<Root>/gripperPitchActualPosition'
    */
-  rtb_Gain16 = 0.047619047619047616 * rtU.actualposition_f;
+  rtb_Gain16 = 0.017453292519943295 * rtU.gripperPitchActualPosition *
+    0.047619047619047616;
 
   /* Sum: '<S1>/Sum10' incorporates:
    *  Constant: '<S1>/Pi2'
@@ -336,17 +338,17 @@ void control_arm_step(void)
    *  Gain: '<S1>/Gain19'
    *  Inport: '<Root>/stepperLeftActualPosition'
    */
-  rtb_Sum10 = 1.8 * rtU.actualposition_k * 0.017453292519943295 * 0.00625 -
-    1.5707963267948966;
+  rtb_Sum10 = 1.8 * rtU.stepperLeftActualPosition * 0.017453292519943295 *
+    0.00625 - 1.5707963267948966;
 
   /* MATLAB Function: '<S1>/MATLAB Function4' */
-  rtb_UintegralTsProdOut_e = sin(rtb_Sum10);
+  rtb_UintegralTsProdOut = sin(rtb_Sum10);
   theta5 = cos(rtb_Sum10);
   theta5_0[0] = theta5;
-  theta5_0[4] = -rtb_UintegralTsProdOut_e;
+  theta5_0[4] = -rtb_UintegralTsProdOut;
   theta5_0[8] = 0.0;
   theta5_0[12] = 0.0;
-  theta5_0[1] = rtb_UintegralTsProdOut_e;
+  theta5_0[1] = rtb_UintegralTsProdOut;
   theta5_0[5] = theta5;
   theta5_0[9] = 0.0;
   theta5_0[13] = 0.0;
@@ -366,12 +368,12 @@ void control_arm_step(void)
     YE = 0.0;
     TPbasetoP3_0 = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = theta5_0[theta5_tmp + i];
+      rtb_UintegralTsProdOut = theta5_0[theta5_tmp + i];
       TPbasetoP3_tmp_1 = i << 2;
-      theta5 += a_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut_e;
-      XE += a_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut_e;
-      YE += a_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut_e;
-      TPbasetoP3_0 += a_0[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut_e;
+      theta5 += a_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut;
+      XE += a_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut;
+      YE += a_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut;
+      TPbasetoP3_0 += a_0[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut;
     }
 
     TPbasetoP3[theta5_tmp + 3] = TPbasetoP3_0;
@@ -380,7 +382,7 @@ void control_arm_step(void)
     TPbasetoP3[theta5_tmp] = theta5;
   }
 
-  rtb_UintegralTsProdOut_e = sin(rtb_Sum11);
+  rtb_UintegralTsProdOut = sin(rtb_Sum11);
   rtb_Sum11 = cos(rtb_Sum11);
   for (i_0 = 0; i_0 < 16; i_0++) {
     /* MATLAB Function: '<S1>/inverse kinematics' */
@@ -388,10 +390,10 @@ void control_arm_step(void)
   }
 
   theta5_0[0] = rtb_Sum11;
-  theta5_0[4] = -rtb_UintegralTsProdOut_e;
+  theta5_0[4] = -rtb_UintegralTsProdOut;
   theta5_0[8] = 0.0;
   theta5_0[12] = 0.0;
-  theta5_0[1] = rtb_UintegralTsProdOut_e;
+  theta5_0[1] = rtb_UintegralTsProdOut;
   theta5_0[5] = rtb_Sum11;
   theta5_0[9] = 0.0;
   theta5_0[13] = 0.0;
@@ -404,12 +406,12 @@ void control_arm_step(void)
     XE = 0.0;
     YE = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = theta5_0[TPbasetoP3_tmp_2 + i];
+      rtb_UintegralTsProdOut = theta5_0[TPbasetoP3_tmp_2 + i];
       TPbasetoP3_tmp_1 = i << 2;
-      rtb_Sum11 += b_a_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut_e;
-      theta5 += b_a_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut_e;
-      XE += b_a_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut_e;
-      YE += b_a_0[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += b_a_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut;
+      theta5 += b_a_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut;
+      XE += b_a_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut;
+      YE += b_a_0[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut;
     }
 
     b_a[TPbasetoP3_tmp_2 + 3] = YE;
@@ -425,16 +427,13 @@ void control_arm_step(void)
     TPbasetoP3_0 = 0.0;
     for (i = 0; i < 4; i++) {
       TPbasetoP3_tmp_1 = (i_0 << 2) + i;
-      rtb_UintegralTsProdOut_e = b_a[TPbasetoP3_tmp_1];
+      rtb_UintegralTsProdOut = b_a[TPbasetoP3_tmp_1];
       TPbasetoP3_tmp_2 = i << 2;
-      theta5 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2] *
-        rtb_UintegralTsProdOut_e;
-      XE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 1] *
-        rtb_UintegralTsProdOut_e;
-      YE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 2] *
-        rtb_UintegralTsProdOut_e;
+      theta5 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      XE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      YE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
       TPbasetoP3_0 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 3] *
-        rtb_UintegralTsProdOut_e;
+        rtb_UintegralTsProdOut;
       P2planar[TPbasetoP3_tmp_1] = 0.0;
     }
 
@@ -453,12 +452,12 @@ void control_arm_step(void)
     YE = P2planar[theta5_tmp + 3];
     for (i = 0; i < 4; i++) {
       TPbasetoP3_tmp_1 = theta5_tmp + i;
-      rtb_UintegralTsProdOut_e = b_b[TPbasetoP3_tmp_1];
+      rtb_UintegralTsProdOut = b_b[TPbasetoP3_tmp_1];
       TPbasetoP3_tmp_2 = i << 2;
-      rtb_Sum11 += theta5_0[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut_e;
-      theta5 += theta5_0[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut_e;
-      XE += theta5_0[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut_e;
-      YE += theta5_0[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += theta5_0[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      theta5 += theta5_0[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      XE += theta5_0[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
+      YE += theta5_0[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut;
       b_a[TPbasetoP3_tmp_1] = 0.0;
     }
 
@@ -472,16 +471,13 @@ void control_arm_step(void)
     TPbasetoP3_0 = b_a[theta5_tmp + 3];
     for (i = 0; i < 4; i++) {
       TPbasetoP3_tmp_1 = theta5_tmp + i;
-      rtb_UintegralTsProdOut_e = TPbasetoP3[TPbasetoP3_tmp_1];
+      rtb_UintegralTsProdOut = TPbasetoP3[TPbasetoP3_tmp_1];
       TPbasetoP3_tmp_2 = i << 2;
-      theta5 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2] *
-        rtb_UintegralTsProdOut_e;
-      XE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 1] *
-        rtb_UintegralTsProdOut_e;
-      YE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 2] *
-        rtb_UintegralTsProdOut_e;
+      theta5 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      XE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      YE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
       TPbasetoP3_0 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 3] *
-        rtb_UintegralTsProdOut_e;
+        rtb_UintegralTsProdOut;
       P4planar[TPbasetoP3_tmp_1] = 0.0;
     }
 
@@ -498,12 +494,12 @@ void control_arm_step(void)
     XE = P4planar[TPbasetoP3_tmp_1 + 2];
     YE = P4planar[TPbasetoP3_tmp_1 + 3];
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = c_b[TPbasetoP3_tmp_1 + i];
+      rtb_UintegralTsProdOut = c_b[TPbasetoP3_tmp_1 + i];
       TPbasetoP3_tmp_2 = i << 2;
-      rtb_Sum11 += b_a[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut_e;
-      theta5 += b_a[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut_e;
-      XE += b_a[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut_e;
-      YE += b_a[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += b_a[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      theta5 += b_a[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      XE += b_a[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
+      YE += b_a[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut;
     }
 
     P4planar[TPbasetoP3_tmp_1 + 3] = YE;
@@ -514,27 +510,28 @@ void control_arm_step(void)
 
   XE = P4planar[12] - P2planar[12];
   YE = P4planar[14] - P2planar[14];
-  rtb_UintegralTsProdOut_e = XE * XE;
-  rtb_Sum11 = YE * YE;
-  theta5 = (((((((rtb_UintegralTsProdOut_e * 0.15680000000000002 -
-                  0.0038886400000000022) + rtb_Sum11 * 0.15680000000000002) -
-                0.00020735999999999997) + rtb_UintegralTsProdOut_e * 0.0288) +
-              rtb_Sum11 * 0.0288) - rt_powd_snf(XE, 4.0)) -
-            rtb_UintegralTsProdOut_e * 2.0 * rtb_Sum11) - rt_powd_snf(YE, 4.0);
-  if (theta5 > 0.0) {
-    theta5 = atan((0.56 * YE + sqrt(theta5)) / ((((0.56 * XE +
-      0.078400000000000011) - 0.0144) + rtb_UintegralTsProdOut_e) + rtb_Sum11)) *
-      2.0;
-    XE = (rtb_UintegralTsProdOut_e - 0.0256) + rtb_Sum11;
-    XE = atan(sqrt(((0.16 - rtb_UintegralTsProdOut_e) - rtb_Sum11) * XE) / XE) *
-      -2.0;
+  rtb_UintegralTsProdOut = XE * XE;
+  TPbasetoP3_0 = YE * YE;
+  rtb_Sum11 = (((((((rtb_UintegralTsProdOut * 0.15680000000000002 -
+                     0.0038886400000000022) + TPbasetoP3_0 * 0.15680000000000002)
+                   - 0.00020735999999999997) + rtb_UintegralTsProdOut * 0.0288)
+                 + TPbasetoP3_0 * 0.0288) - rt_powd_snf(XE, 4.0)) -
+               rtb_UintegralTsProdOut * 2.0 * TPbasetoP3_0) - rt_powd_snf(YE,
+    4.0);
+  if (rtb_Sum11 > 0.0) {
+    theta5 = atan((0.56 * YE + sqrt(rtb_Sum11)) / ((((0.56 * XE +
+      0.078400000000000011) - 0.0144) + rtb_UintegralTsProdOut) + TPbasetoP3_0))
+      * 2.0;
+    rtb_Sum11 = (rtb_UintegralTsProdOut - 0.0256) + TPbasetoP3_0;
+    XE = atan(sqrt(((0.16 - rtb_UintegralTsProdOut) - TPbasetoP3_0) * rtb_Sum11)
+              / rtb_Sum11) * -2.0;
   } else {
     theta5 = 0.0;
     XE = 0.0;
   }
 
   theta5 += 3.1415926535897931 - rtb_Sum10;
-  rtb_UintegralTsProdOut_e = sin(rtb_Gain15);
+  rtb_UintegralTsProdOut = sin(rtb_Gain15);
   rtb_Sum11 = cos(rtb_Gain15);
   rtb_Gain15 = sin(theta5);
   rtb_Sum10 = cos(theta5);
@@ -543,10 +540,10 @@ void control_arm_step(void)
   YE = sin(rtb_Gain16);
   rtb_Gain16 = cos(rtb_Gain16);
   theta5_0[0] = rtb_Sum11;
-  theta5_0[4] = -rtb_UintegralTsProdOut_e;
+  theta5_0[4] = -rtb_UintegralTsProdOut;
   theta5_0[8] = 0.0;
   theta5_0[12] = 0.0;
-  theta5_0[1] = rtb_UintegralTsProdOut_e;
+  theta5_0[1] = rtb_UintegralTsProdOut;
   theta5_0[5] = rtb_Sum11;
   theta5_0[9] = 0.0;
   theta5_0[13] = 0.0;
@@ -578,12 +575,12 @@ void control_arm_step(void)
     TPbasetoP3_0 = b_a[theta5_tmp + 3];
     for (i = 0; i < 4; i++) {
       TPbasetoP3_tmp_1 = theta5_tmp + i;
-      rtb_UintegralTsProdOut_e = TPbasetoP3[TPbasetoP3_tmp_1];
+      rtb_UintegralTsProdOut = TPbasetoP3[TPbasetoP3_tmp_1];
       TPbasetoP3_tmp_2 = i << 2;
-      rtb_Sum11 += theta5_0[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut_e;
-      rtb_Sum10 += theta5_0[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut_e;
-      rtb_Gain15 += theta5_0[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut_e;
-      TPbasetoP3_0 += theta5_0[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += theta5_0[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      rtb_Sum10 += theta5_0[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      rtb_Gain15 += theta5_0[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
+      TPbasetoP3_0 += theta5_0[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut;
       P2planar[TPbasetoP3_tmp_1] = 0.0;
     }
 
@@ -600,12 +597,12 @@ void control_arm_step(void)
     rtb_Gain15 = P2planar[TPbasetoP3_tmp_2 + 2];
     TPbasetoP3_0 = P2planar[TPbasetoP3_tmp_2 + 3];
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = P4planar[TPbasetoP3_tmp_2 + i];
+      rtb_UintegralTsProdOut = P4planar[TPbasetoP3_tmp_2 + i];
       TPbasetoP3_tmp_1 = i << 2;
-      rtb_Sum11 += b_a[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut_e;
-      rtb_Sum10 += b_a[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut_e;
-      rtb_Gain15 += b_a[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut_e;
-      TPbasetoP3_0 += b_a[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += b_a[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut;
+      rtb_Sum10 += b_a[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut;
+      rtb_Gain15 += b_a[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut;
+      TPbasetoP3_0 += b_a[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut;
     }
 
     P2planar[TPbasetoP3_tmp_2 + 3] = TPbasetoP3_0;
@@ -631,12 +628,12 @@ void control_arm_step(void)
     rtb_Gain15 = 0.0;
     TPbasetoP3_0 = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = TPbasetoP3[theta5_tmp + i];
+      rtb_UintegralTsProdOut = TPbasetoP3[theta5_tmp + i];
       TPbasetoP3_tmp_2 = i << 2;
-      rtb_Sum11 += P2planar[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut_e;
-      rtb_Sum10 += P2planar[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut_e;
-      rtb_Gain15 += P2planar[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut_e;
-      TPbasetoP3_0 += P2planar[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += P2planar[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      rtb_Sum10 += P2planar[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      rtb_Gain15 += P2planar[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
+      TPbasetoP3_0 += P2planar[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut;
     }
 
     theta5_0[theta5_tmp + 3] = TPbasetoP3_0;
@@ -662,12 +659,12 @@ void control_arm_step(void)
     rtb_Gain15 = 0.0;
     TPbasetoP3_0 = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = TPbasetoP3[TPbasetoP3_tmp_1 + i];
+      rtb_UintegralTsProdOut = TPbasetoP3[TPbasetoP3_tmp_1 + i];
       TPbasetoP3_tmp_2 = i << 2;
-      rtb_Sum11 += theta5_0[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut_e;
-      rtb_Sum10 += theta5_0[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut_e;
-      rtb_Gain15 += theta5_0[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut_e;
-      TPbasetoP3_0 += theta5_0[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += theta5_0[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      rtb_Sum10 += theta5_0[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      rtb_Gain15 += theta5_0[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
+      TPbasetoP3_0 += theta5_0[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut;
     }
 
     b_a[TPbasetoP3_tmp_1 + 3] = TPbasetoP3_0;
@@ -682,12 +679,12 @@ void control_arm_step(void)
     XE = 0.0;
     YE = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = d_b[(i_0 << 2) + i];
+      rtb_UintegralTsProdOut = d_b[(i_0 << 2) + i];
       theta5_tmp = i << 2;
-      rtb_Sum11 += b_a[theta5_tmp] * rtb_UintegralTsProdOut_e;
-      theta5 += b_a[theta5_tmp + 1] * rtb_UintegralTsProdOut_e;
-      XE += b_a[theta5_tmp + 2] * rtb_UintegralTsProdOut_e;
-      YE += b_a[theta5_tmp + 3] * rtb_UintegralTsProdOut_e;
+      rtb_Sum11 += b_a[theta5_tmp] * rtb_UintegralTsProdOut;
+      theta5 += b_a[theta5_tmp + 1] * rtb_UintegralTsProdOut;
+      XE += b_a[theta5_tmp + 2] * rtb_UintegralTsProdOut;
+      YE += b_a[theta5_tmp + 3] * rtb_UintegralTsProdOut;
     }
 
     theta5_tmp = i_0 << 2;
@@ -704,7 +701,7 @@ void control_arm_step(void)
   rtb_Gain16 = P2planar[12] - rtU.x;
 
   /* DotProduct: '<S3>/Dot Product' */
-  rtb_UintegralTsProdOut_e = rtb_Gain16 * rtb_Gain16;
+  rtb_UintegralTsProdOut = rtb_Gain16 * rtb_Gain16;
 
   /* Sum: '<S3>/Sum' incorporates:
    *  Inport: '<Root>/y'
@@ -713,7 +710,7 @@ void control_arm_step(void)
   rtb_Gain16 = P2planar[13] - rtU.y;
 
   /* DotProduct: '<S3>/Dot Product' */
-  rtb_UintegralTsProdOut_e += rtb_Gain16 * rtb_Gain16;
+  rtb_UintegralTsProdOut += rtb_Gain16 * rtb_Gain16;
 
   /* Sum: '<S3>/Sum' incorporates:
    *  Inport: '<Root>/z'
@@ -727,7 +724,7 @@ void control_arm_step(void)
    *  RelationalOperator: '<S2>/Compare'
    *  Sqrt: '<S3>/sqrt'
    */
-  rtY.pointReached = (sqrt(rtb_Gain16 * rtb_Gain16 + rtb_UintegralTsProdOut_e) <=
+  rtY.pointReached = (sqrt(rtb_Gain16 * rtb_Gain16 + rtb_UintegralTsProdOut) <=
                       0.002);
 
   /* Saturate: '<S1>/Saturation5' incorporates:
@@ -761,22 +758,6 @@ void control_arm_step(void)
   }
 
   /* End of Saturate: '<S1>/Saturation4' */
-
-  /* Saturate: '<S1>/Saturation3' incorporates:
-   *  UnitDelay: '<S1>/Unit Delay4'
-   */
-  if (rtDW.UnitDelay4_DSTATE > 5.0) {
-    /* Outport: '<Root>/controlGripperPitch' */
-    rtY.controlGripperPitch = 5.0;
-  } else if (rtDW.UnitDelay4_DSTATE < -5.0) {
-    /* Outport: '<Root>/controlGripperPitch' */
-    rtY.controlGripperPitch = -5.0;
-  } else {
-    /* Outport: '<Root>/controlGripperPitch' */
-    rtY.controlGripperPitch = rtDW.UnitDelay4_DSTATE;
-  }
-
-  /* End of Saturate: '<S1>/Saturation3' */
 
   /* Saturate: '<S1>/Saturation' incorporates:
    *  UnitDelay: '<S1>/Unit Delay1'
@@ -813,13 +794,13 @@ void control_arm_step(void)
 
   rtb_Gain16 = -rtb_Gain16;
   rtb_Gain15 = sin(rtb_Sum10);
-  rtb_UintegralTsProdOut_e = cos(rtb_Sum10);
-  theta5_0[0] = rtb_UintegralTsProdOut_e;
+  rtb_UintegralTsProdOut = cos(rtb_Sum10);
+  theta5_0[0] = rtb_UintegralTsProdOut;
   theta5_0[4] = -rtb_Gain15;
   theta5_0[8] = 0.0;
   theta5_0[12] = rtU.x;
   theta5_0[1] = rtb_Gain15;
-  theta5_0[5] = rtb_UintegralTsProdOut_e;
+  theta5_0[5] = rtb_UintegralTsProdOut;
   theta5_0[9] = 0.0;
   theta5_0[13] = rtU.y;
   theta5_0[2] = 0.0;
@@ -848,48 +829,46 @@ void control_arm_step(void)
 
   for (i_0 = 0; i_0 < 4; i_0++) {
     TPbasetoP3_tmp_2 = i_0 << 2;
-    rtb_UintegralTsProdOut_e = b_a[TPbasetoP3_tmp_2];
+    rtb_UintegralTsProdOut = b_a[TPbasetoP3_tmp_2];
     rtb_Sum10 = b_a[TPbasetoP3_tmp_2 + 1];
     rtb_Gain15 = b_a[TPbasetoP3_tmp_2 + 2];
     rtb_Sum11 = b_a[TPbasetoP3_tmp_2 + 3];
     for (i = 0; i < 4; i++) {
       TPbasetoP3_tmp_1 = TPbasetoP3_tmp_2 + i;
       theta5_tmp = b_b_0[TPbasetoP3_tmp_1];
-      rtb_UintegralTsProdOut_a_tmp = i << 2;
-      rtb_UintegralTsProdOut_e += theta5_0[rtb_UintegralTsProdOut_a_tmp] *
-        (real_T)theta5_tmp;
-      rtb_Sum10 += theta5_0[rtb_UintegralTsProdOut_a_tmp + 1] * (real_T)
+      rtb_UintegralTsProdOut_tmp = i << 2;
+      rtb_UintegralTsProdOut += theta5_0[rtb_UintegralTsProdOut_tmp] * (real_T)
         theta5_tmp;
-      rtb_Gain15 += theta5_0[rtb_UintegralTsProdOut_a_tmp + 2] * (real_T)
+      rtb_Sum10 += theta5_0[rtb_UintegralTsProdOut_tmp + 1] * (real_T)theta5_tmp;
+      rtb_Gain15 += theta5_0[rtb_UintegralTsProdOut_tmp + 2] * (real_T)
         theta5_tmp;
-      rtb_Sum11 += theta5_0[rtb_UintegralTsProdOut_a_tmp + 3] * (real_T)
-        theta5_tmp;
+      rtb_Sum11 += theta5_0[rtb_UintegralTsProdOut_tmp + 3] * (real_T)theta5_tmp;
       P4planar[TPbasetoP3_tmp_1] = 0.0;
     }
 
     b_a[TPbasetoP3_tmp_2 + 3] = rtb_Sum11;
     b_a[TPbasetoP3_tmp_2 + 2] = rtb_Gain15;
     b_a[TPbasetoP3_tmp_2 + 1] = rtb_Sum10;
-    b_a[TPbasetoP3_tmp_2] = rtb_UintegralTsProdOut_e;
-    rtb_UintegralTsProdOut_e = P4planar[TPbasetoP3_tmp_2];
-    rtb_Sum11 = P4planar[TPbasetoP3_tmp_2 + 1];
-    theta5 = P4planar[TPbasetoP3_tmp_2 + 2];
+    b_a[TPbasetoP3_tmp_2] = rtb_UintegralTsProdOut;
+    rtb_UintegralTsProdOut = P4planar[TPbasetoP3_tmp_2];
+    TPbasetoP3_0 = P4planar[TPbasetoP3_tmp_2 + 1];
+    rtb_Sum11 = P4planar[TPbasetoP3_tmp_2 + 2];
     rtb_Sum10 = P4planar[TPbasetoP3_tmp_2 + 3];
     for (i = 0; i < 4; i++) {
       TPbasetoP3_tmp_1 = TPbasetoP3_tmp_2 + i;
       rtb_Gain15 = c_b_0[TPbasetoP3_tmp_1];
       theta5_tmp = i << 2;
-      rtb_UintegralTsProdOut_e += P2planar[theta5_tmp] * rtb_Gain15;
-      rtb_Sum11 += P2planar[theta5_tmp + 1] * rtb_Gain15;
-      theta5 += P2planar[theta5_tmp + 2] * rtb_Gain15;
+      rtb_UintegralTsProdOut += P2planar[theta5_tmp] * rtb_Gain15;
+      TPbasetoP3_0 += P2planar[theta5_tmp + 1] * rtb_Gain15;
+      rtb_Sum11 += P2planar[theta5_tmp + 2] * rtb_Gain15;
       rtb_Sum10 += P2planar[theta5_tmp + 3] * rtb_Gain15;
       TPbasetoP3[TPbasetoP3_tmp_1] = 0.0;
     }
 
     P4planar[TPbasetoP3_tmp_2 + 3] = rtb_Sum10;
-    P4planar[TPbasetoP3_tmp_2 + 2] = theta5;
-    P4planar[TPbasetoP3_tmp_2 + 1] = rtb_Sum11;
-    P4planar[TPbasetoP3_tmp_2] = rtb_UintegralTsProdOut_e;
+    P4planar[TPbasetoP3_tmp_2 + 2] = rtb_Sum11;
+    P4planar[TPbasetoP3_tmp_2 + 1] = TPbasetoP3_0;
+    P4planar[TPbasetoP3_tmp_2] = rtb_UintegralTsProdOut;
   }
 
   for (i_0 = 0; i_0 < 4; i_0++) {
@@ -899,12 +878,12 @@ void control_arm_step(void)
     YE = TPbasetoP3[TPbasetoP3_tmp_1 + 2];
     TPbasetoP3_0 = TPbasetoP3[TPbasetoP3_tmp_1 + 3];
     for (i = 0; i < 4; i++) {
-      rtb_UintegralTsProdOut_e = P4planar[TPbasetoP3_tmp_1 + i];
+      rtb_UintegralTsProdOut = P4planar[TPbasetoP3_tmp_1 + i];
       TPbasetoP3_tmp_2 = i << 2;
-      theta5 += b_a[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut_e;
-      XE += b_a[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut_e;
-      YE += b_a[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut_e;
-      TPbasetoP3_0 += b_a[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut_e;
+      theta5 += b_a[TPbasetoP3_tmp_2] * rtb_UintegralTsProdOut;
+      XE += b_a[TPbasetoP3_tmp_2 + 1] * rtb_UintegralTsProdOut;
+      YE += b_a[TPbasetoP3_tmp_2 + 2] * rtb_UintegralTsProdOut;
+      TPbasetoP3_0 += b_a[TPbasetoP3_tmp_2 + 3] * rtb_UintegralTsProdOut;
     }
 
     TPbasetoP3[TPbasetoP3_tmp_1 + 3] = TPbasetoP3_0;
@@ -915,14 +894,14 @@ void control_arm_step(void)
 
   rtb_Gain15 = sqrt(TPbasetoP3[12] * TPbasetoP3[12] + TPbasetoP3[13] *
                     TPbasetoP3[13]);
-  rtb_UintegralTsProdOut_e = rtb_Gain15 * rtb_Gain15;
-  rtb_Sum11 = (TPbasetoP3[14] - 0.065) * (TPbasetoP3[14] - 0.065);
-  theta5 = (((((((rtb_UintegralTsProdOut_e * 0.24499999999999997 + 0.04624375) +
-                 rtb_Sum11 * 0.24499999999999997) - 0.0625) +
-               rtb_UintegralTsProdOut_e * 0.5) + rtb_Sum11 * 0.5) - rt_powd_snf
-             (rtb_Gain15, 4.0)) - rtb_UintegralTsProdOut_e * 2.0 * rtb_Sum11) -
-    rt_powd_snf(TPbasetoP3[14] - 0.065, 4.0);
-  if (theta5 < 0.0) {
+  rtb_UintegralTsProdOut = rtb_Gain15 * rtb_Gain15;
+  TPbasetoP3_0 = (TPbasetoP3[14] - 0.065) * (TPbasetoP3[14] - 0.065);
+  rtb_Sum11 = (((((((rtb_UintegralTsProdOut * 0.24499999999999997 + 0.04624375)
+                    + TPbasetoP3_0 * 0.24499999999999997) - 0.0625) +
+                  rtb_UintegralTsProdOut * 0.5) + TPbasetoP3_0 * 0.5) -
+                rt_powd_snf(rtb_Gain15, 4.0)) - rtb_UintegralTsProdOut * 2.0 *
+               TPbasetoP3_0) - rt_powd_snf(TPbasetoP3[14] - 0.065, 4.0);
+  if (rtb_Sum11 < 0.0) {
     for (i_0 = 0; i_0 < 5; i_0++) {
       rtb_angles[i_0] = d[i_0];
     }
@@ -930,22 +909,22 @@ void control_arm_step(void)
     /* Outport: '<Root>/error' */
     rtY.error = 1.0;
   } else {
-    rtb_Sum10 = atan(((TPbasetoP3[14] - 0.065) * 0.7 + sqrt(theta5)) / ((((0.7 *
-      rtb_Gain15 + 0.12249999999999998) - 0.25) + rtb_UintegralTsProdOut_e) +
-      rtb_Sum11)) * 2.0;
-    rtb_Gain15 = (rtb_UintegralTsProdOut_e - 0.02250000000000002) + rtb_Sum11;
-    rtb_Sum11 = atan(sqrt(((0.72249999999999992 - rtb_UintegralTsProdOut_e) -
-      rtb_Sum11) * rtb_Gain15) / rtb_Gain15) * -2.0;
+    rtb_Sum10 = atan(((TPbasetoP3[14] - 0.065) * 0.7 + sqrt(rtb_Sum11)) /
+                     ((((0.7 * rtb_Gain15 + 0.12249999999999998) - 0.25) +
+                       rtb_UintegralTsProdOut) + TPbasetoP3_0)) * 2.0;
+    rtb_Gain15 = (rtb_UintegralTsProdOut - 0.02250000000000002) + TPbasetoP3_0;
+    rtb_Sum11 = atan(sqrt(((0.72249999999999992 - rtb_UintegralTsProdOut) -
+      TPbasetoP3_0) * rtb_Gain15) / rtb_Gain15) * -2.0;
     rtb_Gain15 = sin(rtb_Sum10);
-    rtb_UintegralTsProdOut_e = cos(rtb_Sum10);
+    rtb_UintegralTsProdOut = cos(rtb_Sum10);
     theta5 = sin(rtb_Sum11);
     XE = cos(rtb_Sum11);
-    theta5_0[0] = rtb_UintegralTsProdOut_e;
+    theta5_0[0] = rtb_UintegralTsProdOut;
     theta5_0[4] = -rtb_Gain15;
     theta5_0[8] = 0.0;
     theta5_0[12] = 0.0;
     theta5_0[1] = rtb_Gain15;
-    theta5_0[5] = rtb_UintegralTsProdOut_e;
+    theta5_0[5] = rtb_UintegralTsProdOut;
     theta5_0[9] = 0.0;
     theta5_0[13] = 0.0;
     for (i_0 = 0; i_0 < 4; i_0++) {
@@ -957,12 +936,12 @@ void control_arm_step(void)
       TPbasetoP3_0 = 0.0;
       a = 0.0;
       for (i = 0; i < 4; i++) {
-        rtb_UintegralTsProdOut_e = theta5_0[TPbasetoP3_tmp_2 + i];
+        rtb_UintegralTsProdOut = theta5_0[TPbasetoP3_tmp_2 + i];
         TPbasetoP3_tmp_1 = i << 2;
-        rtb_Gain15 += b_a_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut_e;
-        YE += b_a_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut_e;
-        TPbasetoP3_0 += b_a_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut_e;
-        a += b_a_0[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut_e;
+        rtb_Gain15 += b_a_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut;
+        YE += b_a_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut;
+        TPbasetoP3_0 += b_a_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut;
+        a += b_a_0[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut;
       }
 
       P2planar[TPbasetoP3_tmp_2 + 3] = a;
@@ -989,16 +968,16 @@ void control_arm_step(void)
       TPbasetoP3_0 = 0.0;
       for (i = 0; i < 4; i++) {
         TPbasetoP3_tmp_1 = theta5_tmp + i;
-        rtb_UintegralTsProdOut_e = P2planar[TPbasetoP3_tmp_1];
+        rtb_UintegralTsProdOut = P2planar[TPbasetoP3_tmp_1];
         TPbasetoP3_tmp_2 = i << 2;
         theta5 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2] *
-          rtb_UintegralTsProdOut_e;
+          rtb_UintegralTsProdOut;
         XE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 1] *
-          rtb_UintegralTsProdOut_e;
+          rtb_UintegralTsProdOut;
         YE += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 2] *
-          rtb_UintegralTsProdOut_e;
+          rtb_UintegralTsProdOut;
         TPbasetoP3_0 += (real_T)P2planar_tmp[TPbasetoP3_tmp_2 + 3] *
-          rtb_UintegralTsProdOut_e;
+          rtb_UintegralTsProdOut;
         b_a[TPbasetoP3_tmp_1] = 0.0;
       }
 
@@ -1015,13 +994,12 @@ void control_arm_step(void)
       YE = b_a[TPbasetoP3_tmp_2 + 2];
       TPbasetoP3_0 = b_a[TPbasetoP3_tmp_2 + 3];
       for (i = 0; i < 4; i++) {
-        rtb_UintegralTsProdOut_e = TPbasetoP3[TPbasetoP3_tmp_2 + i];
+        rtb_UintegralTsProdOut = TPbasetoP3[TPbasetoP3_tmp_2 + i];
         TPbasetoP3_tmp_1 = i << 2;
-        theta5 += theta5_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut_e;
-        XE += theta5_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut_e;
-        YE += theta5_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut_e;
-        TPbasetoP3_0 += theta5_0[TPbasetoP3_tmp_1 + 3] *
-          rtb_UintegralTsProdOut_e;
+        theta5 += theta5_0[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut;
+        XE += theta5_0[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut;
+        YE += theta5_0[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut;
+        TPbasetoP3_0 += theta5_0[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut;
       }
 
       b_a[TPbasetoP3_tmp_2 + 3] = TPbasetoP3_0;
@@ -1036,12 +1014,12 @@ void control_arm_step(void)
       YE = 0.0;
       TPbasetoP3_0 = 0.0;
       for (i = 0; i < 4; i++) {
-        rtb_UintegralTsProdOut_e = d_b_0[(i_0 << 2) + i];
+        rtb_UintegralTsProdOut = d_b_0[(i_0 << 2) + i];
         TPbasetoP3_tmp_1 = i << 2;
-        theta5 += b_a[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut_e;
-        XE += b_a[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut_e;
-        YE += b_a[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut_e;
-        TPbasetoP3_0 += b_a[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut_e;
+        theta5 += b_a[TPbasetoP3_tmp_1] * rtb_UintegralTsProdOut;
+        XE += b_a[TPbasetoP3_tmp_1 + 1] * rtb_UintegralTsProdOut;
+        YE += b_a[TPbasetoP3_tmp_1 + 2] * rtb_UintegralTsProdOut;
+        TPbasetoP3_0 += b_a[TPbasetoP3_tmp_1 + 3] * rtb_UintegralTsProdOut;
       }
 
       TPbasetoP3_tmp_1 = i_0 << 2;
@@ -1055,16 +1033,15 @@ void control_arm_step(void)
     rtb_angles[1] = rtb_Sum10;
     rtb_angles[3] = (-rtU.gripperAng - rtb_Sum10) - rtb_Sum11;
     rtb_Gain16 = TPbasetoP3[12] * TPbasetoP3[12];
-    rtb_UintegralTsProdOut_e = (TPbasetoP3[14] - 0.149) * (TPbasetoP3[14] -
-      0.149);
+    rtb_UintegralTsProdOut = (TPbasetoP3[14] - 0.149) * (TPbasetoP3[14] - 0.149);
     rtb_angles[4] = atan((sqrt((((((((rtb_Gain16 * 0.0288 + 0.00205056) +
-      rtb_UintegralTsProdOut_e * 0.0288) - 0.0061465600000000023) + rtb_Gain16 *
-      0.15680000000000002) + rtb_UintegralTsProdOut_e * 0.15680000000000002) -
+      rtb_UintegralTsProdOut * 0.0288) - 0.0061465600000000023) + rtb_Gain16 *
+      0.15680000000000002) + rtb_UintegralTsProdOut * 0.15680000000000002) -
       rt_powd_snf(TPbasetoP3[12], 4.0)) - rtb_Gain16 * 2.0 *
-      rtb_UintegralTsProdOut_e) - rt_powd_snf(TPbasetoP3[14] - 0.149, 4.0)) +
+      rtb_UintegralTsProdOut) - rt_powd_snf(TPbasetoP3[14] - 0.149, 4.0)) +
                           (TPbasetoP3[14] - 0.149) * 0.24) / ((((0.24 *
       TPbasetoP3[12] + 0.0144) - 0.078400000000000011) + rtb_Gain16) +
-      rtb_UintegralTsProdOut_e)) * 2.0 + 6.2831853071795862;
+      rtb_UintegralTsProdOut)) * 2.0 + 6.2831853071795862;
 
     /* Outport: '<Root>/error' */
     rtY.error = 0.0;
@@ -1084,55 +1061,12 @@ void control_arm_step(void)
   rtY.stepperLeftSteps = rtb_Gain16;
 
   /* MATLAB Function: '<S1>/MATLAB Function1' incorporates:
-   *  Constant: '<S1>/Time per movement'
    *  Inport: '<Root>/stepperLeftOldPosition'
+   *  Inport: '<Root>/timePerMovement'
    *  Outport: '<Root>/stepperLeftFrequency'
    */
-  MATLABFunction1(rtU.stepperLeftOldPosition, rtb_Gain16, 10.0,
+  MATLABFunction1(rtU.stepperLeftOldPosition, rtb_Gain16, rtU.timePerMovement,
                   &rtY.stepperLeftFrequency);
-
-  /* MATLAB Function: '<S1>/MATLAB Function' incorporates:
-   *  Constant: '<S1>/Time per movement'
-   *  Gain: '<S1>/Gain12'
-   *  Inport: '<Root>/deltaTime'
-   *  Inport: '<Root>/gripperPitchOldPosition'
-   *  UnitDelay: '<S1>/Unit Delay2'
-   */
-  MATLABFunction(rtDW.UnitDelay2_DSTATE, rtU.gripperPitchOldPosition, 21.0 *
-                 rtb_angles[3], 10.0, rtU.deltaTime, &rtb_Gain16);
-
-  /* Sum: '<S1>/Sum4' incorporates:
-   *  Inport: '<Root>/gripperPitchActualPosition'
-   *  UnitDelay: '<S1>/Unit Delay2'
-   */
-  rtb_Gain15 = rtDW.UnitDelay2_DSTATE - rtU.actualposition_f;
-
-  /* MATLAB Function: '<S1>/MATLAB Function5' incorporates:
-   *  Constant: '<S1>/Time per movement'
-   *  Gain: '<S1>/Gain6'
-   *  Inport: '<Root>/baseOldPosition'
-   *  Inport: '<Root>/deltaTime'
-   *  UnitDelay: '<S1>/Unit Delay5'
-   */
-  MATLABFunction(rtDW.UnitDelay5_DSTATE, rtU.baseOldPosition, 63.0 * rtb_angles
-                 [0], 10.0, rtU.deltaTime, &rtb_Sum10);
-
-  /* Sum: '<S1>/Sum2' incorporates:
-   *  Inport: '<Root>/baseActualPosition'
-   *  UnitDelay: '<S1>/Unit Delay5'
-   */
-  rtb_Sum11 = rtDW.UnitDelay5_DSTATE - rtU.actualposition_o;
-
-  /* Update for UnitDelay: '<S1>/Unit Delay1' incorporates:
-   *  DiscreteIntegrator: '<S50>/Integrator'
-   *  Sum: '<S59>/Sum'
-   */
-  rtDW.UnitDelay1_DSTATE = rtb_Sum11 + rtDW.Integrator_DSTATE_o;
-
-  /* Product: '<S63>/Uintegral*Ts Prod Out' incorporates:
-   *  Inport: '<Root>/deltaTime'
-   */
-  rtb_UintegralTsProdOut_e = rtb_Sum11 * rtU.deltaTime;
 
   /* Rounding: '<S1>/Round1' incorporates:
    *  Constant: '<S1>/Pi1'
@@ -1141,19 +1075,57 @@ void control_arm_step(void)
    *  Gain: '<S1>/Gain8'
    *  Sum: '<S1>/Sum9'
    */
-  rtb_Sum11 = rt_roundd_snf((rtb_angles[1] + 1.5707963267948966) * 160.0 *
+  rtb_Gain16 = rt_roundd_snf((rtb_angles[1] + 1.5707963267948966) * 160.0 *
     57.295779513082323 * 0.55555555555555558);
 
+  /* Outport: '<Root>/stepperRightSteps' */
+  rtY.stepperRightSteps = rtb_Gain16;
+
   /* MATLAB Function: '<S1>/MATLAB Function6' incorporates:
-   *  Constant: '<S1>/Time per movement'
    *  Inport: '<Root>/stepperRightOldPosition'
+   *  Inport: '<Root>/timePerMovement'
    *  Outport: '<Root>/stepperRightFrequency'
    */
-  MATLABFunction1(rtU.stepperRightOldPosition, rtb_Sum11, 10.0,
+  MATLABFunction1(rtU.stepperRightOldPosition, rtb_Gain16, rtU.timePerMovement,
                   &rtY.stepperRightFrequency);
 
-  /* Outport: '<Root>/stepperRightSteps' */
-  rtY.stepperRightSteps = rtb_Sum11;
+  /* MATLAB Function: '<S1>/MATLAB Function' incorporates:
+   *  Gain: '<S1>/Gain12'
+   *  Inport: '<Root>/deltaTime'
+   *  Inport: '<Root>/gripperPitchOldPosition'
+   *  Inport: '<Root>/timePerMovement'
+   *  UnitDelay: '<S1>/Unit Delay2'
+   */
+  MATLABFunction(rtDW.UnitDelay2_DSTATE, rtU.gripperPitchOldPosition,
+                 57.295779513082323 * rtb_angles[3], rtU.timePerMovement,
+                 rtU.deltaTime, &rtb_Gain16);
+
+  /* Outport: '<Root>/controlGripperPitch' incorporates:
+   *  UnitDelay: '<S1>/Unit Delay2'
+   */
+  rtY.controlGripperPitch = rtDW.UnitDelay2_DSTATE;
+
+  /* MATLAB Function: '<S1>/MATLAB Function5' incorporates:
+   *  Gain: '<S1>/Gain6'
+   *  Inport: '<Root>/baseOldPosition'
+   *  Inport: '<Root>/deltaTime'
+   *  Inport: '<Root>/timePerMovement'
+   *  UnitDelay: '<S1>/Unit Delay5'
+   */
+  MATLABFunction(rtDW.UnitDelay5_DSTATE, rtU.baseOldPosition, 63.0 * rtb_angles
+                 [0], rtU.timePerMovement, rtU.deltaTime, &rtb_Gain15);
+
+  /* Sum: '<S1>/Sum2' incorporates:
+   *  Inport: '<Root>/baseActualPosition'
+   *  UnitDelay: '<S1>/Unit Delay5'
+   */
+  rtb_Sum10 = rtDW.UnitDelay5_DSTATE - rtU.baseActualPosition;
+
+  /* Update for UnitDelay: '<S1>/Unit Delay1' incorporates:
+   *  DiscreteIntegrator: '<S49>/Integrator'
+   *  Sum: '<S58>/Sum'
+   */
+  rtDW.UnitDelay1_DSTATE = rtb_Sum10 + rtDW.Integrator_DSTATE;
 
   /* MATLAB Function: '<S1>/MATLAB Function2' incorporates:
    *  Gain: '<S1>/Gain'
@@ -1164,7 +1136,7 @@ void control_arm_step(void)
    *  UnitDelay: '<S1>/Unit Delay7'
    */
   MATLABFunction2(rtDW.UnitDelay7_DSTATE, 21.0 * (0.017453292519943295 *
-    rtU.gripperRotationDesiredPosition), 21.0 * rtU.deltaTime, &theta5);
+    rtU.gripperRotationDesiredPosition), 21.0 * rtU.deltaTime, &rtb_Sum11);
 
   /* MATLAB Function: '<S1>/MATLAB Function3' incorporates:
    *  Gain: '<S1>/Gain2'
@@ -1175,76 +1147,66 @@ void control_arm_step(void)
    *  UnitDelay: '<S1>/Unit Delay9'
    */
   MATLABFunction2(rtDW.UnitDelay9_DSTATE, 21.0 * (0.017453292519943295 *
-    rtU.jawDesiredPosition), 2.1 * rtU.deltaTime, &XE);
+    rtU.jawDesiredPosition), 2.1 * rtU.deltaTime, &theta5);
 
   /* Sum: '<S1>/Sum6' incorporates:
    *  Inport: '<Root>/jawActualPosition'
    *  UnitDelay: '<S1>/Unit Delay9'
    */
-  YE = rtDW.UnitDelay9_DSTATE - rtU.actualposition;
+  XE = rtDW.UnitDelay9_DSTATE - rtU.jawActualPosition;
 
   /* Update for UnitDelay: '<S1>/Unit Delay8' incorporates:
-   *  DiscreteIntegrator: '<S206>/Integrator'
-   *  Gain: '<S211>/Proportional Gain'
-   *  Sum: '<S215>/Sum'
+   *  DiscreteIntegrator: '<S153>/Integrator'
+   *  Gain: '<S158>/Proportional Gain'
+   *  Sum: '<S162>/Sum'
    */
-  rtDW.UnitDelay8_DSTATE = 2.0 * YE + rtDW.Integrator_DSTATE_h;
+  rtDW.UnitDelay8_DSTATE = 2.0 * XE + rtDW.Integrator_DSTATE_h;
 
-  /* Gain: '<S159>/Proportional Gain' incorporates:
-   *  Gain: '<S151>/Integral Gain'
+  /* Gain: '<S106>/Proportional Gain' incorporates:
+   *  Gain: '<S98>/Integral Gain'
    *  Inport: '<Root>/gripperRotationActualPosition'
    *  Sum: '<S1>/Sum5'
    *  UnitDelay: '<S1>/Unit Delay7'
    */
-  rtb_Sum11 = (rtDW.UnitDelay7_DSTATE - rtU.actualposition_e) * 0.2;
+  rtb_UintegralTsProdOut = (rtDW.UnitDelay7_DSTATE -
+    rtU.gripperRotationActualPosition) * 0.2;
 
   /* Update for UnitDelay: '<S1>/Unit Delay6' incorporates:
-   *  DiscreteIntegrator: '<S154>/Integrator'
-   *  Gain: '<S159>/Proportional Gain'
-   *  Sum: '<S163>/Sum'
+   *  DiscreteIntegrator: '<S101>/Integrator'
+   *  Gain: '<S106>/Proportional Gain'
+   *  Sum: '<S110>/Sum'
    */
-  rtDW.UnitDelay6_DSTATE = rtb_Sum11 + rtDW.Integrator_DSTATE_e;
-
-  /* Update for UnitDelay: '<S1>/Unit Delay4' incorporates:
-   *  DiscreteIntegrator: '<S102>/Integrator'
-   *  Gain: '<S107>/Proportional Gain'
-   *  Sum: '<S111>/Sum'
-   */
-  rtDW.UnitDelay4_DSTATE = 0.5 * rtb_Gain15 + rtDW.Integrator_DSTATE;
+  rtDW.UnitDelay6_DSTATE = rtb_UintegralTsProdOut + rtDW.Integrator_DSTATE_e;
 
   /* Update for UnitDelay: '<S1>/Unit Delay2' */
   rtDW.UnitDelay2_DSTATE = rtb_Gain16;
 
-  /* Update for DiscreteIntegrator: '<S102>/Integrator' incorporates:
-   *  Gain: '<S99>/Integral Gain'
-   *  Inport: '<Root>/deltaTime'
-   *  Product: '<S115>/Uintegral*Ts Prod Out'
-   */
-  rtDW.Integrator_DSTATE += 0.1 * rtb_Gain15 * rtU.deltaTime;
-
   /* Update for UnitDelay: '<S1>/Unit Delay5' */
-  rtDW.UnitDelay5_DSTATE = rtb_Sum10;
+  rtDW.UnitDelay5_DSTATE = rtb_Gain15;
 
-  /* Update for DiscreteIntegrator: '<S50>/Integrator' */
-  rtDW.Integrator_DSTATE_o += rtb_UintegralTsProdOut_e;
+  /* Update for DiscreteIntegrator: '<S49>/Integrator' incorporates:
+   *  Inport: '<Root>/deltaTime'
+   *  Product: '<S62>/Uintegral*Ts Prod Out'
+   */
+  rtDW.Integrator_DSTATE += rtb_Sum10 * rtU.deltaTime;
 
   /* Update for UnitDelay: '<S1>/Unit Delay7' */
-  rtDW.UnitDelay7_DSTATE = theta5;
+  rtDW.UnitDelay7_DSTATE = rtb_Sum11;
 
-  /* Update for DiscreteIntegrator: '<S154>/Integrator' incorporates:
+  /* Update for DiscreteIntegrator: '<S101>/Integrator' incorporates:
    *  Inport: '<Root>/deltaTime'
-   *  Product: '<S167>/Uintegral*Ts Prod Out'
+   *  Product: '<S114>/Uintegral*Ts Prod Out'
    */
-  rtDW.Integrator_DSTATE_e += rtb_Sum11 * rtU.deltaTime;
+  rtDW.Integrator_DSTATE_e += rtb_UintegralTsProdOut * rtU.deltaTime;
 
   /* Update for UnitDelay: '<S1>/Unit Delay9' */
-  rtDW.UnitDelay9_DSTATE = XE;
+  rtDW.UnitDelay9_DSTATE = theta5;
 
-  /* Update for DiscreteIntegrator: '<S206>/Integrator' incorporates:
+  /* Update for DiscreteIntegrator: '<S153>/Integrator' incorporates:
    *  Inport: '<Root>/deltaTime'
-   *  Product: '<S219>/Uintegral*Ts Prod Out'
+   *  Product: '<S166>/Uintegral*Ts Prod Out'
    */
-  rtDW.Integrator_DSTATE_h += YE * rtU.deltaTime;
+  rtDW.Integrator_DSTATE_h += XE * rtU.deltaTime;
 }
 
 /* Model initialize function */
