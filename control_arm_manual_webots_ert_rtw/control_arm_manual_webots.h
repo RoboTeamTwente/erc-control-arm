@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual_webots'.
  *
- * Model version                  : 1.41
+ * Model version                  : 1.48
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Thu May 21 10:15:57 2026
+ * C/C++ source code generated on : Mon May 25 12:37:52 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -71,6 +71,7 @@ typedef struct {
   real_T actualX;                      /* '<Root>/actualX' */
   real_T actualY;                      /* '<Root>/actualY' */
   real_T actualZ;                      /* '<Root>/actualZ' */
+  real_T test;                         /* '<Root>/test' */
 } ExtY;
 
 /* Real-time Model Data Structure */
