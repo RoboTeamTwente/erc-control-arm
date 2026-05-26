@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual_webots'.
  *
- * Model version                  : 1.48
+ * Model version                  : 1.50
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Mon May 25 12:37:52 2026
+ * C/C++ source code generated on : Tue May 26 09:52:08 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -561,9 +561,6 @@ void control_arm_manual_webots_step(void)
   }
 
   /* End of MATLAB Function: '<S1>/inverse kinematics' */
-
-  /* Outport: '<Root>/test' */
-  rtY.test = rtb_angles[4];
 
   /* Outport: '<Root>/controlGripperPitch' incorporates:
    *  Gain: '<S1>/Gain'

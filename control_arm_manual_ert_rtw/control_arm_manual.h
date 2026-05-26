@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual'.
  *
- * Model version                  : 1.9
+ * Model version                  : 1.11
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Mon May 25 16:16:30 2026
+ * C/C++ source code generated on : Tue May 26 09:51:24 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -48,7 +48,7 @@ typedef struct {
   real_T jawDesiredPosition;           /* '<Root>/jawDesiredPosition' */
   real_T gripperRotationDesiredPosition;
                                    /* '<Root>/gripperRotationDesiredPosition' */
-  real_T actualposition;               /* '<Root>/jawActualPosition' */
+  real_T jawActualPosition;            /* '<Root>/jawActualPosition' */
   real_T gripperRotationActualPosition;
                                     /* '<Root>/gripperRotationActualPosition' */
   real_T gripperPitchActualPosition;   /* '<Root>/gripperPitchActualPosition' */
@@ -93,8 +93,6 @@ extern RT_MODEL *const rtM;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S1>/Gain19' : Unused code path elimination
- * Block '<S1>/Gain7' : Unused code path elimination
  * Block '<S1>/actual position' : Unused code path elimination
  * Block '<S1>/distance actual and  desired position' : Unused code path elimination
  */

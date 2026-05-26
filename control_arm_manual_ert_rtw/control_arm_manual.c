@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual'.
  *
- * Model version                  : 1.9
+ * Model version                  : 1.11
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Mon May 25 16:16:30 2026
+ * C/C++ source code generated on : Tue May 26 09:51:24 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -539,17 +539,26 @@ void control_arm_manual_step(void)
    */
   rtY.controlBase = 63.0 * rtb_angles[0] * 57.295779513082323 * 0.1;
 
+  /* Switch: '<S1>/Switch' incorporates:
+   *  Constant: '<S1>/Pi'
+   *  Gain: '<S1>/Gain27'
+   *  Sum: '<S1>/Sum7'
+   */
+  if (rtb_angles[4] >= 0.0) {
+    theta2 = 3.1415926535897931 - rtb_angles[4];
+  } else {
+    theta2 = (rtNaN);
+  }
+
   /* Outport: '<Root>/stepperLeftSteps' incorporates:
    *  Constant: '<S1>/Constant5'
-   *  Constant: '<S1>/Pi'
    *  Gain: '<S1>/Gain10'
    *  Gain: '<S1>/Gain13'
    *  Product: '<S1>/Divide1'
    *  Rounding: '<S1>/Round'
-   *  Sum: '<S1>/Sum7'
+   *  Switch: '<S1>/Switch'
    */
-  rtY.stepperLeftSteps = rt_roundd_snf((rtb_angles[4] + 1.5707963267948966) *
-    160.0 * 57.295779513082323 / 1.8);
+  rtY.stepperLeftSteps = rt_roundd_snf(160.0 * theta2 * 57.295779513082323 / 1.8);
 
   /* Outport: '<Root>/stepperRightSteps' incorporates:
    *  Constant: '<S1>/Constant2'
@@ -560,7 +569,7 @@ void control_arm_manual_step(void)
    *  Rounding: '<S1>/Round1'
    *  Sum: '<S1>/Sum9'
    */
-  rtY.stepperRightSteps = rt_roundd_snf((rtb_angles[1] + 1.5707963267948966) *
+  rtY.stepperRightSteps = rt_roundd_snf((1.5707963267948966 - rtb_angles[1]) *
     160.0 * 57.295779513082323 / 1.8);
 
   /* Gain: '<S1>/Gain15' incorporates:
@@ -574,14 +583,16 @@ void control_arm_manual_step(void)
 
   /* Sum: '<S1>/Sum11' incorporates:
    *  Constant: '<S1>/Pi2'
+   *  Constant: '<S1>/Pi5'
    *  Gain: '<S1>/Gain12'
    *  Gain: '<S1>/Gain17'
    *  Gain: '<S1>/degrees per step1'
    *  Gain: '<S1>/gearbox1'
    *  Inport: '<Root>/stepperRightActualPosition'
+   *  Sum: '<S1>/Sum3'
    */
-  theta3 = 0.00625 * rtU.stepperRightActualPosition * 1.8 * 0.017453292519943295
-    * 0.00625 - 1.5707963267948966;
+  theta3 = (1.5707963267948966 - 0.00625 * rtU.stepperRightActualPosition * 1.8 *
+            0.017453292519943295) * 0.00625 - 1.5707963267948966;
 
   /* Gain: '<S1>/Gain16' incorporates:
    *  Gain: '<S1>/Gain25'
@@ -593,14 +604,16 @@ void control_arm_manual_step(void)
 
   /* Sum: '<S1>/Sum10' incorporates:
    *  Constant: '<S1>/Pi2'
+   *  Constant: '<S1>/Pi4'
    *  Gain: '<S1>/Gain18'
    *  Gain: '<S1>/Gain9'
    *  Gain: '<S1>/degrees per step'
    *  Gain: '<S1>/gearbox'
    *  Inport: '<Root>/stepperLeftActualPosition'
+   *  Sum: '<S1>/Sum2'
    */
-  XEi = 0.00625 * rtU.stepperLeftActualPosition * 1.8 * 0.017453292519943295 *
-    0.00625 - 1.5707963267948966;
+  XEi = (3.1415926535897931 - 0.00625 * rtU.stepperLeftActualPosition * 1.8 *
+         0.017453292519943295) * 0.00625 - 1.5707963267948966;
 
   /* MATLAB Function: '<S1>/MATLAB Function4' */
   theta2 = sin(XEi);
@@ -974,38 +987,28 @@ void control_arm_manual_step(void)
   rtY.pointReached = (sqrt(theta0 * theta0 + theta2) <= 0.002);
 
   /* Outport: '<Root>/controlJaw' incorporates:
-   *  Gain: '<S1>/Gain3'
    *  Inport: '<Root>/jawDesiredPosition'
    */
-  rtY.controlJaw = 21.0 * rtU.jawDesiredPosition;
+  rtY.controlJaw = rtU.jawDesiredPosition;
 
   /* Outport: '<Root>/controlWristRotation' incorporates:
-   *  Gain: '<S1>/Gain5'
    *  Inport: '<Root>/gripperRotationDesiredPosition'
    */
-  rtY.controlWristRotation = 21.0 * rtU.gripperRotationDesiredPosition;
-
-  /* Product: '<S1>/Divide' incorporates:
-   *  Constant: '<S1>/One'
-   *  Gain: '<S1>/Gain2'
-   *  Inport: '<Root>/deltaTime'
-   *  Product: '<S1>/Divide3'
-   */
-  theta0 = 1.0 / (5.0 * rtU.deltaTime);
-
-  /* Outport: '<Root>/stepperLeftFrequency' incorporates:
-   *  Product: '<S1>/Divide'
-   */
-  rtY.stepperLeftFrequency = theta0;
-
-  /* Outport: '<Root>/stepperRightFrequency' */
-  rtY.stepperRightFrequency = theta0;
+  rtY.controlWristRotation = rtU.gripperRotationDesiredPosition;
 }
 
 /* Model initialize function */
 void control_arm_manual_initialize(void)
 {
-  /* (no initialization code required) */
+  /* ConstCode for Outport: '<Root>/stepperLeftFrequency' incorporates:
+   *  Constant: '<S1>/Constant'
+   */
+  rtY.stepperLeftFrequency = 50.0;
+
+  /* ConstCode for Outport: '<Root>/stepperRightFrequency' incorporates:
+   *  Constant: '<S1>/Constant1'
+   */
+  rtY.stepperRightFrequency = 50.0;
 }
 
 /*
