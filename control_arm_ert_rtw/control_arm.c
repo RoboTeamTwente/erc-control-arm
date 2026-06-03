@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.37
+ * Model version                  : 1.40
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Mon May 25 16:16:53 2026
+ * C/C++ source code generated on : Wed Jun  3 16:05:38 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -289,7 +289,7 @@ void control_arm_step(void)
     0.0, 1.0, 0.0, 0.335, 0.0, 0.0, 1.0 };
 
   static const real_T a[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.03, 1.0 };
 
   static const int8_T c_a[16] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
   };
@@ -298,7 +298,7 @@ void control_arm_step(void)
     0.0, 1.0, 0.0, -0.12, 0.0, 0.0, 1.0 };
 
   static const real_T a_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.149, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.12, 1.0 };
 
   static const real_T b_b_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
     0.0, 1.0, 0.0, 0.35, 0.0, 0.0, 1.0 };
@@ -432,11 +432,11 @@ void control_arm_step(void)
 
   XEi = sqrt(P6i[12] * P6i[12] + P6i[13] * P6i[13]);
   rtb_Gain15_1 = XEi * XEi;
-  rtb_Sum11 = (P6i[14] - 0.065) * (P6i[14] - 0.065);
+  rtb_Sum11 = (P6i[14] - 0.03) * (P6i[14] - 0.03);
   rtb_Sum6 = (((((((rtb_Gain15_1 * 0.24499999999999997 + 0.04624375) + rtb_Sum11
                    * 0.24499999999999997) - 0.0625) + rtb_Gain15_1 * 0.5) +
                 rtb_Sum11 * 0.5) - rt_powd_snf(XEi, 4.0)) - rtb_Gain15_1 * 2.0 *
-              rtb_Sum11) - rt_powd_snf(P6i[14] - 0.065, 4.0);
+              rtb_Sum11) - rt_powd_snf(P6i[14] - 0.03, 4.0);
   if (rtb_Sum6 < 0.0) {
     for (i_0 = 0; i_0 < 5; i_0++) {
       rtb_angles[i_0] = d[i_0];
@@ -445,8 +445,8 @@ void control_arm_step(void)
     /* Outport: '<Root>/error' */
     rtY.error = 1.0;
   } else {
-    angToBase = atan(((P6i[14] - 0.065) * 0.7 + sqrt(rtb_Sum6)) / ((((0.7 * XEi
-      + 0.12249999999999998) - 0.25) + rtb_Gain15_1) + rtb_Sum11)) * 2.0;
+    angToBase = atan(((P6i[14] - 0.03) * 0.7 + sqrt(rtb_Sum6)) / ((((0.7 * XEi +
+      0.12249999999999998) - 0.25) + rtb_Gain15_1) + rtb_Sum11)) * 2.0;
     XEi = (rtb_Gain15_1 - 0.02250000000000002) + rtb_Sum11;
     theta2 = atan(sqrt(((0.72249999999999992 - rtb_Gain15_1) - rtb_Sum11) * XEi)
                   / XEi) * -2.0;
@@ -564,12 +564,12 @@ void control_arm_step(void)
     rtb_angles[1] = angToBase;
     rtb_angles[3] = (-rtU.gripperAng - angToBase) - theta2;
     theta0 = P6i[12] * P6i[12];
-    rtb_Gain15_1 = (P6i[14] - 0.149) * (P6i[14] - 0.149);
+    rtb_Gain15_1 = (P6i[14] - 0.12) * (P6i[14] - 0.12);
     rtb_angles[4] = atan((sqrt((((((((theta0 * 0.0288 + 0.00205056) +
       rtb_Gain15_1 * 0.0288) - 0.0061465600000000023) + theta0 *
       0.15680000000000002) + rtb_Gain15_1 * 0.15680000000000002) - rt_powd_snf
       (P6i[12], 4.0)) - theta0 * 2.0 * rtb_Gain15_1) - rt_powd_snf(P6i[14] -
-      0.149, 4.0)) + (P6i[14] - 0.149) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
+      0.12, 4.0)) + (P6i[14] - 0.12) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
       0.078400000000000011) + theta0) + rtb_Gain15_1)) * 2.0 +
       6.2831853071795862;
 
@@ -621,23 +621,6 @@ void control_arm_step(void)
   MATLABFunction1(rtU.stepperRightOldPosition, theta0, rtU.timePerMovement,
                   &rtY.stepperRightFrequency);
 
-  /* MATLAB Function: '<S1>/MATLAB Function' incorporates:
-   *  Gain: '<S1>/Gain12'
-   *  Gain: '<S1>/Gain25'
-   *  Inport: '<Root>/deltaTime'
-   *  Inport: '<Root>/gripperPitchOldPosition'
-   *  Inport: '<Root>/timePerMovement'
-   *  UnitDelay: '<S1>/Unit Delay2'
-   */
-  MATLABFunction(rtDW.UnitDelay2_DSTATE, rtU.gripperPitchOldPosition, 0.1 *
-                 (57.295779513082323 * rtb_angles[3]), rtU.timePerMovement,
-                 rtU.deltaTime, &theta0);
-
-  /* Outport: '<Root>/controlGripperPitch' incorporates:
-   *  UnitDelay: '<S1>/Unit Delay2'
-   */
-  rtY.controlGripperPitch = rtDW.UnitDelay2_DSTATE;
-
   /* MATLAB Function: '<S1>/MATLAB Function5' incorporates:
    *  Gain: '<S1>/Gain23'
    *  Gain: '<S1>/Gain24'
@@ -649,12 +632,26 @@ void control_arm_step(void)
    */
   MATLABFunction(rtDW.UnitDelay5_DSTATE, rtU.baseOldPosition, 0.1 *
                  (57.295779513082323 * (63.0 * rtb_angles[0])),
-                 rtU.timePerMovement, rtU.deltaTime, &XEi);
+                 rtU.timePerMovement, rtU.deltaTime, &theta0);
 
   /* Outport: '<Root>/controlBase' incorporates:
    *  UnitDelay: '<S1>/Unit Delay5'
    */
   rtY.controlBase = rtDW.UnitDelay5_DSTATE;
+
+  /* MATLAB Function: '<S1>/MATLAB Function' incorporates:
+   *  Inport: '<Root>/deltaTime'
+   *  Inport: '<Root>/gripperPitchOldPosition'
+   *  Inport: '<Root>/timePerMovement'
+   *  UnitDelay: '<S1>/Unit Delay2'
+   */
+  MATLABFunction(rtDW.UnitDelay2_DSTATE, rtU.gripperPitchOldPosition,
+                 rtb_angles[3], rtU.timePerMovement, rtU.deltaTime, &XEi);
+
+  /* Outport: '<Root>/controlGripperPitch' incorporates:
+   *  UnitDelay: '<S1>/Unit Delay2'
+   */
+  rtY.controlGripperPitch = rtDW.UnitDelay2_DSTATE;
 
   /* Gain: '<S1>/Gain15' incorporates:
    *  Inport: '<Root>/baseActualPosition'
@@ -673,11 +670,9 @@ void control_arm_step(void)
     0.017453292519943295 * 0.00625 - 1.5707963267948966;
 
   /* Gain: '<S1>/Gain16' incorporates:
-   *  Gain: '<S1>/Gain22'
    *  Inport: '<Root>/gripperPitchActualPosition'
    */
-  angToBase = 0.017453292519943295 * rtU.gripperPitchActualPosition *
-    0.047619047619047616;
+  angToBase = 0.047619047619047616 * rtU.gripperPitchActualPosition;
 
   /* Sum: '<S1>/Sum10' incorporates:
    *  Constant: '<S1>/Pi2'
@@ -1122,11 +1117,11 @@ void control_arm_step(void)
    */
   rtb_Sum6 = rtDW.UnitDelay9_DSTATE - rtU.jawActualPosition;
 
-  /* Update for UnitDelay: '<S1>/Unit Delay2' */
-  rtDW.UnitDelay2_DSTATE = theta0;
-
   /* Update for UnitDelay: '<S1>/Unit Delay5' */
-  rtDW.UnitDelay5_DSTATE = XEi;
+  rtDW.UnitDelay5_DSTATE = theta0;
+
+  /* Update for UnitDelay: '<S1>/Unit Delay2' */
+  rtDW.UnitDelay2_DSTATE = XEi;
 
   /* Update for UnitDelay: '<S1>/Unit Delay8' incorporates:
    *  DiscreteIntegrator: '<S100>/Integrator'

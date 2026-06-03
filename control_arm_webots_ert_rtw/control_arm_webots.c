@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_webots'.
  *
- * Model version                  : 1.47
+ * Model version                  : 1.49
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Mon May 25 10:08:36 2026
+ * C/C++ source code generated on : Wed Jun  3 16:07:21 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -203,17 +203,17 @@ void control_arm_webots_step(void)
   real_T theta0;
   real_T theta2;
   static const real_T a[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.03, 1.0 };
 
   real_T P2planar[16];
   real_T P4planar[16];
   real_T XE;
   real_T YE;
   static const real_T a_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.149, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.12, 1.0 };
 
   static const real_T b_a[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.03, 1.0 };
 
   __m128d tmp_1;
   __m128d tmp_2;
@@ -401,11 +401,11 @@ void control_arm_webots_step(void)
 
   XEi = sqrt(P6i[12] * P6i[12] + P6i[13] * P6i[13]);
   P6i_0 = XEi * XEi;
-  P6i_1 = (P6i[14] - 0.065) * (P6i[14] - 0.065);
+  P6i_1 = (P6i[14] - 0.03) * (P6i[14] - 0.03);
   rtb_Sum10 = (((((((P6i_0 * 0.24499999999999997 + 0.04624375) + P6i_1 *
                     0.24499999999999997) - 0.0625) + P6i_0 * 0.5) + P6i_1 * 0.5)
                 - rt_powd_snf(XEi, 4.0)) - P6i_0 * 2.0 * P6i_1) - rt_powd_snf
-    (P6i[14] - 0.065, 4.0);
+    (P6i[14] - 0.03, 4.0);
   if (rtb_Sum10 < 0.0) {
     for (i = 0; i < 5; i++) {
       rtb_angles[i] = d[i];
@@ -417,7 +417,7 @@ void control_arm_webots_step(void)
     tmp = (P6i_0 - 0.02250000000000002) + P6i_1;
     _mm_storeu_pd(&tmp_0[0], _mm_mul_pd(_mm_set_pd(atan(sqrt(tmp *
       ((0.72249999999999992 - P6i_0) - P6i_1)) / tmp), atan((sqrt(rtb_Sum10) +
-      (P6i[14] - 0.065) * 0.7) / ((((0.7 * XEi + 0.12249999999999998) - 0.25) +
+      (P6i[14] - 0.03) * 0.7) / ((((0.7 * XEi + 0.12249999999999998) - 0.25) +
       P6i_0) + P6i_1))), _mm_set_pd(-2.0, 2.0)));
     angToBase = tmp_0[0];
     theta2 = tmp_0[1];
@@ -555,11 +555,11 @@ void control_arm_webots_step(void)
     rtb_angles[1] = angToBase;
     rtb_angles[3] = (-rtU.gripperAng - angToBase) - theta2;
     theta0 = P6i[12] * P6i[12];
-    angToBase = (P6i[14] - 0.149) * (P6i[14] - 0.149);
+    angToBase = (P6i[14] - 0.12) * (P6i[14] - 0.12);
     rtb_angles[4] = atan((sqrt((((((((theta0 * 0.0288 + 0.00205056) + angToBase *
       0.0288) - 0.0061465600000000023) + theta0 * 0.15680000000000002) +
       angToBase * 0.15680000000000002) - rt_powd_snf(P6i[12], 4.0)) - theta0 *
-      2.0 * angToBase) - rt_powd_snf(P6i[14] - 0.149, 4.0)) + (P6i[14] - 0.149) *
+      2.0 * angToBase) - rt_powd_snf(P6i[14] - 0.12, 4.0)) + (P6i[14] - 0.12) *
                           0.24) / ((((0.24 * P6i[12] + 0.0144) -
       0.078400000000000011) + theta0) + angToBase)) * 2.0;
 

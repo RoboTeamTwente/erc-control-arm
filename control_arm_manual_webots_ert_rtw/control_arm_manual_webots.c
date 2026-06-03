@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual_webots'.
  *
- * Model version                  : 1.53
+ * Model version                  : 1.54
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Sat May 30 14:33:19 2026
+ * C/C++ source code generated on : Wed Jun  3 16:07:54 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -174,15 +174,15 @@ void control_arm_manual_webots_step(void)
   real_T theta3;
   real_T theta4;
   static const real_T a[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.03, 1.0 };
 
   real_T P2planar[16];
   real_T P4planar[16];
   static const real_T a_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.149, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.12, 1.0 };
 
   static const real_T b_a[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.03, 1.0 };
 
   __m128d tmp_0;
   __m128d tmp_2;
@@ -372,11 +372,11 @@ void control_arm_manual_webots_step(void)
 
   XEi = sqrt(P6i[12] * P6i[12] + P6i[13] * P6i[13]);
   theta3 = XEi * XEi;
-  P6i_tmp_0 = (P6i[14] - 0.065) * (P6i[14] - 0.065);
+  P6i_tmp_0 = (P6i[14] - 0.03) * (P6i[14] - 0.03);
   angToBase = (((((((theta3 * 0.24499999999999997 + 0.04624375) + P6i_tmp_0 *
                     0.24499999999999997) - 0.0625) + theta3 * 0.5) + P6i_tmp_0 *
                  0.5) - rt_powd_snf(XEi, 4.0)) - theta3 * 2.0 * P6i_tmp_0) -
-    rt_powd_snf(P6i[14] - 0.065, 4.0);
+    rt_powd_snf(P6i[14] - 0.03, 4.0);
   if (angToBase < 0.0) {
     for (i = 0; i < 5; i++) {
       rtb_angles[i] = e[i];
@@ -385,7 +385,7 @@ void control_arm_manual_webots_step(void)
     /* Outport: '<Root>/error' */
     rtY.error = 1.0;
   } else {
-    angToBase = atan(((P6i[14] - 0.065) * 0.7 + sqrt(angToBase)) / ((((0.7 * XEi
+    angToBase = atan(((P6i[14] - 0.03) * 0.7 + sqrt(angToBase)) / ((((0.7 * XEi
       + 0.12249999999999998) - 0.25) + theta3) + P6i_tmp_0)) * 2.0;
     P6i_tmp_1 = (theta3 - 0.02250000000000002) + P6i_tmp_0;
     XEi = atan(sqrt(((0.72249999999999992 - theta3) - P6i_tmp_0) * P6i_tmp_1) /
@@ -522,12 +522,12 @@ void control_arm_manual_webots_step(void)
     }
 
     P6i_tmp_1 = P6i[12] * P6i[12];
-    P6i_tmp_0 = (P6i[14] - 0.149) * (P6i[14] - 0.149);
+    P6i_tmp_0 = (P6i[14] - 0.12) * (P6i[14] - 0.12);
     theta4 = atan((sqrt((((((((P6i_tmp_1 * 0.0288 + 0.00205056) + P6i_tmp_0 *
       0.0288) - 0.0061465600000000023) + P6i_tmp_1 * 0.15680000000000002) +
       P6i_tmp_0 * 0.15680000000000002) - rt_powd_snf(P6i[12], 4.0)) - P6i_tmp_1 *
-                         2.0 * P6i_tmp_0) - rt_powd_snf(P6i[14] - 0.149, 4.0)) +
-                   (P6i[14] - 0.149) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
+                         2.0 * P6i_tmp_0) - rt_powd_snf(P6i[14] - 0.12, 4.0)) +
+                   (P6i[14] - 0.12) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
       0.078400000000000011) + P6i_tmp_1) + P6i_tmp_0)) * 2.0;
     guard1 = false;
     if ((fabs(theta0) > 3.1415926535897931) || ((angToBase < 0.78539816339744828)

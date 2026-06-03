@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm_manual'.
  *
- * Model version                  : 1.11
+ * Model version                  : 1.15
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue May 26 09:51:24 2026
+ * C/C++ source code generated on : Wed Jun  3 16:06:43 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -224,13 +224,13 @@ void control_arm_manual_step(void)
     0.0, 1.0, 0.0, 0.3, 0.0, 0.0, 1.0 };
 
   static const real_T a_0[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.065, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.03, 1.0 };
 
   static const int8_T c_a[16] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
   };
 
   static const real_T a_1[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    -1.0, 0.0, 0.0, 0.0, 0.0, 0.149, 1.0 };
+    -1.0, 0.0, 0.0, 0.0, 0.0, 0.12, 1.0 };
 
   static const real_T d_b[16] = { 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
     0.0, 1.0, 0.0, -0.12, 0.0, 0.0, 1.0 };
@@ -366,11 +366,11 @@ void control_arm_manual_step(void)
 
   XEi = sqrt(P6i[12] * P6i[12] + P6i[13] * P6i[13]);
   theta2 = XEi * XEi;
-  theta3 = (P6i[14] - 0.065) * (P6i[14] - 0.065);
+  theta3 = (P6i[14] - 0.03) * (P6i[14] - 0.03);
   theta5 = (((((((theta2 * 0.24499999999999997 + 0.04624375) + theta3 *
                  0.24499999999999997) - 0.0625) + theta2 * 0.5) + theta3 * 0.5)
              - rt_powd_snf(XEi, 4.0)) - theta2 * 2.0 * theta3) - rt_powd_snf
-    (P6i[14] - 0.065, 4.0);
+    (P6i[14] - 0.03, 4.0);
   if (theta5 < 0.0) {
     for (i_0 = 0; i_0 < 5; i_0++) {
       rtb_angles[i_0] = d[i_0];
@@ -379,7 +379,7 @@ void control_arm_manual_step(void)
     /* Outport: '<Root>/error' */
     rtY.error = 1.0;
   } else {
-    angToBase = atan(((P6i[14] - 0.065) * 0.7 + sqrt(theta5)) / ((((0.7 * XEi +
+    angToBase = atan(((P6i[14] - 0.03) * 0.7 + sqrt(theta5)) / ((((0.7 * XEi +
       0.12249999999999998) - 0.25) + theta2) + theta3)) * 2.0;
     XEi = (theta2 - 0.02250000000000002) + theta3;
     theta2 = atan(sqrt(((0.72249999999999992 - theta2) - theta3) * XEi) / XEi) *
@@ -496,12 +496,12 @@ void control_arm_manual_step(void)
     }
 
     theta2 = P6i[12] * P6i[12];
-    XEi = (P6i[14] - 0.149) * (P6i[14] - 0.149);
+    XEi = (P6i[14] - 0.12) * (P6i[14] - 0.12);
     XEi = atan((sqrt((((((((theta2 * 0.0288 + 0.00205056) + XEi * 0.0288) -
                           0.0061465600000000023) + theta2 * 0.15680000000000002)
                         + XEi * 0.15680000000000002) - rt_powd_snf(P6i[12], 4.0))
-                      - theta2 * 2.0 * XEi) - rt_powd_snf(P6i[14] - 0.149, 4.0))
-                + (P6i[14] - 0.149) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
+                      - theta2 * 2.0 * XEi) - rt_powd_snf(P6i[14] - 0.12, 4.0))
+                + (P6i[14] - 0.12) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
       0.078400000000000011) + theta2) + XEi)) * 2.0;
     if ((fabs(theta0) > 3.1415926535897931) || ((angToBase < 0.0) || (angToBase >
           2.3561944901923448) || (theta3 < -2.3561944901923448) || (theta3 >
@@ -526,11 +526,8 @@ void control_arm_manual_step(void)
 
   /* End of MATLAB Function: '<S1>/inverse kinematics' */
 
-  /* Outport: '<Root>/controlGripperPitch' incorporates:
-   *  Gain: '<S1>/Gain20'
-   *  Gain: '<S1>/Gain4'
-   */
-  rtY.controlGripperPitch = 57.295779513082323 * rtb_angles[3] * 0.1;
+  /* Outport: '<Root>/controlGripperPitch' */
+  rtY.controlGripperPitch = rtb_angles[3];
 
   /* Outport: '<Root>/controlBase' incorporates:
    *  Gain: '<S1>/Gain21'
@@ -595,12 +592,9 @@ void control_arm_manual_step(void)
             0.017453292519943295) * 0.00625 - 1.5707963267948966;
 
   /* Gain: '<S1>/Gain16' incorporates:
-   *  Gain: '<S1>/Gain25'
-   *  Gain: '<S1>/Gain26'
    *  Inport: '<Root>/gripperPitchActualPosition'
    */
-  theta0 = 0.017453292519943295 * rtU.gripperPitchActualPosition * 10.0 *
-    0.047619047619047616;
+  theta0 = 0.047619047619047616 * rtU.gripperPitchActualPosition;
 
   /* Sum: '<S1>/Sum10' incorporates:
    *  Constant: '<S1>/Pi2'

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.37
+ * Model version                  : 1.40
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Mon May 25 16:16:53 2026
+ * C/C++ source code generated on : Wed Jun  3 16:05:38 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -41,8 +41,8 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real_T UnitDelay2_DSTATE;            /* '<S1>/Unit Delay2' */
   real_T UnitDelay5_DSTATE;            /* '<S1>/Unit Delay5' */
+  real_T UnitDelay2_DSTATE;            /* '<S1>/Unit Delay2' */
   real_T UnitDelay8_DSTATE;            /* '<S1>/Unit Delay8' */
   real_T UnitDelay6_DSTATE;            /* '<S1>/Unit Delay6' */
   real_T UnitDelay7_DSTATE;            /* '<S1>/Unit Delay7' */
