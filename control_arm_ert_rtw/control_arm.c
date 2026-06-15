@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'control_arm'.
  *
- * Model version                  : 1.40
+ * Model version                  : 1.47
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Wed Jun  3 16:05:38 2026
+ * C/C++ source code generated on : Mon Jun 15 11:55:55 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: STMicroelectronics->ST10/Super10
@@ -253,16 +253,16 @@ void control_arm_step(void)
   real_T P4planar[16];
   real_T P6i[16];
   real_T b_a[16];
-  real_T rtb_Gain15_0[16];
+  real_T rtb_Sum10_0[16];
   real_T rtb_angles[5];
+  real_T P6i_0;
+  real_T P6i_1;
   real_T XE;
   real_T XEi;
-  real_T YE;
   real_T angToBase;
-  real_T rtb_Gain15;
-  real_T rtb_Gain15_1;
+  real_T rtb_Sum10;
+  real_T rtb_Sum10_1;
   real_T rtb_Sum11;
-  real_T rtb_Sum6;
   real_T theta0;
   real_T theta2;
   real_T theta5;
@@ -270,8 +270,8 @@ void control_arm_step(void)
   int16_T P6i_tmp_2;
   int16_T i;
   int16_T i_0;
-  int16_T rtb_Gain15_tmp;
-  int16_T rtb_Gain15_tmp_0;
+  int16_T rtb_Sum10_tmp;
+  int16_T rtb_Sum10_tmp_0;
   int8_T P2planar_tmp[16];
   int8_T P6i_tmp[4];
   int8_T P6i_tmp_0[4];
@@ -328,19 +328,19 @@ void control_arm_step(void)
 
   theta0 = -theta0;
   XEi = sin(angToBase);
-  rtb_Gain15 = cos(angToBase);
-  P2planar[0] = rtb_Gain15;
-  P2planar[4] = -XEi;
-  P2planar[8] = 0.0;
-  P2planar[12] = rtU.x;
-  P2planar[1] = XEi;
-  P2planar[5] = rtb_Gain15;
-  P2planar[9] = 0.0;
-  P2planar[13] = rtU.y;
-  P2planar[2] = 0.0;
-  P2planar[6] = 0.0;
-  P2planar[10] = 1.0;
-  P2planar[14] = rtU.z;
+  rtb_Sum10 = cos(angToBase);
+  rtb_Sum10_0[0] = rtb_Sum10;
+  rtb_Sum10_0[4] = -XEi;
+  rtb_Sum10_0[8] = 0.0;
+  rtb_Sum10_0[12] = rtU.x;
+  rtb_Sum10_0[1] = XEi;
+  rtb_Sum10_0[5] = rtb_Sum10;
+  rtb_Sum10_0[9] = 0.0;
+  rtb_Sum10_0[13] = rtU.y;
+  rtb_Sum10_0[2] = 0.0;
+  rtb_Sum10_0[6] = 0.0;
+  rtb_Sum10_0[10] = 1.0;
+  rtb_Sum10_0[14] = rtU.z;
   b_a[0] = cos(rtU.gripperAng);
   b_a[4] = -sin(rtU.gripperAng);
   b_a[8] = 0.0;
@@ -357,87 +357,87 @@ void control_arm_step(void)
     /* MATLAB Function: '<S1>/MATLAB Function4' */
     P6i_tmp_2 = c[i_0];
     P6i_tmp_0[i_0] = (int8_T)P6i_tmp_2;
-    rtb_Gain15_tmp = i_0 << 2;
-    P2planar[rtb_Gain15_tmp + 3] = P6i_tmp_1;
-    b_a[rtb_Gain15_tmp + 2] = P6i_tmp_2;
-    b_a[rtb_Gain15_tmp + 3] = P6i_tmp_1;
-    rtb_Gain15_0[rtb_Gain15_tmp] = 0.0;
-    rtb_Gain15_0[rtb_Gain15_tmp + 1] = 0.0;
-    rtb_Gain15_0[rtb_Gain15_tmp + 2] = 0.0;
-    rtb_Gain15_0[rtb_Gain15_tmp + 3] = 0.0;
+    rtb_Sum10_tmp = i_0 << 2;
+    rtb_Sum10_0[rtb_Sum10_tmp + 3] = P6i_tmp_1;
+    b_a[rtb_Sum10_tmp + 2] = P6i_tmp_2;
+    b_a[rtb_Sum10_tmp + 3] = P6i_tmp_1;
+    P2planar[rtb_Sum10_tmp] = 0.0;
+    P2planar[rtb_Sum10_tmp + 1] = 0.0;
+    P2planar[rtb_Sum10_tmp + 2] = 0.0;
+    P2planar[rtb_Sum10_tmp + 3] = 0.0;
   }
 
   for (i_0 = 0; i_0 < 4; i_0++) {
-    rtb_Gain15_tmp = i_0 << 2;
-    rtb_Gain15 = rtb_Gain15_0[rtb_Gain15_tmp];
-    rtb_Gain15_1 = rtb_Gain15_0[rtb_Gain15_tmp + 1];
-    angToBase = rtb_Gain15_0[rtb_Gain15_tmp + 2];
-    XEi = rtb_Gain15_0[rtb_Gain15_tmp + 3];
+    rtb_Sum10_tmp = i_0 << 2;
+    rtb_Sum10 = P2planar[rtb_Sum10_tmp];
+    rtb_Sum10_1 = P2planar[rtb_Sum10_tmp + 1];
+    angToBase = P2planar[rtb_Sum10_tmp + 2];
+    XEi = P2planar[rtb_Sum10_tmp + 3];
     for (i = 0; i < 4; i++) {
-      P6i_tmp_1 = rtb_Gain15_tmp + i;
+      P6i_tmp_1 = rtb_Sum10_tmp + i;
       P6i_tmp_2 = b_b[P6i_tmp_1];
-      rtb_Gain15_tmp_0 = i << 2;
-      rtb_Gain15 += P2planar[rtb_Gain15_tmp_0] * (real_T)P6i_tmp_2;
-      rtb_Gain15_1 += P2planar[rtb_Gain15_tmp_0 + 1] * (real_T)P6i_tmp_2;
-      angToBase += P2planar[rtb_Gain15_tmp_0 + 2] * (real_T)P6i_tmp_2;
-      XEi += P2planar[rtb_Gain15_tmp_0 + 3] * (real_T)P6i_tmp_2;
+      rtb_Sum10_tmp_0 = i << 2;
+      rtb_Sum10 += rtb_Sum10_0[rtb_Sum10_tmp_0] * (real_T)P6i_tmp_2;
+      rtb_Sum10_1 += rtb_Sum10_0[rtb_Sum10_tmp_0 + 1] * (real_T)P6i_tmp_2;
+      angToBase += rtb_Sum10_0[rtb_Sum10_tmp_0 + 2] * (real_T)P6i_tmp_2;
+      XEi += rtb_Sum10_0[rtb_Sum10_tmp_0 + 3] * (real_T)P6i_tmp_2;
       P4planar[P6i_tmp_1] = 0.0;
     }
 
-    rtb_Gain15_0[rtb_Gain15_tmp + 3] = XEi;
-    rtb_Gain15_0[rtb_Gain15_tmp + 2] = angToBase;
-    rtb_Gain15_0[rtb_Gain15_tmp + 1] = rtb_Gain15_1;
-    rtb_Gain15_0[rtb_Gain15_tmp] = rtb_Gain15;
-    rtb_Gain15_1 = P4planar[rtb_Gain15_tmp];
-    rtb_Sum11 = P4planar[rtb_Gain15_tmp + 1];
-    rtb_Sum6 = P4planar[rtb_Gain15_tmp + 2];
-    angToBase = P4planar[rtb_Gain15_tmp + 3];
+    P2planar[rtb_Sum10_tmp + 3] = XEi;
+    P2planar[rtb_Sum10_tmp + 2] = angToBase;
+    P2planar[rtb_Sum10_tmp + 1] = rtb_Sum10_1;
+    P2planar[rtb_Sum10_tmp] = rtb_Sum10;
+    rtb_Sum10_1 = P4planar[rtb_Sum10_tmp];
+    theta2 = P4planar[rtb_Sum10_tmp + 1];
+    rtb_Sum11 = P4planar[rtb_Sum10_tmp + 2];
+    angToBase = P4planar[rtb_Sum10_tmp + 3];
     for (i = 0; i < 4; i++) {
-      P6i_tmp_1 = rtb_Gain15_tmp + i;
+      P6i_tmp_1 = rtb_Sum10_tmp + i;
       XEi = c_b[P6i_tmp_1];
       P6i_tmp_2 = i << 2;
-      rtb_Gain15_1 += b_a[P6i_tmp_2] * XEi;
-      rtb_Sum11 += b_a[P6i_tmp_2 + 1] * XEi;
-      rtb_Sum6 += b_a[P6i_tmp_2 + 2] * XEi;
+      rtb_Sum10_1 += b_a[P6i_tmp_2] * XEi;
+      theta2 += b_a[P6i_tmp_2 + 1] * XEi;
+      rtb_Sum11 += b_a[P6i_tmp_2 + 2] * XEi;
       angToBase += b_a[P6i_tmp_2 + 3] * XEi;
       P6i[P6i_tmp_1] = 0.0;
     }
 
-    P4planar[rtb_Gain15_tmp + 3] = angToBase;
-    P4planar[rtb_Gain15_tmp + 2] = rtb_Sum6;
-    P4planar[rtb_Gain15_tmp + 1] = rtb_Sum11;
-    P4planar[rtb_Gain15_tmp] = rtb_Gain15_1;
+    P4planar[rtb_Sum10_tmp + 3] = angToBase;
+    P4planar[rtb_Sum10_tmp + 2] = rtb_Sum11;
+    P4planar[rtb_Sum10_tmp + 1] = theta2;
+    P4planar[rtb_Sum10_tmp] = rtb_Sum10_1;
   }
 
   for (i_0 = 0; i_0 < 4; i_0++) {
     P6i_tmp_1 = i_0 << 2;
-    rtb_Sum6 = P6i[P6i_tmp_1];
-    theta5 = P6i[P6i_tmp_1 + 1];
-    XE = P6i[P6i_tmp_1 + 2];
-    YE = P6i[P6i_tmp_1 + 3];
+    theta5 = P6i[P6i_tmp_1];
+    XE = P6i[P6i_tmp_1 + 1];
+    P6i_0 = P6i[P6i_tmp_1 + 2];
+    P6i_1 = P6i[P6i_tmp_1 + 3];
     for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = P4planar[P6i_tmp_1 + i];
+      rtb_Sum10_1 = P4planar[P6i_tmp_1 + i];
       P6i_tmp_2 = i << 2;
-      rtb_Sum6 += rtb_Gain15_0[P6i_tmp_2] * rtb_Gain15_1;
-      theta5 += rtb_Gain15_0[P6i_tmp_2 + 1] * rtb_Gain15_1;
-      XE += rtb_Gain15_0[P6i_tmp_2 + 2] * rtb_Gain15_1;
-      YE += rtb_Gain15_0[P6i_tmp_2 + 3] * rtb_Gain15_1;
+      theta5 += P2planar[P6i_tmp_2] * rtb_Sum10_1;
+      XE += P2planar[P6i_tmp_2 + 1] * rtb_Sum10_1;
+      P6i_0 += P2planar[P6i_tmp_2 + 2] * rtb_Sum10_1;
+      P6i_1 += P2planar[P6i_tmp_2 + 3] * rtb_Sum10_1;
     }
 
-    P6i[P6i_tmp_1 + 3] = YE;
-    P6i[P6i_tmp_1 + 2] = XE;
-    P6i[P6i_tmp_1 + 1] = theta5;
-    P6i[P6i_tmp_1] = rtb_Sum6;
+    P6i[P6i_tmp_1 + 3] = P6i_1;
+    P6i[P6i_tmp_1 + 2] = P6i_0;
+    P6i[P6i_tmp_1 + 1] = XE;
+    P6i[P6i_tmp_1] = theta5;
   }
 
   XEi = sqrt(P6i[12] * P6i[12] + P6i[13] * P6i[13]);
-  rtb_Gain15_1 = XEi * XEi;
-  rtb_Sum11 = (P6i[14] - 0.03) * (P6i[14] - 0.03);
-  rtb_Sum6 = (((((((rtb_Gain15_1 * 0.24499999999999997 + 0.04624375) + rtb_Sum11
-                   * 0.24499999999999997) - 0.0625) + rtb_Gain15_1 * 0.5) +
-                rtb_Sum11 * 0.5) - rt_powd_snf(XEi, 4.0)) - rtb_Gain15_1 * 2.0 *
-              rtb_Sum11) - rt_powd_snf(P6i[14] - 0.03, 4.0);
-  if (rtb_Sum6 < 0.0) {
+  rtb_Sum10_1 = XEi * XEi;
+  theta2 = (P6i[14] - 0.03) * (P6i[14] - 0.03);
+  rtb_Sum11 = (((((((rtb_Sum10_1 * 0.24499999999999997 + 0.04624375) + theta2 *
+                    0.24499999999999997) - 0.0625) + rtb_Sum10_1 * 0.5) + theta2
+                 * 0.5) - rt_powd_snf(XEi, 4.0)) - rtb_Sum10_1 * 2.0 * theta2) -
+    rt_powd_snf(P6i[14] - 0.03, 4.0);
+  if (rtb_Sum11 < 0.0) {
     for (i_0 = 0; i_0 < 5; i_0++) {
       rtb_angles[i_0] = d[i_0];
     }
@@ -445,133 +445,132 @@ void control_arm_step(void)
     /* Outport: '<Root>/error' */
     rtY.error = 1.0;
   } else {
-    angToBase = atan(((P6i[14] - 0.03) * 0.7 + sqrt(rtb_Sum6)) / ((((0.7 * XEi +
-      0.12249999999999998) - 0.25) + rtb_Gain15_1) + rtb_Sum11)) * 2.0;
-    XEi = (rtb_Gain15_1 - 0.02250000000000002) + rtb_Sum11;
-    theta2 = atan(sqrt(((0.72249999999999992 - rtb_Gain15_1) - rtb_Sum11) * XEi)
-                  / XEi) * -2.0;
+    angToBase = atan(((P6i[14] - 0.03) * 0.7 + sqrt(rtb_Sum11)) / ((((0.7 * XEi
+      + 0.12249999999999998) - 0.25) + rtb_Sum10_1) + theta2)) * 2.0;
+    XEi = (rtb_Sum10_1 - 0.02250000000000002) + theta2;
+    theta2 = atan(sqrt(((0.72249999999999992 - rtb_Sum10_1) - theta2) * XEi) /
+                  XEi) * -2.0;
     XEi = sin(angToBase);
-    rtb_Gain15 = cos(angToBase);
-    rtb_Sum6 = sin(theta2);
-    rtb_Sum11 = cos(theta2);
-    P2planar[0] = rtb_Gain15;
-    P2planar[4] = -XEi;
-    P2planar[8] = 0.0;
-    P2planar[12] = 0.0;
-    P2planar[1] = XEi;
-    P2planar[5] = rtb_Gain15;
-    P2planar[9] = 0.0;
-    P2planar[13] = 0.0;
+    rtb_Sum10 = cos(angToBase);
+    rtb_Sum11 = sin(theta2);
+    theta5 = cos(theta2);
+    rtb_Sum10_0[0] = rtb_Sum10;
+    rtb_Sum10_0[4] = -XEi;
+    rtb_Sum10_0[8] = 0.0;
+    rtb_Sum10_0[12] = 0.0;
+    rtb_Sum10_0[1] = XEi;
+    rtb_Sum10_0[5] = rtb_Sum10;
+    rtb_Sum10_0[9] = 0.0;
+    rtb_Sum10_0[13] = 0.0;
     for (i_0 = 0; i_0 < 4; i_0++) {
-      rtb_Gain15_tmp = i_0 << 2;
-      P2planar[rtb_Gain15_tmp + 2] = P6i_tmp_0[i_0];
-      P2planar[rtb_Gain15_tmp + 3] = P6i_tmp[i_0];
+      rtb_Sum10_tmp = i_0 << 2;
+      rtb_Sum10_0[rtb_Sum10_tmp + 2] = P6i_tmp_0[i_0];
+      rtb_Sum10_0[rtb_Sum10_tmp + 3] = P6i_tmp[i_0];
       XEi = 0.0;
-      rtb_Gain15 = 0.0;
-      theta5 = 0.0;
+      rtb_Sum10 = 0.0;
       XE = 0.0;
+      P6i_0 = 0.0;
       for (i = 0; i < 4; i++) {
-        rtb_Gain15_1 = P2planar[rtb_Gain15_tmp + i];
+        rtb_Sum10_1 = rtb_Sum10_0[rtb_Sum10_tmp + i];
         P6i_tmp_1 = i << 2;
-        XEi += a[P6i_tmp_1] * rtb_Gain15_1;
-        rtb_Gain15 += a[P6i_tmp_1 + 1] * rtb_Gain15_1;
-        theta5 += a[P6i_tmp_1 + 2] * rtb_Gain15_1;
-        XE += a[P6i_tmp_1 + 3] * rtb_Gain15_1;
+        XEi += a[P6i_tmp_1] * rtb_Sum10_1;
+        rtb_Sum10 += a[P6i_tmp_1 + 1] * rtb_Sum10_1;
+        XE += a[P6i_tmp_1 + 2] * rtb_Sum10_1;
+        P6i_0 += a[P6i_tmp_1 + 3] * rtb_Sum10_1;
       }
 
-      P6i[rtb_Gain15_tmp + 3] = XE;
-      P6i[rtb_Gain15_tmp + 2] = theta5;
-      P6i[rtb_Gain15_tmp + 1] = rtb_Gain15;
-      P6i[rtb_Gain15_tmp] = XEi;
+      P6i[rtb_Sum10_tmp + 3] = P6i_0;
+      P6i[rtb_Sum10_tmp + 2] = XE;
+      P6i[rtb_Sum10_tmp + 1] = rtb_Sum10;
+      P6i[rtb_Sum10_tmp] = XEi;
     }
 
-    P2planar[0] = rtb_Sum11;
-    P2planar[4] = -rtb_Sum6;
+    P2planar[0] = theta5;
+    P2planar[4] = -rtb_Sum11;
     P2planar[8] = 0.0;
     P2planar[12] = 0.35;
-    P2planar[1] = rtb_Sum6;
-    P2planar[5] = rtb_Sum11;
+    P2planar[1] = rtb_Sum11;
+    P2planar[5] = theta5;
     P2planar[9] = 0.0;
     P2planar[13] = 0.0;
     for (i_0 = 0; i_0 < 4; i_0++) {
-      rtb_Gain15_tmp = i_0 << 2;
-      P2planar[rtb_Gain15_tmp + 2] = P6i_tmp_0[i_0];
-      P2planar[rtb_Gain15_tmp + 3] = P6i_tmp[i_0];
-      rtb_Sum11 = 0.0;
-      rtb_Sum6 = 0.0;
-      theta5 = 0.0;
-      XE = 0.0;
-      for (i = 0; i < 4; i++) {
-        P6i_tmp_1 = rtb_Gain15_tmp + i;
-        rtb_Gain15_1 = P6i[P6i_tmp_1];
-        P6i_tmp_2 = i << 2;
-        rtb_Sum11 += (real_T)c_a[P6i_tmp_2] * rtb_Gain15_1;
-        rtb_Sum6 += (real_T)c_a[P6i_tmp_2 + 1] * rtb_Gain15_1;
-        theta5 += (real_T)c_a[P6i_tmp_2 + 2] * rtb_Gain15_1;
-        XE += (real_T)c_a[P6i_tmp_2 + 3] * rtb_Gain15_1;
-        rtb_Gain15_0[P6i_tmp_1] = 0.0;
-      }
-
-      b_a[rtb_Gain15_tmp + 3] = XE;
-      b_a[rtb_Gain15_tmp + 2] = theta5;
-      b_a[rtb_Gain15_tmp + 1] = rtb_Sum6;
-      b_a[rtb_Gain15_tmp] = rtb_Sum11;
-    }
-
-    for (i_0 = 0; i_0 < 4; i_0++) {
       P6i_tmp_2 = i_0 << 2;
-      rtb_Sum11 = rtb_Gain15_0[P6i_tmp_2];
-      rtb_Sum6 = rtb_Gain15_0[P6i_tmp_2 + 1];
-      theta5 = rtb_Gain15_0[P6i_tmp_2 + 2];
-      XE = rtb_Gain15_0[P6i_tmp_2 + 3];
+      P2planar[P6i_tmp_2 + 2] = P6i_tmp_0[i_0];
+      P2planar[P6i_tmp_2 + 3] = P6i_tmp[i_0];
+      rtb_Sum11 = 0.0;
+      theta5 = 0.0;
+      XE = 0.0;
+      P6i_0 = 0.0;
       for (i = 0; i < 4; i++) {
-        rtb_Gain15_1 = P2planar[P6i_tmp_2 + i];
-        P6i_tmp_1 = i << 2;
-        rtb_Sum11 += b_a[P6i_tmp_1] * rtb_Gain15_1;
-        rtb_Sum6 += b_a[P6i_tmp_1 + 1] * rtb_Gain15_1;
-        theta5 += b_a[P6i_tmp_1 + 2] * rtb_Gain15_1;
-        XE += b_a[P6i_tmp_1 + 3] * rtb_Gain15_1;
+        P6i_tmp_1 = P6i_tmp_2 + i;
+        rtb_Sum10_1 = P6i[P6i_tmp_1];
+        rtb_Sum10_tmp = i << 2;
+        rtb_Sum11 += (real_T)c_a[rtb_Sum10_tmp] * rtb_Sum10_1;
+        theta5 += (real_T)c_a[rtb_Sum10_tmp + 1] * rtb_Sum10_1;
+        XE += (real_T)c_a[rtb_Sum10_tmp + 2] * rtb_Sum10_1;
+        P6i_0 += (real_T)c_a[rtb_Sum10_tmp + 3] * rtb_Sum10_1;
+        b_a[P6i_tmp_1] = 0.0;
       }
 
-      rtb_Gain15_0[P6i_tmp_2 + 3] = XE;
-      rtb_Gain15_0[P6i_tmp_2 + 2] = theta5;
-      rtb_Gain15_0[P6i_tmp_2 + 1] = rtb_Sum6;
-      rtb_Gain15_0[P6i_tmp_2] = rtb_Sum11;
+      rtb_Sum10_0[P6i_tmp_2 + 3] = P6i_0;
+      rtb_Sum10_0[P6i_tmp_2 + 2] = XE;
+      rtb_Sum10_0[P6i_tmp_2 + 1] = theta5;
+      rtb_Sum10_0[P6i_tmp_2] = rtb_Sum11;
     }
 
     for (i_0 = 0; i_0 < 4; i_0++) {
-      rtb_Sum6 = 0.0;
+      rtb_Sum10_tmp = i_0 << 2;
+      rtb_Sum11 = b_a[rtb_Sum10_tmp];
+      theta5 = b_a[rtb_Sum10_tmp + 1];
+      XE = b_a[rtb_Sum10_tmp + 2];
+      P6i_0 = b_a[rtb_Sum10_tmp + 3];
+      for (i = 0; i < 4; i++) {
+        rtb_Sum10_1 = P2planar[rtb_Sum10_tmp + i];
+        P6i_tmp_1 = i << 2;
+        rtb_Sum11 += rtb_Sum10_0[P6i_tmp_1] * rtb_Sum10_1;
+        theta5 += rtb_Sum10_0[P6i_tmp_1 + 1] * rtb_Sum10_1;
+        XE += rtb_Sum10_0[P6i_tmp_1 + 2] * rtb_Sum10_1;
+        P6i_0 += rtb_Sum10_0[P6i_tmp_1 + 3] * rtb_Sum10_1;
+      }
+
+      b_a[rtb_Sum10_tmp + 3] = P6i_0;
+      b_a[rtb_Sum10_tmp + 2] = XE;
+      b_a[rtb_Sum10_tmp + 1] = theta5;
+      b_a[rtb_Sum10_tmp] = rtb_Sum11;
+    }
+
+    for (i_0 = 0; i_0 < 4; i_0++) {
       theta5 = 0.0;
       XE = 0.0;
-      YE = 0.0;
+      P6i_0 = 0.0;
+      P6i_1 = 0.0;
       for (i = 0; i < 4; i++) {
-        rtb_Gain15_1 = d_b[(i_0 << 2) + i];
+        rtb_Sum10_1 = d_b[(i_0 << 2) + i];
         P6i_tmp_1 = i << 2;
-        rtb_Sum6 += rtb_Gain15_0[P6i_tmp_1] * rtb_Gain15_1;
-        theta5 += rtb_Gain15_0[P6i_tmp_1 + 1] * rtb_Gain15_1;
-        XE += rtb_Gain15_0[P6i_tmp_1 + 2] * rtb_Gain15_1;
-        YE += rtb_Gain15_0[P6i_tmp_1 + 3] * rtb_Gain15_1;
+        theta5 += b_a[P6i_tmp_1] * rtb_Sum10_1;
+        XE += b_a[P6i_tmp_1 + 1] * rtb_Sum10_1;
+        P6i_0 += b_a[P6i_tmp_1 + 2] * rtb_Sum10_1;
+        P6i_1 += b_a[P6i_tmp_1 + 3] * rtb_Sum10_1;
       }
 
       P6i_tmp_1 = i_0 << 2;
-      P6i[P6i_tmp_1 + 3] = YE;
-      P6i[P6i_tmp_1 + 2] = XE;
-      P6i[P6i_tmp_1 + 1] = theta5;
-      P6i[P6i_tmp_1] = rtb_Sum6;
+      P6i[P6i_tmp_1 + 3] = P6i_1;
+      P6i[P6i_tmp_1 + 2] = P6i_0;
+      P6i[P6i_tmp_1 + 1] = XE;
+      P6i[P6i_tmp_1] = theta5;
     }
 
     rtb_angles[0] = theta0;
     rtb_angles[1] = angToBase;
     rtb_angles[3] = (-rtU.gripperAng - angToBase) - theta2;
     theta0 = P6i[12] * P6i[12];
-    rtb_Gain15_1 = (P6i[14] - 0.12) * (P6i[14] - 0.12);
+    rtb_Sum10_1 = (P6i[14] - 0.12) * (P6i[14] - 0.12);
     rtb_angles[4] = atan((sqrt((((((((theta0 * 0.0288 + 0.00205056) +
-      rtb_Gain15_1 * 0.0288) - 0.0061465600000000023) + theta0 *
-      0.15680000000000002) + rtb_Gain15_1 * 0.15680000000000002) - rt_powd_snf
-      (P6i[12], 4.0)) - theta0 * 2.0 * rtb_Gain15_1) - rt_powd_snf(P6i[14] -
-      0.12, 4.0)) + (P6i[14] - 0.12) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
-      0.078400000000000011) + theta0) + rtb_Gain15_1)) * 2.0 +
-      6.2831853071795862;
+      rtb_Sum10_1 * 0.0288) - 0.0061465600000000023) + theta0 *
+      0.15680000000000002) + rtb_Sum10_1 * 0.15680000000000002) - rt_powd_snf
+      (P6i[12], 4.0)) - theta0 * 2.0 * rtb_Sum10_1) - rt_powd_snf(P6i[14] - 0.12,
+      4.0)) + (P6i[14] - 0.12) * 0.24) / ((((0.24 * P6i[12] + 0.0144) -
+      0.078400000000000011) + theta0) + rtb_Sum10_1)) * 2.0 + 6.2831853071795862;
 
     /* Outport: '<Root>/error' */
     rtY.error = 0.0;
@@ -579,15 +578,27 @@ void control_arm_step(void)
 
   /* End of MATLAB Function: '<S1>/inverse kinematics' */
 
-  /* Rounding: '<S1>/Round' incorporates:
+  /* Switch: '<S1>/Switch' incorporates:
    *  Constant: '<S1>/Pi'
+   *  Constant: '<S1>/Pi3'
+   *  Gain: '<S1>/Gain17'
+   *  Sum: '<S1>/Sum1'
+   *  Sum: '<S1>/Sum7'
+   */
+  if (rtb_angles[4] >= 0.0) {
+    rtb_Sum10_1 = 3.1415926535897931 - rtb_angles[4];
+  } else {
+    rtb_Sum10_1 = -(rtb_angles[4] + 3.1415926535897931);
+  }
+
+  /* Rounding: '<S1>/Round' incorporates:
    *  Gain: '<S1>/Gain10'
    *  Gain: '<S1>/Gain13'
    *  Gain: '<S1>/Gain20'
-   *  Sum: '<S1>/Sum7'
+   *  Switch: '<S1>/Switch'
    */
-  theta0 = rt_roundd_snf((rtb_angles[4] + 1.5707963267948966) * 160.0 *
-    57.295779513082323 * 0.55555555555555558);
+  theta0 = rt_roundd_snf(160.0 * rtb_Sum10_1 * 57.295779513082323 *
+    0.55555555555555558);
 
   /* Outport: '<Root>/stepperLeftSteps' */
   rtY.stepperLeftSteps = theta0;
@@ -607,7 +618,7 @@ void control_arm_step(void)
    *  Gain: '<S1>/Gain8'
    *  Sum: '<S1>/Sum9'
    */
-  theta0 = rt_roundd_snf((rtb_angles[1] + 1.5707963267948966) * 160.0 *
+  theta0 = rt_roundd_snf((1.5707963267948966 - rtb_angles[1]) * 160.0 *
     57.295779513082323 * 0.55555555555555558);
 
   /* Outport: '<Root>/stepperRightSteps' */
@@ -653,293 +664,289 @@ void control_arm_step(void)
    */
   rtY.controlGripperPitch = rtDW.UnitDelay2_DSTATE;
 
-  /* Gain: '<S1>/Gain15' incorporates:
+  /* Gain: '<S1>/Gain16' incorporates:
+   *  Gain: '<S1>/Gain12'
+   *  Gain: '<S1>/Gain15'
    *  Inport: '<Root>/baseActualPosition'
    */
-  rtb_Gain15 = -0.015873015873015872 * rtU.baseActualPosition;
+  angToBase = 0.015873015873015872 * rtU.baseActualPosition *
+    0.017453292519943295 * 10.0;
 
   /* Sum: '<S1>/Sum11' incorporates:
    *  Constant: '<S1>/Pi2'
    *  Gain: '<S1>/Gain14'
-   *  Gain: '<S1>/Gain17'
    *  Gain: '<S1>/Gain27'
    *  Gain: '<S1>/Gain4'
    *  Inport: '<Root>/stepperRightActualPosition'
    */
   rtb_Sum11 = 0.00625 * rtU.stepperRightActualPosition * 1.8 *
-    0.017453292519943295 * 0.00625 - 1.5707963267948966;
-
-  /* Gain: '<S1>/Gain16' incorporates:
-   *  Inport: '<Root>/gripperPitchActualPosition'
-   */
-  angToBase = 0.047619047619047616 * rtU.gripperPitchActualPosition;
+    0.017453292519943295 - 1.5707963267948966;
 
   /* Sum: '<S1>/Sum10' incorporates:
    *  Constant: '<S1>/Pi2'
    *  Gain: '<S1>/Gain1'
-   *  Gain: '<S1>/Gain18'
    *  Gain: '<S1>/Gain19'
    *  Gain: '<S1>/Gain26'
    *  Inport: '<Root>/stepperLeftActualPosition'
    */
-  theta2 = 0.00625 * rtU.stepperLeftActualPosition * 1.8 * 0.017453292519943295 *
-    0.00625 - 1.5707963267948966;
+  rtb_Sum10 = 0.00625 * rtU.stepperLeftActualPosition * 1.8 *
+    0.017453292519943295 - 1.5707963267948966;
 
-  /* MATLAB Function: '<S1>/MATLAB Function4' */
-  rtb_Sum6 = sin(theta2);
-  theta5 = cos(theta2);
+  /* MATLAB Function: '<S1>/MATLAB Function4' incorporates:
+   *  Inport: '<Root>/gripperPitchActualPosition'
+   */
+  theta2 = sin(rtb_Sum10);
+  theta5 = cos(rtb_Sum10);
   P2planar[0] = theta5;
-  P2planar[4] = -rtb_Sum6;
+  P2planar[4] = -theta2;
   P2planar[8] = 0.0;
   P2planar[12] = 0.0;
-  P2planar[1] = rtb_Sum6;
+  P2planar[1] = theta2;
   P2planar[5] = theta5;
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
   for (i_0 = 0; i_0 < 4; i_0++) {
-    rtb_Gain15_tmp = i_0 << 2;
-    P2planar[rtb_Gain15_tmp + 2] = P6i_tmp_0[i_0];
-    P2planar[rtb_Gain15_tmp + 3] = P6i_tmp[i_0];
-    rtb_Sum6 = 0.0;
+    P6i_tmp_2 = i_0 << 2;
+    P2planar[P6i_tmp_2 + 2] = P6i_tmp_0[i_0];
+    P2planar[P6i_tmp_2 + 3] = P6i_tmp[i_0];
     theta5 = 0.0;
     XE = 0.0;
-    YE = 0.0;
+    P6i_0 = 0.0;
+    P6i_1 = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = P2planar[rtb_Gain15_tmp + i];
+      rtb_Sum10_1 = P2planar[P6i_tmp_2 + i];
       P6i_tmp_1 = i << 2;
-      rtb_Sum6 += a_0[P6i_tmp_1] * rtb_Gain15_1;
-      theta5 += a_0[P6i_tmp_1 + 1] * rtb_Gain15_1;
-      XE += a_0[P6i_tmp_1 + 2] * rtb_Gain15_1;
-      YE += a_0[P6i_tmp_1 + 3] * rtb_Gain15_1;
+      theta5 += a_0[P6i_tmp_1] * rtb_Sum10_1;
+      XE += a_0[P6i_tmp_1 + 1] * rtb_Sum10_1;
+      P6i_0 += a_0[P6i_tmp_1 + 2] * rtb_Sum10_1;
+      P6i_1 += a_0[P6i_tmp_1 + 3] * rtb_Sum10_1;
     }
 
-    P6i[rtb_Gain15_tmp + 3] = YE;
-    P6i[rtb_Gain15_tmp + 2] = XE;
-    P6i[rtb_Gain15_tmp + 1] = theta5;
-    P6i[rtb_Gain15_tmp] = rtb_Sum6;
+    P6i[P6i_tmp_2 + 3] = P6i_1;
+    P6i[P6i_tmp_2 + 2] = P6i_0;
+    P6i[P6i_tmp_2 + 1] = XE;
+    P6i[P6i_tmp_2] = theta5;
   }
 
-  rtb_Sum6 = sin(rtb_Sum11);
+  theta2 = sin(rtb_Sum11);
   rtb_Sum11 = cos(rtb_Sum11);
   for (i_0 = 0; i_0 < 16; i_0++) {
     P2planar_tmp[i_0] = c_a[i_0];
   }
 
   P2planar[0] = rtb_Sum11;
-  P2planar[4] = -rtb_Sum6;
+  P2planar[4] = -theta2;
   P2planar[8] = 0.0;
   P2planar[12] = 0.0;
-  P2planar[1] = rtb_Sum6;
+  P2planar[1] = theta2;
   P2planar[5] = rtb_Sum11;
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
   for (i_0 = 0; i_0 < 4; i_0++) {
-    rtb_Gain15_tmp = i_0 << 2;
-    P2planar[rtb_Gain15_tmp + 2] = P6i_tmp_0[i_0];
-    P2planar[rtb_Gain15_tmp + 3] = P6i_tmp[i_0];
+    P6i_tmp_2 = i_0 << 2;
+    P2planar[P6i_tmp_2 + 2] = P6i_tmp_0[i_0];
+    P2planar[P6i_tmp_2 + 3] = P6i_tmp[i_0];
     rtb_Sum11 = 0.0;
-    rtb_Sum6 = 0.0;
     theta5 = 0.0;
     XE = 0.0;
+    P6i_0 = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = P2planar[rtb_Gain15_tmp + i];
-      P6i_tmp_2 = i << 2;
-      rtb_Sum11 += a[P6i_tmp_2] * rtb_Gain15_1;
-      rtb_Sum6 += a[P6i_tmp_2 + 1] * rtb_Gain15_1;
-      theta5 += a[P6i_tmp_2 + 2] * rtb_Gain15_1;
-      XE += a[P6i_tmp_2 + 3] * rtb_Gain15_1;
+      rtb_Sum10_1 = P2planar[P6i_tmp_2 + i];
+      rtb_Sum10_tmp = i << 2;
+      rtb_Sum11 += a[rtb_Sum10_tmp] * rtb_Sum10_1;
+      theta5 += a[rtb_Sum10_tmp + 1] * rtb_Sum10_1;
+      XE += a[rtb_Sum10_tmp + 2] * rtb_Sum10_1;
+      P6i_0 += a[rtb_Sum10_tmp + 3] * rtb_Sum10_1;
     }
 
-    b_a[rtb_Gain15_tmp + 3] = XE;
-    b_a[rtb_Gain15_tmp + 2] = theta5;
-    b_a[rtb_Gain15_tmp + 1] = rtb_Sum6;
-    b_a[rtb_Gain15_tmp] = rtb_Sum11;
+    rtb_Sum10_0[P6i_tmp_2 + 3] = P6i_0;
+    rtb_Sum10_0[P6i_tmp_2 + 2] = XE;
+    rtb_Sum10_0[P6i_tmp_2 + 1] = theta5;
+    rtb_Sum10_0[P6i_tmp_2] = rtb_Sum11;
   }
 
   for (i_0 = 0; i_0 < 4; i_0++) {
+    theta2 = 0.0;
     rtb_Sum11 = 0.0;
-    rtb_Sum6 = 0.0;
     theta5 = 0.0;
     XE = 0.0;
     for (i = 0; i < 4; i++) {
       P6i_tmp_1 = (i_0 << 2) + i;
-      rtb_Gain15_1 = b_a[P6i_tmp_1];
+      rtb_Sum10_1 = rtb_Sum10_0[P6i_tmp_1];
       P6i_tmp_2 = i << 2;
-      rtb_Sum11 += (real_T)P2planar_tmp[P6i_tmp_2] * rtb_Gain15_1;
-      rtb_Sum6 += (real_T)P2planar_tmp[P6i_tmp_2 + 1] * rtb_Gain15_1;
-      theta5 += (real_T)P2planar_tmp[P6i_tmp_2 + 2] * rtb_Gain15_1;
-      XE += (real_T)P2planar_tmp[P6i_tmp_2 + 3] * rtb_Gain15_1;
+      theta2 += (real_T)P2planar_tmp[P6i_tmp_2] * rtb_Sum10_1;
+      rtb_Sum11 += (real_T)P2planar_tmp[P6i_tmp_2 + 1] * rtb_Sum10_1;
+      theta5 += (real_T)P2planar_tmp[P6i_tmp_2 + 2] * rtb_Sum10_1;
+      XE += (real_T)P2planar_tmp[P6i_tmp_2 + 3] * rtb_Sum10_1;
       P2planar[P6i_tmp_1] = 0.0;
     }
 
     P6i_tmp_2 = i_0 << 2;
-    rtb_Gain15_0[P6i_tmp_2 + 3] = XE;
-    rtb_Gain15_0[P6i_tmp_2 + 2] = theta5;
-    rtb_Gain15_0[P6i_tmp_2 + 1] = rtb_Sum6;
-    rtb_Gain15_0[P6i_tmp_2] = rtb_Sum11;
+    b_a[P6i_tmp_2 + 3] = XE;
+    b_a[P6i_tmp_2 + 2] = theta5;
+    b_a[P6i_tmp_2 + 1] = rtb_Sum11;
+    b_a[P6i_tmp_2] = theta2;
   }
 
   for (i_0 = 0; i_0 < 4; i_0++) {
-    rtb_Gain15_tmp = i_0 << 2;
-    rtb_Sum11 = P2planar[rtb_Gain15_tmp];
-    rtb_Sum6 = P2planar[rtb_Gain15_tmp + 1];
-    theta5 = P2planar[rtb_Gain15_tmp + 2];
-    XE = P2planar[rtb_Gain15_tmp + 3];
+    rtb_Sum10_tmp = i_0 << 2;
+    theta2 = P2planar[rtb_Sum10_tmp];
+    rtb_Sum11 = P2planar[rtb_Sum10_tmp + 1];
+    theta5 = P2planar[rtb_Sum10_tmp + 2];
+    XE = P2planar[rtb_Sum10_tmp + 3];
     for (i = 0; i < 4; i++) {
-      P6i_tmp_1 = rtb_Gain15_tmp + i;
-      rtb_Gain15_1 = b_b_0[P6i_tmp_1];
+      P6i_tmp_1 = rtb_Sum10_tmp + i;
+      rtb_Sum10_1 = b_b_0[P6i_tmp_1];
       P6i_tmp_2 = i << 2;
-      rtb_Sum11 += rtb_Gain15_0[P6i_tmp_2] * rtb_Gain15_1;
-      rtb_Sum6 += rtb_Gain15_0[P6i_tmp_2 + 1] * rtb_Gain15_1;
-      theta5 += rtb_Gain15_0[P6i_tmp_2 + 2] * rtb_Gain15_1;
-      XE += rtb_Gain15_0[P6i_tmp_2 + 3] * rtb_Gain15_1;
-      b_a[P6i_tmp_1] = 0.0;
+      theta2 += b_a[P6i_tmp_2] * rtb_Sum10_1;
+      rtb_Sum11 += b_a[P6i_tmp_2 + 1] * rtb_Sum10_1;
+      theta5 += b_a[P6i_tmp_2 + 2] * rtb_Sum10_1;
+      XE += b_a[P6i_tmp_2 + 3] * rtb_Sum10_1;
+      rtb_Sum10_0[P6i_tmp_1] = 0.0;
     }
 
-    P2planar[rtb_Gain15_tmp + 3] = XE;
-    P2planar[rtb_Gain15_tmp + 2] = theta5;
-    P2planar[rtb_Gain15_tmp + 1] = rtb_Sum6;
-    P2planar[rtb_Gain15_tmp] = rtb_Sum11;
-    rtb_Sum11 = b_a[rtb_Gain15_tmp];
-    rtb_Sum6 = b_a[rtb_Gain15_tmp + 1];
-    theta5 = b_a[rtb_Gain15_tmp + 2];
-    XE = b_a[rtb_Gain15_tmp + 3];
+    P2planar[rtb_Sum10_tmp + 3] = XE;
+    P2planar[rtb_Sum10_tmp + 2] = theta5;
+    P2planar[rtb_Sum10_tmp + 1] = rtb_Sum11;
+    P2planar[rtb_Sum10_tmp] = theta2;
+    theta2 = rtb_Sum10_0[rtb_Sum10_tmp];
+    rtb_Sum11 = rtb_Sum10_0[rtb_Sum10_tmp + 1];
+    theta5 = rtb_Sum10_0[rtb_Sum10_tmp + 2];
+    XE = rtb_Sum10_0[rtb_Sum10_tmp + 3];
     for (i = 0; i < 4; i++) {
-      P6i_tmp_1 = rtb_Gain15_tmp + i;
-      rtb_Gain15_1 = P6i[P6i_tmp_1];
+      P6i_tmp_1 = rtb_Sum10_tmp + i;
+      rtb_Sum10_1 = P6i[P6i_tmp_1];
       P6i_tmp_2 = i << 2;
-      rtb_Sum11 += (real_T)P2planar_tmp[P6i_tmp_2] * rtb_Gain15_1;
-      rtb_Sum6 += (real_T)P2planar_tmp[P6i_tmp_2 + 1] * rtb_Gain15_1;
-      theta5 += (real_T)P2planar_tmp[P6i_tmp_2 + 2] * rtb_Gain15_1;
-      XE += (real_T)P2planar_tmp[P6i_tmp_2 + 3] * rtb_Gain15_1;
+      theta2 += (real_T)P2planar_tmp[P6i_tmp_2] * rtb_Sum10_1;
+      rtb_Sum11 += (real_T)P2planar_tmp[P6i_tmp_2 + 1] * rtb_Sum10_1;
+      theta5 += (real_T)P2planar_tmp[P6i_tmp_2 + 2] * rtb_Sum10_1;
+      XE += (real_T)P2planar_tmp[P6i_tmp_2 + 3] * rtb_Sum10_1;
       P4planar[P6i_tmp_1] = 0.0;
     }
 
-    b_a[rtb_Gain15_tmp + 3] = XE;
-    b_a[rtb_Gain15_tmp + 2] = theta5;
-    b_a[rtb_Gain15_tmp + 1] = rtb_Sum6;
-    b_a[rtb_Gain15_tmp] = rtb_Sum11;
+    rtb_Sum10_0[rtb_Sum10_tmp + 3] = XE;
+    rtb_Sum10_0[rtb_Sum10_tmp + 2] = theta5;
+    rtb_Sum10_0[rtb_Sum10_tmp + 1] = rtb_Sum11;
+    rtb_Sum10_0[rtb_Sum10_tmp] = theta2;
   }
 
   for (i_0 = 0; i_0 < 4; i_0++) {
     P6i_tmp_1 = i_0 << 2;
-    rtb_Sum11 = P4planar[P6i_tmp_1];
-    rtb_Sum6 = P4planar[P6i_tmp_1 + 1];
+    theta2 = P4planar[P6i_tmp_1];
+    rtb_Sum11 = P4planar[P6i_tmp_1 + 1];
     theta5 = P4planar[P6i_tmp_1 + 2];
     XE = P4planar[P6i_tmp_1 + 3];
     for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = c_b_0[P6i_tmp_1 + i];
-      rtb_Gain15_tmp = i << 2;
-      rtb_Sum11 += b_a[rtb_Gain15_tmp] * rtb_Gain15_1;
-      rtb_Sum6 += b_a[rtb_Gain15_tmp + 1] * rtb_Gain15_1;
-      theta5 += b_a[rtb_Gain15_tmp + 2] * rtb_Gain15_1;
-      XE += b_a[rtb_Gain15_tmp + 3] * rtb_Gain15_1;
+      rtb_Sum10_1 = c_b_0[P6i_tmp_1 + i];
+      rtb_Sum10_tmp = i << 2;
+      theta2 += rtb_Sum10_0[rtb_Sum10_tmp] * rtb_Sum10_1;
+      rtb_Sum11 += rtb_Sum10_0[rtb_Sum10_tmp + 1] * rtb_Sum10_1;
+      theta5 += rtb_Sum10_0[rtb_Sum10_tmp + 2] * rtb_Sum10_1;
+      XE += rtb_Sum10_0[rtb_Sum10_tmp + 3] * rtb_Sum10_1;
     }
 
     P4planar[P6i_tmp_1 + 3] = XE;
     P4planar[P6i_tmp_1 + 2] = theta5;
-    P4planar[P6i_tmp_1 + 1] = rtb_Sum6;
-    P4planar[P6i_tmp_1] = rtb_Sum11;
+    P4planar[P6i_tmp_1 + 1] = rtb_Sum11;
+    P4planar[P6i_tmp_1] = theta2;
   }
 
   XE = P4planar[12] - P2planar[12];
-  YE = P4planar[14] - P2planar[14];
-  rtb_Gain15_1 = XE * XE;
-  rtb_Sum11 = YE * YE;
-  rtb_Sum6 = (((((((rtb_Gain15_1 * 0.15680000000000002 - 0.0038886400000000022)
-                   + rtb_Sum11 * 0.15680000000000002) - 0.00020735999999999997)
-                 + rtb_Gain15_1 * 0.0288) + rtb_Sum11 * 0.0288) - rt_powd_snf(XE,
-    4.0)) - rtb_Gain15_1 * 2.0 * rtb_Sum11) - rt_powd_snf(YE, 4.0);
-  if (rtb_Sum6 > 0.0) {
-    theta5 = atan((0.56 * YE + sqrt(rtb_Sum6)) / ((((0.56 * XE +
-      0.078400000000000011) - 0.0144) + rtb_Gain15_1) + rtb_Sum11)) * 2.0;
-    rtb_Sum6 = (rtb_Gain15_1 - 0.0256) + rtb_Sum11;
-    XE = atan(sqrt(((0.16 - rtb_Gain15_1) - rtb_Sum11) * rtb_Sum6) / rtb_Sum6) *
+  theta5 = P4planar[14] - P2planar[14];
+  rtb_Sum10_1 = XE * XE;
+  theta2 = theta5 * theta5;
+  rtb_Sum11 = (((((((rtb_Sum10_1 * 0.15680000000000002 - 0.0038886400000000022)
+                    + theta2 * 0.15680000000000002) - 0.00020735999999999997) +
+                  rtb_Sum10_1 * 0.0288) + theta2 * 0.0288) - rt_powd_snf(XE, 4.0))
+               - rtb_Sum10_1 * 2.0 * theta2) - rt_powd_snf(theta5, 4.0);
+  if (rtb_Sum11 > 0.0) {
+    theta5 = atan((0.56 * theta5 + sqrt(rtb_Sum11)) / ((((0.56 * XE +
+      0.078400000000000011) - 0.0144) + rtb_Sum10_1) + theta2)) * 2.0;
+    rtb_Sum11 = (rtb_Sum10_1 - 0.0256) + theta2;
+    XE = atan(sqrt(((0.16 - rtb_Sum10_1) - theta2) * rtb_Sum11) / rtb_Sum11) *
       -2.0;
   } else {
     theta5 = 0.0;
     XE = 0.0;
   }
 
-  theta5 += 3.1415926535897931 - theta2;
-  rtb_Sum6 = sin(rtb_Gain15);
-  rtb_Sum11 = cos(rtb_Gain15);
-  rtb_Gain15 = sin(theta5);
-  theta2 = cos(theta5);
+  theta5 += 3.1415926535897931 - rtb_Sum10;
+  theta2 = sin(angToBase);
+  rtb_Sum11 = cos(angToBase);
+  angToBase = sin(theta5);
+  rtb_Sum10 = cos(theta5);
   theta5 = sin(XE);
   XE = cos(XE);
-  YE = sin(angToBase);
-  angToBase = cos(angToBase);
   P2planar[0] = rtb_Sum11;
-  P2planar[4] = -rtb_Sum6;
+  P2planar[4] = -theta2;
   P2planar[8] = 0.0;
   P2planar[12] = 0.0;
-  P2planar[1] = rtb_Sum6;
+  P2planar[1] = theta2;
   P2planar[5] = rtb_Sum11;
   P2planar[9] = 0.0;
   P2planar[13] = 0.0;
   for (i_0 = 0; i_0 < 4; i_0++) {
-    rtb_Gain15_tmp = i_0 << 2;
-    P2planar[rtb_Gain15_tmp + 2] = P6i_tmp_0[i_0];
-    P2planar[rtb_Gain15_tmp + 3] = P6i_tmp[i_0];
-    b_a[rtb_Gain15_tmp] = 0.0;
-    b_a[rtb_Gain15_tmp + 1] = 0.0;
-    b_a[rtb_Gain15_tmp + 2] = 0.0;
-    b_a[rtb_Gain15_tmp + 3] = 0.0;
+    P6i_tmp_2 = i_0 << 2;
+    P2planar[P6i_tmp_2 + 2] = P6i_tmp_0[i_0];
+    P2planar[P6i_tmp_2 + 3] = P6i_tmp[i_0];
+    P4planar[P6i_tmp_2] = 0.0;
+    P4planar[P6i_tmp_2 + 1] = 0.0;
+    P4planar[P6i_tmp_2 + 2] = 0.0;
+    P4planar[P6i_tmp_2 + 3] = 0.0;
   }
 
-  P4planar[0] = theta2;
-  P4planar[4] = -rtb_Gain15;
-  P4planar[8] = 0.0;
-  P4planar[12] = 0.12;
-  P4planar[1] = rtb_Gain15;
-  P4planar[5] = theta2;
-  P4planar[9] = 0.0;
-  P4planar[13] = 0.0;
+  rtb_Sum10_0[0] = rtb_Sum10;
+  rtb_Sum10_0[4] = -angToBase;
+  rtb_Sum10_0[8] = 0.0;
+  rtb_Sum10_0[12] = 0.12;
+  rtb_Sum10_0[1] = angToBase;
+  rtb_Sum10_0[5] = rtb_Sum10;
+  rtb_Sum10_0[9] = 0.0;
+  rtb_Sum10_0[13] = 0.0;
+  for (i_0 = 0; i_0 < 4; i_0++) {
+    rtb_Sum10_tmp = i_0 << 2;
+    rtb_Sum10_0[rtb_Sum10_tmp + 2] = P6i_tmp_0[i_0];
+    rtb_Sum10_0[rtb_Sum10_tmp + 3] = P6i_tmp[i_0];
+    rtb_Sum11 = P4planar[rtb_Sum10_tmp];
+    angToBase = P4planar[rtb_Sum10_tmp + 1];
+    rtb_Sum10 = P4planar[rtb_Sum10_tmp + 2];
+    theta2 = P4planar[rtb_Sum10_tmp + 3];
+    for (i = 0; i < 4; i++) {
+      P6i_tmp_1 = rtb_Sum10_tmp + i;
+      rtb_Sum10_1 = P6i[P6i_tmp_1];
+      P6i_tmp_2 = i << 2;
+      rtb_Sum11 += P2planar[P6i_tmp_2] * rtb_Sum10_1;
+      angToBase += P2planar[P6i_tmp_2 + 1] * rtb_Sum10_1;
+      rtb_Sum10 += P2planar[P6i_tmp_2 + 2] * rtb_Sum10_1;
+      theta2 += P2planar[P6i_tmp_2 + 3] * rtb_Sum10_1;
+      b_a[P6i_tmp_1] = 0.0;
+    }
+
+    P4planar[rtb_Sum10_tmp + 3] = theta2;
+    P4planar[rtb_Sum10_tmp + 2] = rtb_Sum10;
+    P4planar[rtb_Sum10_tmp + 1] = angToBase;
+    P4planar[rtb_Sum10_tmp] = rtb_Sum11;
+  }
+
   for (i_0 = 0; i_0 < 4; i_0++) {
     P6i_tmp_2 = i_0 << 2;
-    P4planar[P6i_tmp_2 + 2] = P6i_tmp_0[i_0];
-    P4planar[P6i_tmp_2 + 3] = P6i_tmp[i_0];
     rtb_Sum11 = b_a[P6i_tmp_2];
-    theta2 = b_a[P6i_tmp_2 + 1];
-    rtb_Gain15 = b_a[P6i_tmp_2 + 2];
-    rtb_Sum6 = b_a[P6i_tmp_2 + 3];
+    angToBase = b_a[P6i_tmp_2 + 1];
+    rtb_Sum10 = b_a[P6i_tmp_2 + 2];
+    theta2 = b_a[P6i_tmp_2 + 3];
     for (i = 0; i < 4; i++) {
-      P6i_tmp_1 = P6i_tmp_2 + i;
-      rtb_Gain15_1 = P6i[P6i_tmp_1];
-      rtb_Gain15_tmp = i << 2;
-      rtb_Sum11 += P2planar[rtb_Gain15_tmp] * rtb_Gain15_1;
-      theta2 += P2planar[rtb_Gain15_tmp + 1] * rtb_Gain15_1;
-      rtb_Gain15 += P2planar[rtb_Gain15_tmp + 2] * rtb_Gain15_1;
-      rtb_Sum6 += P2planar[rtb_Gain15_tmp + 3] * rtb_Gain15_1;
-      rtb_Gain15_0[P6i_tmp_1] = 0.0;
-    }
-
-    b_a[P6i_tmp_2 + 3] = rtb_Sum6;
-    b_a[P6i_tmp_2 + 2] = rtb_Gain15;
-    b_a[P6i_tmp_2 + 1] = theta2;
-    b_a[P6i_tmp_2] = rtb_Sum11;
-  }
-
-  for (i_0 = 0; i_0 < 4; i_0++) {
-    rtb_Gain15_tmp = i_0 << 2;
-    rtb_Sum11 = rtb_Gain15_0[rtb_Gain15_tmp];
-    theta2 = rtb_Gain15_0[rtb_Gain15_tmp + 1];
-    rtb_Gain15 = rtb_Gain15_0[rtb_Gain15_tmp + 2];
-    rtb_Sum6 = rtb_Gain15_0[rtb_Gain15_tmp + 3];
-    for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = P4planar[rtb_Gain15_tmp + i];
+      rtb_Sum10_1 = rtb_Sum10_0[P6i_tmp_2 + i];
       P6i_tmp_1 = i << 2;
-      rtb_Sum11 += b_a[P6i_tmp_1] * rtb_Gain15_1;
-      theta2 += b_a[P6i_tmp_1 + 1] * rtb_Gain15_1;
-      rtb_Gain15 += b_a[P6i_tmp_1 + 2] * rtb_Gain15_1;
-      rtb_Sum6 += b_a[P6i_tmp_1 + 3] * rtb_Gain15_1;
+      rtb_Sum11 += P4planar[P6i_tmp_1] * rtb_Sum10_1;
+      angToBase += P4planar[P6i_tmp_1 + 1] * rtb_Sum10_1;
+      rtb_Sum10 += P4planar[P6i_tmp_1 + 2] * rtb_Sum10_1;
+      theta2 += P4planar[P6i_tmp_1 + 3] * rtb_Sum10_1;
     }
 
-    rtb_Gain15_0[rtb_Gain15_tmp + 3] = rtb_Sum6;
-    rtb_Gain15_0[rtb_Gain15_tmp + 2] = rtb_Gain15;
-    rtb_Gain15_0[rtb_Gain15_tmp + 1] = theta2;
-    rtb_Gain15_0[rtb_Gain15_tmp] = rtb_Sum11;
+    b_a[P6i_tmp_2 + 3] = theta2;
+    b_a[P6i_tmp_2 + 2] = rtb_Sum10;
+    b_a[P6i_tmp_2 + 1] = angToBase;
+    b_a[P6i_tmp_2] = rtb_Sum11;
   }
 
   P6i[0] = XE;
@@ -955,99 +962,99 @@ void control_arm_step(void)
     P6i[P6i_tmp_1 + 2] = P6i_tmp_0[i_0];
     P6i[P6i_tmp_1 + 3] = P6i_tmp[i_0];
     rtb_Sum11 = 0.0;
+    angToBase = 0.0;
+    rtb_Sum10 = 0.0;
     theta2 = 0.0;
-    rtb_Gain15 = 0.0;
-    rtb_Sum6 = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = P6i[P6i_tmp_1 + i];
-      rtb_Gain15_tmp = i << 2;
-      rtb_Sum11 += rtb_Gain15_0[rtb_Gain15_tmp] * rtb_Gain15_1;
-      theta2 += rtb_Gain15_0[rtb_Gain15_tmp + 1] * rtb_Gain15_1;
-      rtb_Gain15 += rtb_Gain15_0[rtb_Gain15_tmp + 2] * rtb_Gain15_1;
-      rtb_Sum6 += rtb_Gain15_0[rtb_Gain15_tmp + 3] * rtb_Gain15_1;
+      rtb_Sum10_1 = P6i[P6i_tmp_1 + i];
+      P6i_tmp_2 = i << 2;
+      rtb_Sum11 += b_a[P6i_tmp_2] * rtb_Sum10_1;
+      angToBase += b_a[P6i_tmp_2 + 1] * rtb_Sum10_1;
+      rtb_Sum10 += b_a[P6i_tmp_2 + 2] * rtb_Sum10_1;
+      theta2 += b_a[P6i_tmp_2 + 3] * rtb_Sum10_1;
     }
 
-    P2planar[P6i_tmp_1 + 3] = rtb_Sum6;
-    P2planar[P6i_tmp_1 + 2] = rtb_Gain15;
-    P2planar[P6i_tmp_1 + 1] = theta2;
+    P2planar[P6i_tmp_1 + 3] = theta2;
+    P2planar[P6i_tmp_1 + 2] = rtb_Sum10;
+    P2planar[P6i_tmp_1 + 1] = angToBase;
     P2planar[P6i_tmp_1] = rtb_Sum11;
   }
 
-  P6i[0] = angToBase;
-  P6i[4] = -YE;
-  P6i[8] = 0.0;
-  P6i[12] = 0.62;
-  P6i[1] = YE;
-  P6i[5] = angToBase;
-  P6i[9] = 0.0;
-  P6i[13] = 0.0;
+  b_a[0] = cos(rtU.gripperPitchActualPosition);
+  b_a[4] = -sin(rtU.gripperPitchActualPosition);
+  b_a[8] = 0.0;
+  b_a[12] = 0.62;
+  b_a[1] = sin(rtU.gripperPitchActualPosition);
+  b_a[5] = cos(rtU.gripperPitchActualPosition);
+  b_a[9] = 0.0;
+  b_a[13] = 0.0;
   for (i_0 = 0; i_0 < 4; i_0++) {
-    P6i_tmp_1 = i_0 << 2;
-    P6i[P6i_tmp_1 + 2] = P6i_tmp_0[i_0];
-    P6i[P6i_tmp_1 + 3] = P6i_tmp[i_0];
+    i = i_0 << 2;
+    b_a[i + 2] = P6i_tmp_0[i_0];
+    b_a[i + 3] = P6i_tmp[i_0];
     rtb_Sum11 = 0.0;
+    angToBase = 0.0;
+    rtb_Sum10 = 0.0;
     theta2 = 0.0;
-    rtb_Gain15 = 0.0;
-    rtb_Sum6 = 0.0;
-    for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = P6i[P6i_tmp_1 + i];
-      rtb_Gain15_tmp = i << 2;
-      rtb_Sum11 += P2planar[rtb_Gain15_tmp] * rtb_Gain15_1;
-      theta2 += P2planar[rtb_Gain15_tmp + 1] * rtb_Gain15_1;
-      rtb_Gain15 += P2planar[rtb_Gain15_tmp + 2] * rtb_Gain15_1;
-      rtb_Sum6 += P2planar[rtb_Gain15_tmp + 3] * rtb_Gain15_1;
+    for (P6i_tmp_1 = 0; P6i_tmp_1 < 4; P6i_tmp_1++) {
+      rtb_Sum10_1 = b_a[i + P6i_tmp_1];
+      P6i_tmp_2 = P6i_tmp_1 << 2;
+      rtb_Sum11 += P2planar[P6i_tmp_2] * rtb_Sum10_1;
+      angToBase += P2planar[P6i_tmp_2 + 1] * rtb_Sum10_1;
+      rtb_Sum10 += P2planar[P6i_tmp_2 + 2] * rtb_Sum10_1;
+      theta2 += P2planar[P6i_tmp_2 + 3] * rtb_Sum10_1;
     }
 
-    b_a[P6i_tmp_1 + 3] = rtb_Sum6;
-    b_a[P6i_tmp_1 + 2] = rtb_Gain15;
-    b_a[P6i_tmp_1 + 1] = theta2;
-    b_a[P6i_tmp_1] = rtb_Sum11;
+    P4planar[i + 3] = theta2;
+    P4planar[i + 2] = rtb_Sum10;
+    P4planar[i + 1] = angToBase;
+    P4planar[i] = rtb_Sum11;
   }
 
   for (i_0 = 0; i_0 < 4; i_0++) {
+    theta2 = 0.0;
     rtb_Sum11 = 0.0;
-    rtb_Sum6 = 0.0;
     theta5 = 0.0;
     XE = 0.0;
     for (i = 0; i < 4; i++) {
-      rtb_Gain15_1 = d_b_0[(i_0 << 2) + i];
-      rtb_Gain15_tmp = i << 2;
-      rtb_Sum11 += b_a[rtb_Gain15_tmp] * rtb_Gain15_1;
-      rtb_Sum6 += b_a[rtb_Gain15_tmp + 1] * rtb_Gain15_1;
-      theta5 += b_a[rtb_Gain15_tmp + 2] * rtb_Gain15_1;
-      XE += b_a[rtb_Gain15_tmp + 3] * rtb_Gain15_1;
+      rtb_Sum10_1 = d_b_0[(i_0 << 2) + i];
+      rtb_Sum10_tmp = i << 2;
+      theta2 += P4planar[rtb_Sum10_tmp] * rtb_Sum10_1;
+      rtb_Sum11 += P4planar[rtb_Sum10_tmp + 1] * rtb_Sum10_1;
+      theta5 += P4planar[rtb_Sum10_tmp + 2] * rtb_Sum10_1;
+      XE += P4planar[rtb_Sum10_tmp + 3] * rtb_Sum10_1;
     }
 
-    rtb_Gain15_tmp = i_0 << 2;
-    P2planar[rtb_Gain15_tmp + 3] = XE;
-    P2planar[rtb_Gain15_tmp + 2] = theta5;
-    P2planar[rtb_Gain15_tmp + 1] = rtb_Sum6;
-    P2planar[rtb_Gain15_tmp] = rtb_Sum11;
+    rtb_Sum10_tmp = i_0 << 2;
+    P2planar[rtb_Sum10_tmp + 3] = XE;
+    P2planar[rtb_Sum10_tmp + 2] = theta5;
+    P2planar[rtb_Sum10_tmp + 1] = rtb_Sum11;
+    P2planar[rtb_Sum10_tmp] = theta2;
   }
 
   /* Sum: '<S3>/Sum' incorporates:
    *  Inport: '<Root>/x'
    *  MATLAB Function: '<S1>/MATLAB Function4'
    */
-  rtb_Gain15_1 = P2planar[12] - rtU.x;
+  rtb_Sum10_1 = P2planar[12] - rtU.x;
 
   /* DotProduct: '<S3>/Dot Product' */
-  angToBase = rtb_Gain15_1 * rtb_Gain15_1;
+  angToBase = rtb_Sum10_1 * rtb_Sum10_1;
 
   /* Sum: '<S3>/Sum' incorporates:
    *  Inport: '<Root>/y'
    *  MATLAB Function: '<S1>/MATLAB Function4'
    */
-  rtb_Gain15_1 = P2planar[13] - rtU.y;
+  rtb_Sum10_1 = P2planar[13] - rtU.y;
 
   /* DotProduct: '<S3>/Dot Product' */
-  angToBase += rtb_Gain15_1 * rtb_Gain15_1;
+  angToBase += rtb_Sum10_1 * rtb_Sum10_1;
 
   /* Sum: '<S3>/Sum' incorporates:
    *  Inport: '<Root>/z'
    *  MATLAB Function: '<S1>/MATLAB Function4'
    */
-  rtb_Gain15_1 = P2planar[14] - rtU.z;
+  rtb_Sum10_1 = P2planar[14] - rtU.z;
 
   /* Outport: '<Root>/pointReached' incorporates:
    *  Constant: '<S2>/Constant'
@@ -1055,7 +1062,7 @@ void control_arm_step(void)
    *  RelationalOperator: '<S2>/Compare'
    *  Sqrt: '<S3>/sqrt'
    */
-  rtY.pointReached = (sqrt(rtb_Gain15_1 * rtb_Gain15_1 + angToBase) <= 0.002);
+  rtY.pointReached = (sqrt(rtb_Sum10_1 * rtb_Sum10_1 + angToBase) <= 0.002);
 
   /* Saturate: '<S1>/Saturation5' incorporates:
    *  UnitDelay: '<S1>/Unit Delay8'
@@ -1098,7 +1105,7 @@ void control_arm_step(void)
    *  UnitDelay: '<S1>/Unit Delay7'
    */
   MATLABFunction2(rtDW.UnitDelay7_DSTATE, 21.0 * (0.017453292519943295 *
-    rtU.gripperRotationDesiredPosition), 21.0 * rtU.deltaTime, &angToBase);
+    rtU.gripperRotationDesiredPosition), 21.0 * rtU.deltaTime, &rtb_Sum10);
 
   /* MATLAB Function: '<S1>/MATLAB Function3' incorporates:
    *  Gain: '<S1>/Gain2'
@@ -1115,7 +1122,7 @@ void control_arm_step(void)
    *  Inport: '<Root>/jawActualPosition'
    *  UnitDelay: '<S1>/Unit Delay9'
    */
-  rtb_Sum6 = rtDW.UnitDelay9_DSTATE - rtU.jawActualPosition;
+  rtb_Sum11 = rtDW.UnitDelay9_DSTATE - rtU.jawActualPosition;
 
   /* Update for UnitDelay: '<S1>/Unit Delay5' */
   rtDW.UnitDelay5_DSTATE = theta0;
@@ -1128,7 +1135,7 @@ void control_arm_step(void)
    *  Gain: '<S105>/Proportional Gain'
    *  Sum: '<S109>/Sum'
    */
-  rtDW.UnitDelay8_DSTATE = 2.0 * rtb_Sum6 + rtDW.Integrator_DSTATE_h;
+  rtDW.UnitDelay8_DSTATE = 2.0 * rtb_Sum11 + rtDW.Integrator_DSTATE_h;
 
   /* Gain: '<S53>/Proportional Gain' incorporates:
    *  Gain: '<S45>/Integral Gain'
@@ -1146,7 +1153,7 @@ void control_arm_step(void)
   rtDW.UnitDelay6_DSTATE = theta0 + rtDW.Integrator_DSTATE;
 
   /* Update for UnitDelay: '<S1>/Unit Delay7' */
-  rtDW.UnitDelay7_DSTATE = angToBase;
+  rtDW.UnitDelay7_DSTATE = rtb_Sum10;
 
   /* Update for DiscreteIntegrator: '<S48>/Integrator' incorporates:
    *  Inport: '<Root>/deltaTime'
@@ -1161,7 +1168,7 @@ void control_arm_step(void)
    *  Inport: '<Root>/deltaTime'
    *  Product: '<S113>/Uintegral*Ts Prod Out'
    */
-  rtDW.Integrator_DSTATE_h += rtb_Sum6 * rtU.deltaTime;
+  rtDW.Integrator_DSTATE_h += rtb_Sum11 * rtU.deltaTime;
 }
 
 /* Model initialize function */
